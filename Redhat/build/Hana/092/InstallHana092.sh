@@ -19,11 +19,12 @@ if [ $STATUS -ne 0 ]; then
   exit $STATUS; fi
 
 
+###  MARCH 2013 : UAL install removed, decided that this install belongs to BUILD process
 #--------------- UAL_AFL package installation
-echo -e "$SID\n$PASSWORD" | /setup/ual_afl/hdbinst
-STATUS=$?
-if [ $STATUS -ne 0 ]; then
-  exit $STATUS; fi
+# echo -e "$SID\n$PASSWORD" | /setup/ual_afl/hdbinst
+# STATUS=$?
+# if [ $STATUS -ne 0 ]; then
+#   exit $STATUS; fi
 
 
 #--------------- generated-script to indicate Hana install location

@@ -14,6 +14,7 @@
 #!/bin/sh
 
 
+# DEBUG PURPOSE
 #--------------------------------------
 function _PAUSE {
   read -p "PAUSE "; }
@@ -40,8 +41,8 @@ function CleanupBuildSpace {
 
   RemoveDir "$1/installer"
 
-  mkdir -p "$1"/installer/sapcar
-  mkdir    "$1"/installer/ual_afl; }
+  mkdir -p "$1"/installer/sapcar; }
+# mkdir    "$1"/installer/ual_afl; }
 
 
 #--------------------------------------
@@ -57,25 +58,25 @@ function Download_sapcar {
 
 
 #--------------------------------------
-function Download_ualafl {
+#function Download_ualafl {
 
-  echo
-  echo ". Downloading '/net/build-drops-wdf/dropzone/nett_dev/ual_afl.sar'"
+#  echo
+#  echo ". Downloading '/net/build-drops-wdf/dropzone/nett_dev/ual_afl.sar'"
 
-  cp  /net/build-drops-wdf/dropzone/nett_dev/ual_afl.sar   $1/installer/ual_afl/
-  if [ ! -f $1/installer/ual_afl/ual_afl.sar ]; then
-    abort 1  "Failed to download 'ual_afl.sar'"; fi
+#  cp  /net/build-drops-wdf/dropzone/nett_dev/ual_afl.sar   $1/installer/ual_afl/
+#  if [ ! -f $1/installer/ual_afl/ual_afl.sar ]; then
+#    abort 1  "Failed to download 'ual_afl.sar'"; fi
 
-  echo ". Uncompressing '$1/installer/ual_afl/ual_afl.sar'"
+#  echo ". Uncompressing '$1/installer/ual_afl/ual_afl.sar'"
 
-  cd $1/installer/ual_afl
-  $1/installer/sapcar/sapcar.exe  -xf  $1/installer/ual_afl/ual_afl.sar > /dev/nul
+#  cd $1/installer/ual_afl
+#  $1/installer/sapcar/sapcar.exe  -xf  $1/installer/ual_afl/ual_afl.sar > /dev/nul
 
-  STATUS=$?
-  if [ $STATUS -ne 0 ]; then
-    abort $STATUS  "Error decompressing '$1/installer/ual_afl/ual_afl.sar'"; fi
+#  STATUS=$?
+#  if [ $STATUS -ne 0 ]; then
+#    abort $STATUS  "Error decompressing '$1/installer/ual_afl/ual_afl.sar'"; fi
 
-  rm -f $1/installer/ual_afl/ual_afl.sar; }
+#  rm -f $1/installer/ual_afl/ual_afl.sar; }
 
 
 #--------------------------------------
@@ -180,7 +181,7 @@ function PushImageHana092 {
 
 #---------------  MAIN
 clear
-# set -x
+#set -x
 
 HANA="hana"
 REV="092"
@@ -190,15 +191,15 @@ LOCATION=/root/docker/build/$HANA/$REV
 CleanupBuildSpace  $LOCATION
 
 Download_sapcar   $LOCATION
-Download_ualafl   $LOCATION
-Download_HanaDb   $LOCATION; _PAUSE
+#Download_ualafl   $LOCATION
+Download_HanaDb   $LOCATION
 
 DeleteContainer092
 DeleteImage092
 
 BuildImageHana092
-WriteImageHana092; _PAUSE
-PushImageHana092
+WriteImageHana092
+#PushImageHana092
 
 
 
