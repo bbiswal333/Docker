@@ -3,7 +3,8 @@
 #  AUTHOR: gerald.braunwarth@sap.com
 #
 #  DOWNLOADS: 
-#  SAPCAR   :  /net/build-drops-wdf/dropzone/nett_dev/sapcar.exe
+#  SAPCAR   :  http://moo-repo.wdf.sap.corp:8080/static/monsoon/sapcar/7.20/linux_x86_64/sapcar.exe
+#              INSTEAD OF /net/build-drops-wdf/dropzone/nett_dev/sapcar.exe
 #  UAL_AFL  :  /net/build-drops-wdf/dropzone/nett_dev/ual_afl.sar
 #  HANA 091 :  http://moo-repo.wdf.sap.corp:8080/static/pblack/newdb/NewDB100/rel/091/server/linuxx86_64/SAP_HANA_DATABASE100_091_Linux_on_x86_64.SAR
 #  HANA 092 :  http://moo-repo.wdf.sap.corp:8080/static/pblack/newdb/NewDB100/rel/092/server/linuxx86_64/SAP_HANA_DATABASE100_092_Linux_on_x86_64.SAR
@@ -37,6 +38,11 @@ function CheckPathParameter {
 
 
 #--------------------------------------
+function SetWorkingDirectory {
+  cd "$1"; }
+
+
+#--------------------------------------
 function InitVars {
   export DOWNLOAD_FROM="$1"
   export REGISTRY="dewdftzlidck:5000"
@@ -45,8 +51,7 @@ function InitVars {
   export REV="NUL"
   export TAG="latest"
   export INSTANCE="00"
-  export LOCATION="/root/docker/build/$HANA"; }
-# export LOCATION="$2"; _PAUSE; }
+  export LOCATION=$(pwd); }
 
 
 #--------------------------------------
@@ -61,23 +66,25 @@ function CleanupBuildSpace {
   echo
   echo ". Cleaning build workspace"
 
-  RemoveDir "$LOCATION/XXX"
+  RemoveDir "XXX"
 
-  mkdir -p $LOCATION/XXX/installer/sapcar
-  mkdir    $LOCATION/XXX/installer/tmp; }
-# mkdir    $LOCATION/XXX/installer/ual_afl; }
+  mkdir -p XXX/installer/sapcar
+  mkdir    XXX/installer/tmp; }
+# mkdir    XXX/installer/ual_afl; }
 
 
 #--------------------------------------
 function Download_sapcar {
 
   echo
-  echo ". Downloading '/net/build-drops-wdf/dropzone/nett_dev/sapcar.exe'"
+  echo ". Downloading 'http://moo-repo.wdf.sap.corp:8080/static/monsoon/sapcar/7.20/linux_x86_64/sapcar.exe'"
 
-  cp  /net/build-drops-wdf/dropzone/nett_dev/sapcar.exe   $LOCATION/XXX/installer/sapcar/
+  wget -o /dev/null "http://moo-repo.wdf.sap.corp:8080/static/monsoon/sapcar/7.20/linux_x86_64/sapcar.exe"  -P XXX/installer/sapcar/
 
-  if [ ! -f $LOCATION/XXX/installer/sapcar/sapcar.exe ]; then
-    abort 1  "Failed to download 'sapcar.exe'"; fi; }
+  if [ ! -f XXX/installer/sapcar/sapcar.exe ]; then
+    abort 1  "Failed to download 'sapcar.exe'"; fi
+
+  chmod +x XXX/installer/sapcar/sapcar.exe; }
 
 
 #--------------------------------------
@@ -107,7 +114,7 @@ function Download_HanaDb {
 
   echo ". Downloading '$DOWNLOAD_FROM'     '*.SAR'"
 
-  cd $LOCATION/XXX/installer/tmp
+  cd XXX/installer/tmp
   wget -o /dev/null -r --no-directories --reject="index.html*"  $DOWNLOAD_FROM
 
   SAR=$(ls | grep "DATABASE")
@@ -223,7 +230,8 @@ set -x
 
 CheckPathParameter $1
 
-InitVars $1 $(dirname $0)
+SetWorkingDirectory  $(dirname $0)
+InitVars $1
 CleanupBuildSpace
 
 Download_sapcar
@@ -236,7 +244,7 @@ SetRevBuildSpace
 DeleteContainer
 DeleteImage
 
-BuildImageHana 
+BuildImageHana
 WriteImageHana
 #PushImageHana
 
