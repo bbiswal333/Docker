@@ -3,10 +3,12 @@
 #  AUTHOR: gerald.braunwarth@sap.com
 #
 #  DOWNLOADS: 
-#  /net/build-drops-wdf/dropzone/nett_dev/sapcar.exe
-#  /net/build-drops-wdf/dropzone/nett_dev/ual_afl.sar
-#  http://moo-repo.wdf.sap.corp:8080/static/pblack/newdb/NewDB100/rel/092/server/linuxx86_64/SAP_HANA_DATABASE100_092_Linux_on_x86_64.SAR
-#      REPLACES: \\production\newdb\NewDB100\rel\092\server\linuxx86_64\SAP_HANA_DATABASE
+#  SAPCAR   :  /net/build-drops-wdf/dropzone/nett_dev/sapcar.exe
+#  UAL_AFL  :  /net/build-drops-wdf/dropzone/nett_dev/ual_afl.sar
+#  HANA 091 :  http://moo-repo.wdf.sap.corp:8080/static/pblack/newdb/NewDB100/rel/091/server/linuxx86_64/SAP_HANA_DATABASE100_091_Linux_on_x86_64.SAR
+#  HANA 092 :  http://moo-repo.wdf.sap.corp:8080/static/pblack/newdb/NewDB100/rel/092/server/linuxx86_64/SAP_HANA_DATABASE100_092_Linux_on_x86_64.SAR
+#
+#      INSTEAD OF: \\production\newdb\NewDB100\rel\[REV]\server\linuxx86_64\SAP_HANA_DATABASE
 #
 ###############################################################################
 
@@ -28,6 +30,26 @@ function abort {
 
 
 #--------------------------------------
+function CheckPathParameter {
+  if [ ! "${1}" ]; then
+    echo "Usage BuildHana <Path to .SAR>"
+    abort 1  "Parameter <Path to HanaDb installer (.SAR expected)> is missing"; fi }
+
+
+#--------------------------------------
+function InitVars {
+  export DOWNLOAD_FROM="$1"
+  export REGISTRY="dewdftzlidck:5000"
+  export SOFTWARE="hana"
+  export HANA="hana"
+  export REV="NUL"
+  export TAG="latest"
+  export INSTANCE="00"
+  export LOCATION="/root/docker/build/$HANA"; }
+# export LOCATION="$2"; _PAUSE; }
+
+
+#--------------------------------------
 function RemoveDir {
   if [ -d "$1" ]; then
     rm -rf $1; fi }
@@ -37,12 +59,13 @@ function RemoveDir {
 function CleanupBuildSpace {
 
   echo
-  echo ". Cleaning Hana$REV build workspace"
+  echo ". Cleaning build workspace"
 
-  RemoveDir "$1/installer"
+  RemoveDir "$LOCATION/XXX"
 
-  mkdir -p "$1"/installer/sapcar; }
-# mkdir    "$1"/installer/ual_afl; }
+  mkdir -p $LOCATION/XXX/installer/sapcar
+  mkdir    $LOCATION/XXX/installer/tmp; }
+# mkdir    $LOCATION/XXX/installer/ual_afl; }
 
 
 #--------------------------------------
@@ -51,9 +74,9 @@ function Download_sapcar {
   echo
   echo ". Downloading '/net/build-drops-wdf/dropzone/nett_dev/sapcar.exe'"
 
-  cp  /net/build-drops-wdf/dropzone/nett_dev/sapcar.exe   $1/installer/sapcar/
+  cp  /net/build-drops-wdf/dropzone/nett_dev/sapcar.exe   $LOCATION/XXX/installer/sapcar/
 
-  if [ ! -f $1/installer/sapcar/sapcar.exe ]; then
+  if [ ! -f $LOCATION/XXX/installer/sapcar/sapcar.exe ]; then
     abort 1  "Failed to download 'sapcar.exe'"; fi; }
 
 
@@ -63,90 +86,105 @@ function Download_sapcar {
 #  echo
 #  echo ". Downloading '/net/build-drops-wdf/dropzone/nett_dev/ual_afl.sar'"
 
-#  cp  /net/build-drops-wdf/dropzone/nett_dev/ual_afl.sar   $1/installer/ual_afl/
-#  if [ ! -f $1/installer/ual_afl/ual_afl.sar ]; then
+#  cp  /net/build-drops-wdf/dropzone/nett_dev/ual_afl.sar   $LOCATION/installer/ual_afl/
+#  if [ ! -f $LOCATION/installer/ual_afl/ual_afl.sar ]; then
 #    abort 1  "Failed to download 'ual_afl.sar'"; fi
 
-#  echo ". Uncompressing '$1/installer/ual_afl/ual_afl.sar'"
+#  echo ". Uncompressing '$LOCATION/installer/ual_afl/ual_afl.sar'"
 
-#  cd $1/installer/ual_afl
-#  $1/installer/sapcar/sapcar.exe  -xf  $1/installer/ual_afl/ual_afl.sar > /dev/nul
+#  cd $LOCATION/installer/ual_afl
+#  $LOCATION/installer/sapcar/sapcar.exe  -xf  $LOCATION/installer/ual_afl/ual_afl.sar > /dev/null
 
 #  STATUS=$?
 #  if [ $STATUS -ne 0 ]; then
-#    abort $STATUS  "Error decompressing '$1/installer/ual_afl/ual_afl.sar'"; fi
+#    abort $STATUS  "Error decompressing '$LOCATION/installer/ual_afl/ual_afl.sar'"; fi
 
-#  rm -f $1/installer/ual_afl/ual_afl.sar; }
+#  rm -f $LOCATION/installer/ual_afl/ual_afl.sar; }
 
 
 #--------------------------------------
 function Download_HanaDb {
 
-  FILE=SAP_HANA_DATABASE100_092_Linux_on_x86_64.SAR
+  echo ". Downloading '$DOWNLOAD_FROM'     '*.SAR'"
 
-  echo
-  echo ". Downloading 'http://moo-repo.wdf.sap.corp:8080/static/pblack/newdb/NewDB100/rel/092/server/linuxx86_64/$FILE'"
+  cd $LOCATION/XXX/installer/tmp
+  wget -o /dev/null -r --no-directories --reject="index.html*"  $DOWNLOAD_FROM
 
-  cd $1/installer
+  SAR=$(ls | grep "DATABASE")
+  if [ ! "${SAR}" ]; then
+    abort 1 "Failed to download HANA DATABASE '.SAR'"; fi
 
-  wget -o /dev/nul http://moo-repo.wdf.sap.corp:8080/static/pblack/newdb/NewDB100/rel/092/server/linuxx86_64/$FILE
-  if [ ! -f $FILE ]; then
-    abort 1 "Failed to download '$FILE'"; fi
-
-  echo ". Uncompressing '$1/installer/$FILE'"
+  echo ".   Uncompressing '$LOCATION/XXX/installer/$SAR'"
   echo
 
-  $1/installer/sapcar/sapcar.exe  -xf  $FILE > /dev/nul
+  cd ..
+  $LOCATION/XXX/installer/sapcar/sapcar.exe  -xf  tmp/$SAR > /dev/null
 
   STATUS=$?
   if [ $STATUS -ne 0 ]; then
-    error $STATUS "Error decompressing '$FILE'"; fi
+    error $STATUS "Error decompressing '$SAR'"; fi
 
-  rm -f $FILE
+  rm -rf tmp
   chmod -R 755 SAP_HANA_DATABASE/*; }
 
 
 #--------------------------------------
-function DeleteContainer092 {
+function GetHanaRevision {
 
-  docker ps -a | awk '$NF == "$HANA$REV"'
+  REV=$(cat SAP_HANA_DATABASE/server/manifest | grep --word-regexp  "rev-number" | awk '$2 { print $2 }')
 
-  if [ $? -ne 0 ]; then
-    return; fi
-
-  echo ". Deleting container $HANA$REV"
-
-  docker ps | grep $HANA$REV
-
-  if [ $? -eq 0 ]; then
-    docker stop $HANA$REV; fi
-
-  docker rm $HANA$REV > /dev/nul; }
+  if [ ! "${REV}" ]; then
+    abort 1 "Failed retreive HANA revision from manifest"; fi; }
 
 
 #--------------------------------------
-function DeleteImage092 {
+function SetRevBuildSpace {
+
+  cd $LOCATION
+
+  RemoveDir $REV
+  mv "XXX" $REV; }
+
+
+#--------------------------------------
+function DeleteContainer {
+
+  for CONTAINER in $( docker ps -a | awk -v image="$REGISTRY/$SOFTWARE/$HANA$REV:$TAG" '$2==image { print $NF }' ); do
+
+    NAME=$(docker ps | awk -v name=$CONTAINER '$NF==name { print $NF }')
+
+    if [ ${NAME} ]; then
+      echo ". Stopping container $CONTAINER"
+      docker stop $CONTAINER > /dev/null; fi
+
+    echo ". Deleting container $CONTAINER"
+    docker rm $CONTAINER > /dev/null; done; }
+
+
+#--------------------------------------
+function DeleteImage {
 
   docker images | grep $HANA$REV
 
   if [ $? -eq 0 ]; then
     echo ". Deleting image $HANA$REV"
-    docker rmi $REGISTRY/hana/$HANA$REV > /dev/nul; fi; }
+    docker rmi $REGISTRY/$SOFTWARE/$HANA$REV:$TAG > /dev/null; fi; }
 
 
 #--------------------------------------
-function BuildImageHana092 {
+function BuildImageHana {
 
   echo ". Creating container, installing Hana"
+  echo
 
   cd $LOCATION
 
-  docker run --name=$HANA$REV --net=host --privileged \
+  docker run --name=$HANA$REV-$INSTANCE --net=host --privileged \
       -v /etc/localtime:/etc/localtime \
-      -v $LOCATION/installer:/setup \
-      -v $LOCATION/InstallHana$REV.sh:/InstallHana$REV.sh \
+      -v $LOCATION/$REV/installer:/setup \
+      -v $LOCATION/InstallHana.sh:/InstallHana.sh \
       $REGISTRY/rh70/rh70lib \
-      /bin/sh -c /InstallHana$REV.sh
+      /bin/sh -c /InstallHana.sh
 
   STATUS=$?  
   if [ $STATUS -ne 0 ]; then
@@ -154,12 +192,12 @@ function BuildImageHana092 {
 
 
 #--------------------------------------
-function WriteImageHana092 {
+function WriteImageHana {
 
   echo
   echo ". Committing container to an image"
 
-  docker commit $HANA$REV $REGISTRY/hana/$HANA$REV
+  docker commit $HANA$REV-$INSTANCE $REGISTRY/$SOFTWARE/$HANA$REV
 
   STATUS=$?
   if [ $STATUS -ne 0 ]; then
@@ -167,39 +205,40 @@ function WriteImageHana092 {
 
 
 #--------------------------------------
-function PushImageHana092 {
+function PushImageHana {
 
   echo
   echo ". Pushing image to the registry server"
 
-  docker push $HANA$REV
+  docker push $REGISTRY/$SOFTWARE/$HANA$REV:$TAG
 
   STATUS=$?
   if [ $STATUS -ne 0 ]; then
-    abort $STATUS "Failed to push $HANA$REV to registry"; fi; }
+    abort $STATUS "Failed to push image '$REGISTRY/$SOFTWARE/$HANA$REV:$TAG' to the registry server"; fi; }
 
 
 #---------------  MAIN
 clear
-#set -x
+set -x
 
-HANA="hana"
-REV="092"
-REGISTRY=dewdftzlidck:5000
-LOCATION=/root/docker/build/$HANA/$REV
+CheckPathParameter $1
 
-CleanupBuildSpace  $LOCATION
+InitVars $1 $(dirname $0)
+CleanupBuildSpace
 
-Download_sapcar   $LOCATION
-#Download_ualafl   $LOCATION
-Download_HanaDb   $LOCATION
+Download_sapcar
+#Download_ualafl
+Download_HanaDb
 
-DeleteContainer092
-DeleteImage092
+GetHanaRevision
+SetRevBuildSpace
 
-BuildImageHana092
-WriteImageHana092
-#PushImageHana092
+DeleteContainer
+DeleteImage
+
+BuildImageHana 
+WriteImageHana
+#PushImageHana
 
 
 
