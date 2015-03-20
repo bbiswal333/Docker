@@ -44,13 +44,16 @@ function SetWorkingDirectory {
 
 #--------------------------------------
 function InitVars {
-  export DOWNLOAD_FROM="$1"
+  export DOWNLOAD_DB_FROM="$1"
+  export DOWNLOAD_CL_FROM="${DOWNLOAD_DB_FROM/server/client}"
   export REGISTRY="dewdftzlidck:5000"
   export SOFTWARE="hana"
   export HANA="hana"
   export REV="NUL"
   export TAG="latest"
   export INSTANCE="00"
+  export KEY_DATABASE="DATABASE"
+  export KEY_CLIENT="CLIENT"
   export LOCATION=$(pwd); }
 
 
@@ -97,47 +100,66 @@ function Download_sapcar {
 #  if [ ! -f $LOCATION/installer/ual_afl/ual_afl.sar ]; then
 #    abort 1  "Failed to download 'ual_afl.sar'"; fi
 
-#  echo ". Uncompressing '$LOCATION/installer/ual_afl/ual_afl.sar'"
+#  echo ". Extracting '$LOCATION/installer/ual_afl/ual_afl.sar'"
 
 #  cd $LOCATION/installer/ual_afl
 #  $LOCATION/installer/sapcar/sapcar.exe  -xf  $LOCATION/installer/ual_afl/ual_afl.sar > /dev/null
 
 #  STATUS=$?
 #  if [ $STATUS -ne 0 ]; then
-#    abort $STATUS  "Error decompressing '$LOCATION/installer/ual_afl/ual_afl.sar'"; fi
+#    abort $STATUS  "Error exracting '$LOCATION/installer/ual_afl/ual_afl.sar'"; fi
 
 #  rm -f $LOCATION/installer/ual_afl/ual_afl.sar; }
 
 
 #--------------------------------------
-function Download_HanaDb {
+function Download {
 
-  echo ". Downloading '$DOWNLOAD_FROM'     '*.SAR'"
+  # $1 = $KEY_xxxxxxxx
+  # $2 = $DOWNLOAD_xx_FROM
 
-  cd XXX/installer/tmp
-  wget -o /dev/null -r --no-directories --reject="index.html*"  $DOWNLOAD_FROM
+  cd tmp
 
-  SAR=$(ls | grep "DATABASE")
-  if [ ! "${SAR}" ]; then
-    abort 1 "Failed to download HANA DATABASE '.SAR'"; fi
-
-  echo ".   Uncompressing '$LOCATION/XXX/installer/$SAR'"
   echo
+  echo ". Downloading '$2/'"
+  wget -o /dev/null -r --no-directories --no-parent --reject="index.html*"  $2
+
+  SAR=$(ls | grep "$1")
+  if [ ! "${SAR}" ]; then
+    abort 1 "Failed to download a file like 'HANA $1 .SAR'"; fi
+
+  echo ".   Found downloaded file: '$SAR'"
+  echo ".   Extracting             '$SAR'"
 
   cd ..
   $LOCATION/XXX/installer/sapcar/sapcar.exe  -xf  tmp/$SAR > /dev/null
 
   STATUS=$?
   if [ $STATUS -ne 0 ]; then
-    error $STATUS "Error decompressing '$SAR'"; fi
+    error $STATUS "Error extracting '$SAR'"; fi
+
+  rm -f tmp/$SAR
+
+  FOLDER=$(ls -d S* | grep $1)
+  chmod -R 755 $FOLDER/*; }
+
+
+#--------------------------------------
+function Download_Hana {
+
+  cd XXX/installer
+
+  Download  $KEY_DATABASE  $DOWNLOAD_DB_FROM
+  Download  $KEY_CLIENT    $DOWNLOAD_CL_FROM
 
   rm -rf tmp
-  chmod -R 755 SAP_HANA_DATABASE/*; }
+  echo; }
 
 
 #--------------------------------------
 function GetHanaRevision {
 
+  FOLDERDB=$(ls -d S* | grep $KEY_DATABASE)
   REV=$(cat SAP_HANA_DATABASE/server/manifest | grep --word-regexp  "rev-number" | awk '$2 { print $2 }')
 
   if [ ! "${REV}" ]; then
@@ -154,7 +176,7 @@ function SetRevBuildSpace {
 
 
 #--------------------------------------
-function DeleteContainer {
+function DeleteContainers {
 
   for CONTAINER in $( docker ps -a | awk -v image="$REGISTRY/$SOFTWARE/$HANA$REV:$TAG" '$2==image { print $NF }' ); do
 
@@ -171,7 +193,7 @@ function DeleteContainer {
 #--------------------------------------
 function DeleteImage {
 
-  docker images | grep $HANA$REV
+  docker images | grep $HANA$REV > /dev/null
 
   if [ $? -eq 0 ]; then
     echo ". Deleting image $HANA$REV"
@@ -212,6 +234,11 @@ function WriteImageHana {
 
 
 #--------------------------------------
+function DeleteBuildContainer {
+  docker rm HANA$REV-$INSTANCE > /dev/null; }
+
+
+#--------------------------------------
 function PushImageHana {
 
   echo
@@ -226,7 +253,7 @@ function PushImageHana {
 
 #---------------  MAIN
 clear
-set -x
+#set -x
 
 CheckPathParameter $1
 
@@ -236,18 +263,19 @@ CleanupBuildSpace
 
 Download_sapcar
 #Download_ualafl
-Download_HanaDb
+Download_Hana
 
 GetHanaRevision
 SetRevBuildSpace
 
-DeleteContainer
+DeleteContainers
 DeleteImage
 
 BuildImageHana
 WriteImageHana
 #PushImageHana
 
+DeleteBuildContainer
 
 
 #--------------------------------------

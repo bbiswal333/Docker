@@ -6,14 +6,18 @@
 
 #!/bin/sh
 
-FOLDER=/hana
+PATHINST=/hana/shared
+PATHDATA=/hana/data
+PATHLOG=/hana/log
 SID=DCK
 PASSWORD=Password01
 
-mkdir $FOLDER
+mkdir -p $PATHINST
+mkdir    $PATHDATA
+mkdir    $PATHLOG
 
 #--------------- HANA installation
-/setup/SAP_HANA_DATABASE/hdbinst --b --sid $SID -password $PASSWORD -system_user_password $PASSWORD --sapmnt=$FOLDER --datapath=$FOLDER --logpath=$FOLDER --ignore=check_hardware
+/setup/SAP_HANA_DATABASE/hdbinst --b --sid $SID -password $PASSWORD -system_user_password $PASSWORD --sapmnt=$PATHINST --datapath=$PATHDATA --logpath=$PATHLOG --ignore=check_hardware
 STATUS=$?
 if [ $STATUS -ne 0 ]; then
   exit $STATUS; fi
@@ -29,5 +33,5 @@ if [ $STATUS -ne 0 ]; then
 
 #--------------- generated-script to indicate Hana install location
 SCRIPT="/HanaFolder.sh"
-echo "echo $FOLDER" > $SCRIPT
+echo "echo $PATHINST" > $SCRIPT
 chmod 755 $SCRIPT
