@@ -318,8 +318,7 @@ InstallHanaClient
 GetHanaRevision
 SetRevBuildSpace
 
-set -x
-DeleteBuildContainer; _PAUSE
+DeleteBuildContainer
 DeleteContainers
 DeleteImage
 
