@@ -1,0 +1,6 @@
+[lvdc-s-plerin01]
+name=Red Hat Enterprise Linux $releasever - $basearch
+baseurl=http://lvdc-s-plerin01.pgdev.sap.corp:1080/RHEL-7.0x64-Extra
+enabled=1
+gpgcheck=1
+gpgkey=http://lvdc-s-plerin01.pgdev.sap.corp:1080/RHEL-7.0x64-Extra/RPM-GPG-KEY-redhat-release
