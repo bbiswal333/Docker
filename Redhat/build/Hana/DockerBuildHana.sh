@@ -199,7 +199,7 @@ function InstallHanaClient {
 function GetHanaRevision {
 
   FOLDERDB=$(ls -d S* | grep $KEY_DATABASE)
-  REV=$(cat SAP_HANA_DATABASE/server/manifest | grep --word-regexp  "rev-number" | awk '$2 { print $2 }')
+  REV=$(cat $FOLDERDB/server/manifest | grep --word-regexp  "rev-number" | awk '$2 { print $2 }')
 
   if [ ! "${REV}" ]; then
     abort 1 "Failed retreive HANA revision from manifest"; fi; }
