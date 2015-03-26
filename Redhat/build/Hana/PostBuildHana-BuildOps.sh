@@ -58,9 +58,9 @@ function hanaclientTar {
 
   if [ $? != 0 -o ! -f $REV/$HANACLIENT.tar ]; then
     echo "Failed to 'tar $REV/$HANACLIENT.tar'"
-    exit 1; fi
+    exit 1; fi }
 
-  rm -rf $REV/$HANACLIENT; }
+#  rm -rf $REV/$HANACLIENT; }
 
 
 #--------------------------------------
