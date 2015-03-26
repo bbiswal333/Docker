@@ -71,9 +71,41 @@ function CleanupBuildSpace {
 
   RemoveDir "XXX"
 
-  mkdir -p XXX/installer/sapcar
+  mkdir -p XXX/installer/deployer
+  mkdir    XXX/installer/sapcar
   mkdir    XXX/installer/tmp; }
 # mkdir    XXX/installer/ual_afl; }
+
+
+#--------------------------------------
+function Download_Deployer {
+
+  FROM="http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/prd/commonrepo/artifactdeployer/com.sap.prd.commonrepo.artifactdeployer.dist.cli/0.16.5-rc1/"
+  FILE="com.sap.prd.commonrepo.artifactdeployer.dist.cli-0.16.5-rc1"
+
+  echo
+  echo ". Downloading '${FROM:0:57}/......./$FILE.tar.gz'"
+
+  wget -o /dev/null $FROM/$FILE.tar.gz  -P XXX/installer/deployer/
+
+  if [ ! -f XXX/installer/deployer/$FILE.tar.gz ]; then
+    abort 1  "Failed to download '$FILE.tar.gz'"; fi
+
+  echo ".   Extracting '$FILE.tar.gz'"
+  gunzip XXX/installer/deployer/$FILE.tar.gz
+
+  if [ ! -f XXX/installer/deployer/$FILE.tar ]; then
+    abort 1  "Failed to extract '$FILE.tar.gz'"; fi
+
+  tar -xf XXX/installer/deployer/$FILE.tar  -C XXX/installer/deployer/
+
+  ls -l XXX/installer/deployer/ | grep ^d > /dev/null
+
+  STATUS=$?
+  if [ $STATUS -ne 0 ]; then
+    abort $STATUS "Failed to extract '$FILE.tar'"; fi
+
+  rm -f XXX/installer/deployer/$FILE.tar; }
 
 
 #--------------------------------------
@@ -136,7 +168,7 @@ function Download {
 
   STATUS=$?
   if [ $STATUS -ne 0 ]; then
-    error $STATUS "Error extracting '$SAR'"; fi
+    abort $STATUS "Error extracting '$SAR'"; fi
 
   rm -f tmp/$SAR
 
@@ -154,6 +186,13 @@ function Download_Hana {
 
   rm -rf tmp
   echo; }
+
+
+#--------------------------------------
+function InstallHanaClient {
+
+  FOLDERCLT=$(ls -d S* | grep $KEY_CLIENT)
+  $FOLDERCLT/hdbinst  -a  client  --path=$LOCATION/XXX/hanaclient; }
 
 
 #--------------------------------------
@@ -176,18 +215,31 @@ function SetRevBuildSpace {
 
 
 #--------------------------------------
+function RemoveContainer {
+
+  NAME=$(docker ps | awk -v name=$1 '$NF==name { print $NF }')
+
+  if [ ${NAME} ]; then
+    echo ". Stopping container $1"
+    docker stop $1 > /dev/null; fi
+
+  NAME=$(docker ps -a | awk -v name=$1 '$NF==name { print $NF }')
+
+  if [ ${NAME} ]; then
+    echo ". Deleting container $1"
+    docker rm $1 > /dev/null; fi; }
+
+
+#--------------------------------------
+function DeleteBuildContainer {
+  RemoveContainer $HANA$REV-$INSTANCE; }
+
+
+#--------------------------------------
 function DeleteContainers {
 
   for CONTAINER in $( docker ps -a | awk -v image="$REGISTRY/$SOFTWARE/$HANA$REV:$TAG" '$2==image { print $NF }' ); do
-
-    NAME=$(docker ps | awk -v name=$CONTAINER '$NF==name { print $NF }')
-
-    if [ ${NAME} ]; then
-      echo ". Stopping container $CONTAINER"
-      docker stop $CONTAINER > /dev/null; fi
-
-    echo ". Deleting container $CONTAINER"
-    docker rm $CONTAINER > /dev/null; done; }
+    RemoveContainer $CONTAINER; done; }
 
 
 #--------------------------------------
@@ -234,11 +286,6 @@ function WriteImageHana {
 
 
 #--------------------------------------
-function DeleteBuildContainer {
-  docker rm HANA$REV-$INSTANCE > /dev/null; }
-
-
-#--------------------------------------
 function PushImageHana {
 
   echo
@@ -261,13 +308,17 @@ SetWorkingDirectory  $(dirname $0)
 InitVars $1
 CleanupBuildSpace
 
+Download_Deployer
 Download_sapcar
 #Download_ualafl
 Download_Hana
 
+InstallHanaClient
+
 GetHanaRevision
 SetRevBuildSpace
 
+DeleteBuildContainer
 DeleteContainers
 DeleteImage
 
