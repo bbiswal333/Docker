@@ -30,7 +30,7 @@ if [ $? != 0 ]; then
 
 
 if [ "$1" != "00" ]; then
-  /hana/DCK/global/hdb/install/bin/hdbrename  -b  --number=$1 --source_password=$PASSWORD --target_password=$PASSWORD
+  /hana/shared/DCK/global/hdb/install/bin/hdbrename  -b  --number=$1 --source_password=$PASSWORD --target_password=$PASSWORD
   if [ $? != 0 ]; then
     exit 1; fi; fi
 

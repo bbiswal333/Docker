@@ -27,7 +27,9 @@ function _PAUSE {
 function abort {
   echo
   echo $2
-  exit $1; }
+  exit -1; }
+
+# exit $1; }
 
 
 #--------------------------------------
@@ -51,7 +53,7 @@ function InitVars {
   export HANA="hana"
   export REV="NUL"
   export TAG="latest"
-  export INSTANCE="00"
+  export MAXINSTANCE="97"
   export KEY_DATABASE="DATABASE"
   export KEY_CLIENT="CLIENT"
   export LOCATION=$(pwd); }
@@ -73,8 +75,10 @@ function CleanupBuildSpace {
 
   mkdir -p XXX/installer/deployer
   mkdir    XXX/installer/sapcar
-  mkdir    XXX/installer/tmp; }
-# mkdir    XXX/installer/ual_afl; }
+  mkdir    XXX/installer/tmp
+# mkdir    XXX/installer/ual_afl
+
+  chmod -R 777 XXX/installer; }
 
 
 #--------------------------------------
@@ -232,7 +236,7 @@ function RemoveContainer {
 
 #--------------------------------------
 function DeleteBuildContainer {
-  RemoveContainer $HANA$REV-$INSTANCE; }
+  RemoveContainer $HANA$REV-$MAXINSTANCE; }
 
 
 #--------------------------------------
@@ -260,7 +264,7 @@ function BuildImageHana {
 
   cd $LOCATION
 
-  docker run --name=$HANA$REV-$INSTANCE --net=host --privileged \
+  docker run --name=$HANA$REV-$MAXINSTANCE --net=host --privileged \
       -v /etc/localtime:/etc/localtime \
       -v $LOCATION/$REV/installer:/setup \
       -v $LOCATION/InstallHana.sh:/InstallHana.sh \
@@ -276,9 +280,9 @@ function BuildImageHana {
 function WriteImageHana {
 
   echo
-  echo ". Committing container to an image"
+  echo ". Writing image (commit container)"
 
-  docker commit $HANA$REV-$INSTANCE $REGISTRY/$SOFTWARE/$HANA$REV
+  docker commit $HANA$REV-$MAXINSTANCE $REGISTRY/$SOFTWARE/$HANA$REV
 
   STATUS=$?
   if [ $STATUS -ne 0 ]; then
@@ -300,7 +304,7 @@ function PushImageHana {
 
 #---------------  MAIN
 clear
-#set -x
+set -x
 
 CheckPathParameter $1
 
@@ -327,6 +331,8 @@ WriteImageHana
 #PushImageHana
 
 DeleteBuildContainer
+
+return $REV
 
 
 #--------------------------------------

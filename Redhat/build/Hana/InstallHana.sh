@@ -10,7 +10,7 @@ PATHINST=/hana/shared
 PATHDATA=/hana/data
 PATHLOG=/hana/log
 SID=DCK
-INSTANCE=97
+MAXINSTANCE=97
 PASSWORD=Password01
 
 mkdir -p $PATHINST
@@ -18,7 +18,7 @@ mkdir    $PATHDATA
 mkdir    $PATHLOG
 
 #--------------- HANA installation
-/setup/SAP_HANA_DATABASE/hdbinst --b --sid $SID --number=$INSTANCE -password $PASSWORD -system_user_password $PASSWORD --sapmnt=$PATHINST --datapath=$PATHDATA --logpath=$PATHLOG --ignore=check_hardware
+/setup/SAP_HANA_DATABASE/hdbinst --b --sid $SID --number=$MAXINSTANCE -password $PASSWORD -system_user_password $PASSWORD --sapmnt=$PATHINST --datapath=$PATHDATA --logpath=$PATHLOG --ignore=check_hardware
 STATUS=$?
 if [ $STATUS -ne 0 ]; then
   exit $STATUS; fi

@@ -175,7 +175,7 @@ function UploadNexus {
     exit 1; fi }
 
 
---------- MAIN ------------------------
+#--------- MAIN ------------------------
 clear
 #set -x
 
