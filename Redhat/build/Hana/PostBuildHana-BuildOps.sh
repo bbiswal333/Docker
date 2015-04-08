@@ -54,9 +54,14 @@ function hanaclientTar {
   echo
   echo ". tar $REV/$HANACLIENT.tar"
 
-  tar -cf $REV/$HANACLIENT.tar  $REV/$HANACLIENT
+  cd $REV
 
-  if [ $? != 0 -o ! -f $REV/$HANACLIENT.tar ]; then
+  tar -cf $HANACLIENT.tar  $HANACLIENT
+  STATUS=$?
+
+  cd ..
+
+  if [ $STATUS != 0 -o ! -f $REV/$HANACLIENT.tar ]; then
     echo "Failed to 'tar $REV/$HANACLIENT.tar'"
     exit 1; fi }
 
@@ -118,6 +123,8 @@ function ImageTarTarGzip {
 #--------------------------------------
 function CreateFileGroovy {
 
+mv $LOCATION/$REV/$HANA$REV.tar.tar.gz $LOCATION/$REV/$HANA$REV.tar-linuxx86_64.tar.gz
+
   echo
   echo ". Create hana.groovy"
 
@@ -125,13 +132,13 @@ function CreateFileGroovy {
     artifacts builderVersion:\"1.1\", {
       group \"com.sap.docker.images\", {
         artifact \"$HANA$REV\", {
-          file \"$LOCATION/$REV/$HANA$REV.tar.tar.gz\", extension:\"tar.gz\"
+          file \"$LOCATION/$REV/$HANA$REV.tar.tar.gz\", extension:\"tar.gz\", classifier: \"linuxx86_64\"
           metadata \"hana_docker_path...\", typeDisplayName:\"Linuxx86_64 hana docker\"
         }
       }
       group \"com.sap.docker.$HANACLIENT\", {
         artifact \"$HANACLIENT\", {
-          file \"$LOCATION/$REV/$HANACLIENT.tar.gz\", extension:\"tar.gz\"
+          file \"$LOCATION/$REV/$HANACLIENT.tar.gz\", extension:\"tar.gz\", classifier: \"linuxx86_64\"
           metadata \"hana_client_path...\", typeDisplayName:\"Linuxx86_64 hana client\"
         }
       }
@@ -177,7 +184,7 @@ function UploadNexus {
 
 #--------- MAIN ------------------------
 clear
-#set -x
+set -x
 
 CheckRevParameter   $1
 
