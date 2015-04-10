@@ -123,8 +123,6 @@ function ImageTarTarGzip {
 #--------------------------------------
 function CreateFileGroovy {
 
-mv $LOCATION/$REV/$HANA$REV.tar.tar.gz $LOCATION/$REV/$HANA$REV.tar-linuxx86_64.tar.gz
-
   echo
   echo ". Create hana.groovy"
 
