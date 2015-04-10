@@ -36,17 +36,20 @@ set -x
 
 MAXINSTANCE="097"
 PASSWORD="Password01"
+SHMALL=14807668
+SHMMAX=1073741824
+
 
 if [ ! "${1}" ]; then
   exit 1; fi
 
 
-sysctl kernel.shmall=14807668
+sysctl kernel.shmall=$SHMALL
 if [ $? != 0 ]; then
   exit 1; fi
 
 
-sysctl kernel.shmmax=1073741824
+sysctl kernel.shmmax=$SHMMAX
 if [ $? != 0 ]; then
   exit 1; fi
 
