@@ -17,7 +17,7 @@
 #!/bin/sh
 
 
-# DEBUG PURPOSE
+#### DEBUG PURPOSE ####
 #--------------------------------------
 function _PAUSE {
   read -p "PAUSE "; }
@@ -27,9 +27,8 @@ function _PAUSE {
 function abort {
   echo
   echo $2
-  exit -1; }
-
-# exit $1; }
+  echo "-1"
+  exit; }
 
 
 #--------------------------------------
@@ -46,6 +45,7 @@ function SetWorkingDirectory {
 
 #--------------------------------------
 function InitVars {
+  export NB_MAX_ARCHIVES=3
   export DOWNLOAD_DB_FROM="$1"
   export DOWNLOAD_CL_FROM="${DOWNLOAD_DB_FROM/server/client}"
   export REGISTRY="dewdftzlidck:5000"
@@ -78,7 +78,7 @@ function CleanupBuildSpace {
   mkdir    XXX/installer/tmp
 # mkdir    XXX/installer/ual_afl
 
-  chmod -R 777 XXX/installer; }
+  chmod -R 777 XXX; }
 
 
 #--------------------------------------
@@ -214,7 +214,11 @@ function SetRevBuildSpace {
 
   cd $LOCATION
 
+_PAUSE
   RemoveDir $REV
+_PAUSE
+
+  chmod -R 777 "XXX"
   mv "XXX" $REV; }
 
 
@@ -302,6 +306,16 @@ function PushImageHana {
     abort $STATUS "Failed to push image '$REGISTRY/$SOFTWARE/$HANA$REV:$TAG' to the registry server"; fi; }
 
 
+#--------------------------------------
+function DeleteExceedingArchives {
+
+  NBDIR=$(ls -d1 [0-9][0-9][0-9] | wc -l)
+  ((NBERASE = NBDIR - NB_MAX_ARCHIVES ))
+
+  if (( $NBERASE > 0 )); then
+    ls -d1 ??? | head -$NBERASE | xargs rm -rf; fi }
+
+
 #---------------  MAIN
 clear
 set -x
@@ -331,8 +345,9 @@ WriteImageHana
 #PushImageHana
 
 DeleteBuildContainer
+DeleteExceedingArchives
 
-return $REV
+echo $REV
 
 
 #--------------------------------------
@@ -343,3 +358,4 @@ return $REV
 # Use smbclient instead of 'mount -t cifs' -> 'input/output error'
 # echo ". Downloading '\\production\newdb\NewDB100\rel\092\server\linuxx86_64\SAP_HANA_DATABASE'"
 # smbclient -W $DOMAIN -U $USER%$PASSWORD //production/newdb -c 'prompt;recurse;cd NewDB100\rel\092\server\linuxx86_64\SAP_HANA_DATABASE\;mget *' 2>&1 >/dev/null
+
