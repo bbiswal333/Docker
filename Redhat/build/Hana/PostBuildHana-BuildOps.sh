@@ -99,9 +99,14 @@ function ImageTarTar {
   echo
   echo ". tar $REV/$HANA$REV.tar.tar"
 
-  tar -cf $REV/$HANA$REV.tar.tar  $REV/$HANA$REV.tar
+  cd $REV
 
-  if [ $? != 0 -o ! -f $REV/$HANA$REV.tar.tar ]; then
+  tar -cf $HANA$REV.tar.tar  $HANA$REV.tar
+  STATUS=$?
+
+  cd ..
+
+  if [ $STATUS != 0 -o ! -f $REV/$HANA$REV.tar.tar ]; then
     echo "Failed to generate '$HANA$REV.tar.tar'"
     exit 1; fi }
 
