@@ -8,7 +8,7 @@
 #!/bin/bash
 DIRREPO=/net/derotvi0127.pgdev.sap.corp/derotvi0127e_bobj/q_unix/Imagesdck
 Norep=`ls -d $DIRREPO/repositories/* | wc -l`
-reponame=docker-dev-registry
+reponame=dockerdevregistry
 #export LS_COLORS=$LS_COLORS:fi=94
 unset LS_COLORS
 echo ""
