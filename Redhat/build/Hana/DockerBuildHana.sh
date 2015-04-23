@@ -214,9 +214,7 @@ function SetRevBuildSpace {
 
   cd $LOCATION
 
-_PAUSE
   RemoveDir $REV
-_PAUSE
 
   chmod -R 777 "XXX"
   mv "XXX" $REV; }
@@ -318,7 +316,7 @@ function DeleteExceedingArchives {
 
 #---------------  MAIN
 clear
-set -x
+#set -x
 
 CheckPathParameter $1
 
