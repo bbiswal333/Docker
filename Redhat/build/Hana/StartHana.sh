@@ -8,39 +8,50 @@
 
 
 #--------------------------------------
-function RenameHostname {
-
-  # registered hostname at install: lowercase and trim
-  NAME=$($FOLDER/DCK/hdblcm/hdblcm --list_systems | awk -F: '/host:/ { print tolower($2) }')
-  NAME=${NAME/ /}
-
-  # this machine hostname to upper
-  HOST=$(echo $(hostname) | awk '{ print tolower($0) }')
-
-  if [ "$HOST" != "$NAME" ]; then
-    $FOLDER/DCK/hdblcm/hdblcm -b --action=rename_system --target_password=$PASSWORD --hostmap=$NAME=$HOST; fi }
-  # /hana/shared/DCK/hdblcm/hdblcm -b --action=rename_system --hostmap=dewdftv00125.dhcp.pgdev.sap.corp=demoserver --target_password=Password01  --scope=instance
-
-
-#--------------------------------------
 function RenameInstance {
 
-  $FOLDER/DCK/global/hdb/install/bin/hdbrename  -b  --number=$1 --source_password=$PASSWORD --target_password=$PASSWORD
+  # registered hostname at install: lowercase and trim
+  OLDHOST=$($FOLDER/DCK/hdblcm/hdblcm --list_systems | awk -F: '/host:/ { print tolower($2) }')
+  OLDHOST=${OLDHOST/ /}
 
-  if [ $? != 0 ]; then
-    exit 1; fi }
+  # the hostname of this machine, to upper
+  NEWHOST=$(echo $(hostname) | awk '{ print tolower($0) }')
+
+  # current Instance NUMBER
+  INSTANCE=$($FOLDER/DCK/hdblcm/hdblcm --list_systems | awk -F: '/used instance number:/ { print $2 }')
+
+  if [ ! ${INSTANCE} ]; then
+    echo "Failed to retrieve Instance NUMBER"
+    exit 1; fi
+
+  INSTANCE=$(printf "%02d" $INSTANCE)
+
+  if [ "$NEWHOST" == "$OLDHOST"  -a  $INSTANCE -eq $1 ]; then
+    echo 0    
+    return; fi
+
+  $FOLDER/DCK/global/hdb/install/bin/hdbrename -b --source_password=$PASSWORD --target_password=$PASSWORD  --hostmap=$OLDHOST=$NEWHOST --number=$1
+
+  echo 1; }
+
+# $FOLDER/DCK/hdblcm/hdblcm -b --action=rename_system --target_password=$PASSWORD --hostmap=$NAME=$HOST --scope=instance
 
 
 #---------------  MAIN
-set -x
+#set -x
 
-MAXINSTANCE="097"
 PASSWORD="Password01"
 SHMALL=14807668
 SHMMAX=1073741824
+FOLDER=$(/HanaFolder.sh)
+
+
+if [ ! "${FOLDER}" ]; then
+  exit 1; fi
 
 
 if [ ! "${1}" ]; then
+  echo "Usage: StartHana <NewInstanceNumber>"
   exit 1; fi
 
 
@@ -54,19 +65,12 @@ if [ $? != 0 ]; then
   exit 1; fi
 
 
-su - dckadm -c "HDB start"
-if [ $? != 0 ]; then
-  exit 1; fi
+STARTED=$(RenameInstance $1)
 
-
-FOLDER=$(/HanaFolder.sh)
-if [ ! "${FOLDER}" ]; then
-  exit 1; fi
-
-
-RenameHostname
-if [ "$1" != $MAXINSTANCE ]; then
-  RenameInstance $1; fi
+if [ $STARTED -eq 0 ]; then
+  su - dckadm -c "HDB start"
+  if [ $? != 0 ]; then
+    exit 1; fi; fi
 
 
 /bin/sh
