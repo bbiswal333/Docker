@@ -314,6 +314,13 @@ function DeleteExceedingArchives {
     ls -d1 ??? | head -$NBERASE | xargs rm -rf; fi }
 
 
+#--------------------------------------
+function WriteRev {
+  PARAM=$1
+  FILE=${PARAM/.sh/.rev}
+  echo $REV > $FILE; }
+
+
 #---------------  MAIN
 clear
 #set -x
@@ -345,7 +352,7 @@ WriteImageHana
 DeleteBuildContainer
 DeleteExceedingArchives
 
-echo $REV > DockerBuildHana.rev
+WriteRev  $0
 
 
 #--------------------------------------
