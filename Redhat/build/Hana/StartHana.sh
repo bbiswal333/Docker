@@ -26,13 +26,11 @@ function RenameInstance {
 
   INSTANCE=$(printf "%02d" $INSTANCE)
 
-  if [ "$NEWHOST" == "$OLDHOST"  -a  $INSTANCE -eq $1 ]; then
-    echo 0    
-    return; fi
+  if [ "$NEWHOST" = "$OLDHOST"  -a  $INSTANCE -eq $1 ]; then
+    return 0; fi
 
   $FOLDER/DCK/global/hdb/install/bin/hdbrename -b --source_password=$PASSWORD --target_password=$PASSWORD  --hostmap=$OLDHOST=$NEWHOST --number=$1
-
-  echo 1; }
+  return 1; }
 
 # $FOLDER/DCK/hdblcm/hdblcm -b --action=rename_system --target_password=$PASSWORD --hostmap=$NAME=$HOST --scope=instance
 
@@ -65,11 +63,12 @@ if [ $? != 0 ]; then
   exit 1; fi
 
 
-STARTED=$(RenameInstance $1)
+RenameInstance $1
+STATUS=$?
 
-if [ $STARTED -eq 0 ]; then
+if [ $STATUS -eq 0 ]; then
   su - dckadm -c "HDB start"
-  if [ $? != 0 ]; then
+  if [ $? -eq 0 ]; then
     exit 1; fi; fi
 
 
