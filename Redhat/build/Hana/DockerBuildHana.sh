@@ -345,7 +345,7 @@ WriteImageHana
 DeleteBuildContainer
 DeleteExceedingArchives
 
-echo $REV
+echo $REV > DockerBuildHana.rev
 
 
 #--------------------------------------
