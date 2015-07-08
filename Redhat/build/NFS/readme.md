@@ -10,13 +10,16 @@ The container requires a script (configure-nfs)to run after the image is created
 2. Copy script, redhat.repo, systemd and dbus.service to this folder.
 3. Copy or create a new Dockerfile
 4. Build the Docker image
- * docker build -t nfs-images .
-5. Run container with the following syntax:
- * docker run -it --privileged v /sys/fs/cgroup:/sys/fs/cgroup:ro -v /run:/run --name=container nfs-image /bin/bash
-6. Inside the container  
-  -bash-4.2$./configure-nfs.sh
 
-   -bash-4.2$ mount -t nfs -o nolock ....
+  `$ docker build -t nfs-images . `
+5. Run container with the following syntax:
+
+ `$ docker run -it --privileged v /sys/fs/cgroup:/sys/fs/cgroup:ro -v /run:/run --name=container nfs-image /bin/bash`
+6. Inside the container  
+
+  `# ./configure-nfs.sh`
+
+  `# mount -t nfs -o nolock <IP>:<SHARE>/<PATH> docker-nfs`
 
    example:
-  mount -t nfs -o nolock 10.17.136.53:dropzone/aurora_dev/aurora42_cons docker-nfs )
+  `mount -t nfs -o nolock [10.17.136.53]:dropzone/aurora_dev/aurora42_cons docker-nfs`
