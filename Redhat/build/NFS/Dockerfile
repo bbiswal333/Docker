@@ -1,5 +1,5 @@
-# Base redhat image with NFS configuration 
-# autofs
+# Base redhat 7 image with NFS configuration
+#
 ############################
 #
 FROM rhel-server-docker-7.0-23.x86_64
@@ -20,8 +20,7 @@ ENV no_proxy localhost,127.0.0.1,sap.corp,10.0.0.0/8
 RUN mkdir /docker-nfs
 
 # Install config NFS
-RUN yum -y install nfs-utils; yum clean all;  yum install -y autofs
-RUN echo "/docker-nfs /etc/auto.misc --timeout=50" >> /etc/auto.master
+RUN yum -y install nfs-utils; yum clean all
 
 RUN systemctl mask dev-mqueue.mount dev-hugepages.mount \
  systemd-remount-fs.service sys-kernel-config.mount \
@@ -39,4 +38,3 @@ RUN chmod 777 configure-nfs.sh
 
 # CREATE CONFIG FILE SEMANAGE
 RUN echo "SELINUX=disabled \SELINUXTYPE=targeted" > /etc/selinux/config
-

@@ -14,7 +14,7 @@ The container requires a script (configure-nfs)to run after the image is created
   `$ docker build -t nfs-images . `
 5. Run container with the following syntax:
 
- `$ docker run -it --privileged v /sys/fs/cgroup:/sys/fs/cgroup:ro -v /run:/run --name=container nfs-image /bin/bash`
+ `$ docker run -it --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v /run:/run --name=container nfs-image /bin/bash`
 6. Inside the container  
 
   `# ./configure-nfs.sh`
