@@ -17,12 +17,12 @@ The mnt-webi.sh is not mandatory, just if you mount by script or not.
 
   `# docker build -t aurora-image . `
 
-#### Steps to run a new container and install XI
+#### Steps to run a new container and install XI (silent mode)
 5. Run container with the following syntax:
 
   `$ docker run -it --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v /run:/run:ro -p 6400:6400 -p 6404:6404 -p 6001:6001 -p 2638:2638 -p 3690:3690 -p 10001:10001 -p 10002:10002 -p 10003:10003 -p 10004:10004 --name=aurora-container aurora-image /bin/bash`
 
-or if only 1 XI container on your dockerhost:
+or if only 1 XI container on your dockerhost
 
   `$ docker run -it --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v /run:/run:ro -P --name=aurora-container aurora-image /bin/bash`
 6. Inside the container
@@ -31,7 +31,7 @@ or if only 1 XI container on your dockerhost:
 
   `# mount -t nfs -o nolock 10.17.136.53:dropzone/aurora_dev/aurora42_cons /soft/BO`
 
-7. change user to install XI
+7. Change user to install XI
 
   `# sudo - qaunix `
 8. set environment variable
@@ -43,8 +43,8 @@ or if only 1 XI container on your dockerhost:
 
   `$ /soft/BO/./setup.sh - r /soft/response.ini`
 
-  => if message: Finished, return code is 0 = your BI CMC is ready
-10. To check the installation, on your workstation, open a browser:
+  => if message "Finished, return code is 0 " your BI/CMC is ready.
+10. Verifying your installation
 
   http://dockerhost:port/BOE/BI
 
@@ -52,7 +52,7 @@ or if only 1 XI container on your dockerhost:
 
 #### To run multiple containers
 
-You cannot run 2 or more containers with the same ports openned!
+You cannot run 2 or more containers with the same opened ports!
 
 Container 1
 
