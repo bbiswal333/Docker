@@ -1,5 +1,5 @@
-# Base Redhat 7 build a new image to Aurora XI 42
-# Include all packages (see bo requirements) and NFS
+#CREATE NEW IMAGE REDHAT WITH PACKAGES-NFS
+# Special WEBI SBOP 42
 ############################
 #
 FROM rhel-server-docker-7.0-23.x86_64
@@ -8,28 +8,29 @@ FROM rhel-server-docker-7.0-23.x86_64
 #
 RUN /bin/bash
 
-# Copy files from origin folder to location with Dockerfile
+# COPY files from origin folder to location with Dockerfile
 COPY redhat.repo /etc/yum.repos.d/
 COPY systemctl /usr/bin/systemctl
 COPY dbus.service /usr/lib/systemd/system/dbus.service
 
-# proxy settings
+#proxy settings
 ENV http_proxy http://proxy.wdf.sap.corp:8080
 ENV https_proxy http://proxy.wdf.sap.corp:8080
 ENV no_proxy localhost,127.0.0.1,sap.corp,10.0.0.0/8
 
 # INSTALL CONFIG NFS
-RUN yum -y install nfs-utils; yum clean all
-RUN yum -y install libc.so.*
-RUN yum -y install libstdc++*
-RUN yum -y install libX11*
-RUN yum -y install libXext*
-RUN yum -y install expat*
-RUN yum -y install libgcc_s.so.*
-RUN yum -y install libstdc++.so.6
-RUN yum -y install libXcursor*
-RUN yum -y install compat-libstdc++-33-3.2.3-72.el7
-RUN yum -y install compat-libstdc++-33-3.2.3-72.el7.i686
+RUN yum -y install nfs-utils \
+  yum -y install libc.so.* \
+  yum -y install libstdc++* \
+  yum -y install libX11* \
+  yum -y install libXext* \
+  yum -y install expat* \
+  yum -y install libgcc_s.so.* \
+  yum -y install libstdc++.so.6 \
+  yum -y install libXcursor* \
+  yum -y install compat-libstdc++-33-3.2.3-72.el7 \
+  yum -y install compat-libstdc++-33-3.2.3-72.el7.i686 \
+  yum clean all
 
 RUN systemctl mask dev-mqueue.mount dev-hugepages.mount \
  systemd-remount-fs.service sys-kernel-config.mount \
@@ -74,16 +75,12 @@ VOLUME ["/usr/sbin"]
 VOLUME ["/usr/lib64"]
 VOLUME ["/usr/lib"]
 VOLUME ["/etc"]
-CMD ["/usr/lib/systemd/systemd"]
 VOLUME ["/run"]
 VOLUME ["/sys/fs/cgroup"]
-
-# ADD ALIAS  ETC/HOSTS
-RUN host1line=`grep \`uname -n\` /etc/hosts`packages; cp /etc/hosts /etc/hosts.old; host1line=`grep \`uname -n\` /etc/hosts`; sed  "/$host1line/s/$/ sapboxi42/" /etc/hosts.old > /etc/hosts
+CMD ["/usr/lib/systemd/systemd"]
 
 # CHANGE USER
 RUN su - qaunix
-
 # ENVIRONNEMENT
 #######
 ENV LANG en_US.utf8
