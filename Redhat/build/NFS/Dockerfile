@@ -21,11 +21,9 @@ RUN mkdir /docker-nfs
 
 # Install config NFS
 RUN yum -y install nfs-utils; yum clean all
-
 RUN systemctl mask dev-mqueue.mount dev-hugepages.mount \
  systemd-remount-fs.service sys-kernel-config.mount \
  sys-kernel-debug.mount sys-fs-fuse-connections.mount
-
 RUN systemctl mask display-manager.service systemd-logind.service
 RUN systemctl disable graphical.target
 
@@ -38,3 +36,5 @@ RUN chmod 777 configure-nfs.sh
 
 # CREATE CONFIG FILE SEMANAGE
 RUN echo "SELINUX=disabled \SELINUXTYPE=targeted" > /etc/selinux/config
+
+CMD ./configure-nfs.sh
