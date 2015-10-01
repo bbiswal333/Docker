@@ -31,6 +31,10 @@ or if only 1 XI container on your dockerhost
 
   `# mount -t nfs -o nolock 10.17.136.53:dropzone/aurora_dev/aurora42_cons /soft/BO`
 
+note :  on the dropzone, select the good build
+ex: .../aurora_dev/aurora42_cons/1826/linux_x64/release/packages/BusinessObjectsServer
+
+
 7. Change user to install XI
 
   `# sudo - qaunix `
@@ -41,7 +45,7 @@ or if only 1 XI container on your dockerhost
   `$ export LC_ALL=en_US.utf8`
 9. XI installation
 
-  `$ /soft/BO/./setup.sh - r /soft/response.ini`
+  `$ /soft/BO/./setup.sh -r /soft/response.ini`
 
   => if message "Finished, return code is 0 " your BI/CMC is ready.
 10. Verifying your installation
@@ -56,8 +60,8 @@ You cannot run 2 or more containers with the same opened ports!
 
 Container 1
 
-  `$ docker run -it --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v /run:/run:ro -p 6400:6400 -p 6404:6404 -p 6001:6001 -p 2638:2638 -p 3690:3690 -p 10001:10001 -p 10002:10002 -p 10003:10003 -p 10004:10004 --name=aurora-container aurora-image /bin/bash`
-
+`$ docker run -it --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v /run:/run:ro -p 6400:6400 -p 6404:6404 -p 6001:6001 -p 2638:2638 -p 3690:3690 -p 10001:10001 -p 10002:10002 -p 10003:10003 -p 10004:10004 --name=aurora-container aurora-image /bin/bash`
+  
 Container 2
 
   `$ docker run -it --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v /run:/run:ro -p 36400:6400 -p 36404:6404 -p 36001:6001 -p 32638:2638 -p 33690:3690 -p 11001:10001 -p 11002:10002 -p 11003:10003 -p 11004:10004 --name=aurora-container2 aurora-image /bin/bash`
