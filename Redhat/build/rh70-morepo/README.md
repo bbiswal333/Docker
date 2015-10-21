@@ -1,4 +1,4 @@
-<h3>Configure the connection to Red Hat repos, required by the **yum** command:
+<h2>Configure the connection to Red Hat repos, required by the **yum** command:
 
 Connect to Moonson repos instead of the Red Hat web site with subscription-manager:
 Repos files configuration are exactly the Moonson ones, generated in **/etc/yum.repos.d**
