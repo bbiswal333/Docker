@@ -7,5 +7,6 @@
 
 <h5> Mounts inside the container (example):
 
->mount -r -o nolock \<server>:/<path  /mnt/nfsshare
+>mount -r -o nolock \<server>:/\<path  /mnt/nfsshare
+
 >mount -w \<server>:/\<path  /mnt/nfsshare
