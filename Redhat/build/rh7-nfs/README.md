@@ -9,4 +9,4 @@
 
 >mount -r -o nolock \<server>:/\<path  /mnt/nfsshare
 >mount -w \<server>:/\<path  /mnt/nfsshare
-
+.
