@@ -9,4 +9,4 @@ RUN \
 yum install -y deltarpm; \
 yum install -y nfs-utils; \
 \
-mkdir /mnt/nfsshare
+mkdir /mnt/nfs
