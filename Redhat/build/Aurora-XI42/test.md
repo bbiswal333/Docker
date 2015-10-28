@@ -18,7 +18,7 @@ Change options before continuing (as installdir, product key...ports )
 
 #### Running the XI installation in silent mode in the container 
 
-1. Starting the container
+##### Starting the container
 
 The container is alone on the host: don't mind the ports publication, publish all with -P
 
@@ -28,7 +28,7 @@ Several containers cohabits: personalize published ports
 
   `docker run -it --privileged -p 6400:6400 -p 6404:6404 -p 6001:6001 -p 2638:2638 -p 3690:3690 -p 10001:10001 -p 10002:10002 -p 10003:10003 -p 10004:10004 aurora-prereq /bin/sh -c /mnt/installAurora.sh`
 
-2. Testing the installation
+###### Testing the installation
 
   http://dockerhost:port/BOE/BI
 
