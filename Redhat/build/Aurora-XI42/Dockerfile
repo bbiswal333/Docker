@@ -2,7 +2,8 @@
 
 FROM dockerdevregistry:5000/rh70/rh7-nfs:latest
 
-MAINTAINER Antonia Rodrigues <antonia.rodrigues@sap.com>, Gerald Braunwarth <gerald.braunwarth@sap.com>
+MAINTAINER Antonia Rodrigues <antonia.rodrigues@sap.com>, \
+           Gerald Braunwarth <gerald.braunwarth@sap.com>
 
 RUN	yum -y install \
 	libc.so.* \
