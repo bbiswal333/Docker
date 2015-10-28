@@ -12,23 +12,23 @@ Change options before continuing (as installdir, product key...ports )
 #### Building the **aurora-prereq** image
 1. Create a build folder on the Docker host.
 2. Download **Dockerfile** inside
-4. Run the build:
+3. Run the build:
 
-  `docker build -t aurora-prereq .`
+`docker build -t aurora-prereq .`
 
 #### Running the XI installation in silent mode in the container 
 
-1. Starting the container
+##### Starting the container
 
 The container is alone on the host: don't mind the ports publication, publish all with -P
 
-	`docker run -it --privileged -P aurora-prereq /bin/sh -c /mnt/installAurora.sh`
+`docker run -it --privileged -P aurora-prereq /bin/sh -c /mnt/installAurora.sh`
 
 Several containers cohabits: personalize published ports
 
-	`docker run -it --privileged -p 6400:6400 -p 6404:6404 -p 6001:6001 -p 2638:2638 -p 3690:3690 -p 10001:10001 -p 10002:10002 -p 10003:10003 -p 10004:10004 aurora-prereq /bin/sh -c /mnt/installAurora.sh`
+`docker run -it --privileged -p 6400:6400 -p 6404:6404 -p 6001:6001 -p 2638:2638 -p 3690:3690 -p 10001:10001 -p 10002:10002 -p 10003:10003 -p 10004:10004 aurora-prereq /bin/sh -c /mnt/installAurora.sh`
 
-2. Testing the installation
+##### Testing the installation
 
   http://dockerhost:port/BOE/BI
 
@@ -44,6 +44,6 @@ Several containers cohabits: personalize published ports
 
 #### Saving a container "XI" as an image
 
-syntax: 
+syntax:
 
 `docker commit <container_id> <image_name>`
