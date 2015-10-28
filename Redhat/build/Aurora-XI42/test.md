@@ -12,9 +12,9 @@ Change options before continuing (as installdir, product key...ports )
 #### Building the **aurora-prereq** image
 1. Create a build folder on the Docker host.
 2. Download **Dockerfile** inside
-4. Run the build:
+3. Run the build:
 
-  `docker build -t aurora-prereq .`
+`docker build -t aurora-prereq .`
 
 #### Running the XI installation in silent mode in the container 
 
