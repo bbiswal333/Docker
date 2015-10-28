@@ -8,6 +8,7 @@ Note: **--privileged** is required
 ##### Mounts inside the container (example):
 
 `mount -r -o nolock \<server>:/\<path  /mnt/nfs`
+
 `mount -w \<server>:/\<path  /mnt/nfs`
 
 
