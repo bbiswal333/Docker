@@ -1,90 +1,39 @@
-#CREATE NEW IMAGE REDHAT WITH PACKAGES-NFS
-# Special WEBI SBOP 42
-############################
-#
-FROM rhel-server-docker-7.0-23.x86_64
-#
-#MAINTAINER Antonia Rodrigues <antonia.rodrigues@sap.com>
-#
-RUN /bin/bash
+# WEBI SBOP 4.x prerequisites installation
 
-# COPY files from origin folder to location with Dockerfile
-COPY redhat.repo /etc/yum.repos.d/
-COPY systemctl /usr/bin/systemctl
-COPY dbus.service /usr/lib/systemd/system/dbus.service
+FROM dockerdevregistry:5000/rh70/rh7-nfs:latest
 
-#proxy settings
-ENV http_proxy http://proxy.wdf.sap.corp:8080
-ENV https_proxy http://proxy.wdf.sap.corp:8080
-ENV no_proxy localhost,127.0.0.1,sap.corp,10.0.0.0/8
+MAINTAINER Antonia Rodrigues <antonia.rodrigues@sap.com>, Gerald Braunwarth <gerald.braunwarth@sap.com>
 
-# INSTALL CONFIG NFS
-RUN yum -y install nfs-utils \
-  yum -y install libc.so.* \
-  yum -y install libstdc++* \
-  yum -y install libX11* \
-  yum -y install libXext* \
-  yum -y install expat* \
-  yum -y install libgcc_s.so.* \
-  yum -y install libstdc++.so.6 \
-  yum -y install libXcursor* \
-  yum -y install compat-libstdc++-33-3.2.3-72.el7 \
-  yum -y install compat-libstdc++-33-3.2.3-72.el7.i686 \
-  yum clean all
+RUN	yum -y install \
+	libc.so.* \
+  	libstdc++* \
+  	libX11* \
+	libXext* \
+  	expat* \
+  	libgcc_s.so.* \
+  	libstdc++.so.6 \
+ 	libXcursor* \
+  	compat-libstdc++-33-3.2.3-72.el7 \
+  	compat-libstdc++-33-3.2.3-72.el7.i686 ; \
+	yum clean all ; \
 
-RUN systemctl mask dev-mqueue.mount dev-hugepages.mount \
- systemd-remount-fs.service sys-kernel-config.mount \
- sys-kernel-debug.mount sys-fs-fuse-connections.mount
+	# ADD locale
+	localedef -v -c -i en_US -f UTF-8 en_US.UTF-8 ; \
+	
+	# XI INSTALL, GROUP td AND USER qaunix
+	groupadd td; \
+	adduser -g td -G wheel -m -d /home/qaunix qaunix; \
+	echo qaunix | passwd --stdin qaunix; \
 
-RUN systemctl mask display-manager.service systemd-logind.service
-RUN systemctl disable graphical.target
+	# XI INSTALL DIRECTORY
+	mkdir -p /usr/sap/XI42 -m 0755; \
+	chown -R qaunix:td /usr/sap/XI42 ; \
 
-# Copy the shell script to finish setup
-COPY configure-nfs.sh /configure-nfs.sh
-RUN chmod 777 configure-nfs.sh
+	# XI INSTALL SCRIPTS
+        curl -k -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI42/installAurora.sh > /mnt/installAurora.sh; \
+	curl -0    http://dewdftv01813.dhcp.pgdev.sap.corp/artifactory/virtual_docker/TestDockerfileSimon/response.ini         > /mnt/response.ini
 
-# CREATE NEW USER
-RUN mkdir -p /home/qaunix -m 755
-RUN groupadd td
-RUN adduser  -g td -G wheel -m -d /home/qaunix qaunix
-RUN echo qaunix | passwd --stdin qaunix
-RUN chown -R qaunix:td /home/qaunix
-
-# CREATE CONFIG FILE SEMANAGE
-RUN echo "SELINUX=disabled \SELINUXTYPE=targeted" > /etc/selinux/config
-
-# CREATE DIRECTORIES
-#########
-RUN mkdir -p /usr/sap/XI42 -m 0755
-RUN chown -R qaunix:td /usr/sap/XI42
-RUN mkdir -p /soft -m 0755
-RUN mkdir -p /soft/BO -m 0755
-RUN touch /tmp/text.txt
-RUN chmod 777 /tmp/text.txt
-RUN chown -R qaunix:td /home/qaunix
-
-# ADD FOLDER on Container
-########
-ADD response.ini soft/
-ADD mnt-webi.sh /mnt-webi.sh
-
-# MOUNT VOLUMES
-#######
-VOLUME ["/usr/bin"]
-VOLUME ["/usr/sbin"]
-VOLUME ["/usr/lib64"]
-VOLUME ["/usr/lib"]
-VOLUME ["/etc"]
-VOLUME ["/run"]
-VOLUME ["/sys/fs/cgroup"]
-CMD ["/usr/lib/systemd/systemd"]
-
-# CHANGE USER
-RUN su - qaunix
-# ENVIRONNEMENT
-#######
-ENV LANG en_US.utf8
-ENV LC_ALL en_US.utf8
-
-# TCP PORTS EXPOSED BY START SERVICE
+# EXPOSED PORTS
 EXPOSE  6410 6400 2638 8080 8005 8443 6405 10001 10002 10003 10004 10006
+
+CMD ["/usr/sbin/init"]
