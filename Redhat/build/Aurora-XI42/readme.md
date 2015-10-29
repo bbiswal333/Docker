@@ -37,7 +37,7 @@ Several containers cohabits: personalize published ports
 
 #### Running multiple containers on the same host
 
-** TODO:** run "restart all servers" script at startup
+**TODO:** run "restart all servers" script at startup
 
 `docker run -it --privileged  -p 6400:6400 -p 6404:6404 -p 6001:6001 -p 2638:2638 -p 3690:3690 -p 10001:10001 -p 10002:10002 -p 10003:10003 -p 10004:10004 --name=container1 dockerdevregistry:5000/aurora/aurora-prereq/bin/sh`
   
