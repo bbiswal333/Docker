@@ -32,7 +32,9 @@ RUN	yum -y install \
 
 	# XI INSTALL SCRIPTS
         curl -k -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI42/installAurora.sh > /mnt/installAurora.sh; \
-	curl -0    http://dewdftv01813.dhcp.pgdev.sap.corp/artifactory/virtual_docker/TestDockerfileSimon/response.ini         > /mnt/response.ini
+	curl -0    http://dewdftv01813.dhcp.pgdev.sap.corp/artifactory/virtual_docker/TestDockerfileSimon/response.ini         > /mnt/response.ini; \
+
+	chmod +x /mnt/installAurora.sh
 
 # EXPOSED PORTS
 EXPOSE  6410 6400 2638 8080 8005 8443 6405 10001 10002 10003 10004 10006
