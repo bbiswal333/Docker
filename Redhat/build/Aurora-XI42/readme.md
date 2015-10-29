@@ -1,4 +1,4 @@
-# Aurora XI4.x container on Rhel7
+# Aurora XI 4.x container on Rhel7
 
 * **Dockerfile**: create a base image that contains system requirements to install XI, download "docker build" scripts and "XI installation" scripts
 

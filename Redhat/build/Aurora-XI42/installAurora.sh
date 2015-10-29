@@ -4,19 +4,27 @@
 #
 ###############################################################################
 
-# TODO: manage errors
-
 # TO BE DEFINED: Buildfolder length to be passed as parameter 
 
-if [ ! "${1}" ]; then
+if [ $# -ne 1 ]; then
   echo "Usage installAurora.sh  <BuildFolder>"
   exit 1; fi
 
 mount -t nfs -o nolock 10.17.136.53:/dropzone/aurora_dev/aurora42_cons/$1/linux_x64/release/packages/BusinessObjectsServer /mnt/nfs/
+if [ $? -ne 0 ]; then
+  echo "NFS mount failed"
+  exit 1; fi
 
-su - qaunix
-export LANG=en_US.utf8 LC_ALL=en_US.utf8
+su - qaunix -c "
+  export LANG=en_US.utf8 LC_ALL=en_US.utf8;
+  /mnt/nfs/setup.sh -r /mnt/response.ini;
+  if [ $? -ne 0 ]; then
+    return 1; fi"
 
-/mnt/nfs/setup.sh -r /mnt/response.ini
+status=$?
 
 umount /mnt/nfs/
+
+if [ $status -ne 0 ]; then
+  echo "XI installation failed"
+  exit 1; fi
