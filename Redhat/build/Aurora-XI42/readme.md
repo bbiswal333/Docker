@@ -15,13 +15,13 @@ Change options before continuing (as installdir, product key...ports )
 
 `docker build -t dockerdevregistry:5000/aurora/aurora-prereq .`
 
-#### Running the XI installation in silent mode in the container 
+#### Running the XI installation in silent mode in a container 
 
 ##### Starting the container
 
 The container is alone on the host: don't mind the ports publication, publish all with -P
 
-The parameter expected by **installAurora.sh** is the buildnum folder in the path "\\10.17.136.53\dropzone\aurora_dev\aurora42_cons\**1853_previous**\win64_x64\release\packages\BusinessObjectsServer"
+The parameter expected by **installAurora.sh** is the buildnum folder in the path "10.17.136.53:/dropzone/aurora_dev/aurora42_cons/**1853_previous**/win64_x64/release/packages/BusinessObjectsServer"
 
 `docker run -it --privileged -P dockerdevregistry:5000/aurora/aurora-prereq /bin/sh -c "/mnt/installAurora.sh 1853_previous"`
 
