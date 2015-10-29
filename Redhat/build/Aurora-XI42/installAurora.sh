@@ -19,7 +19,7 @@ su - qaunix -c "
   export LANG=en_US.utf8 LC_ALL=en_US.utf8;
   /mnt/nfs/setup.sh -r /mnt/response.ini;
   if [ $? -ne 0 ]; then
-    return 1; fi"
+    exit 1; fi"
 
 status=$?
 
