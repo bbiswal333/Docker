@@ -7,7 +7,6 @@ These files are downloaded in the image by the Dockerfile build:
 * **response.ini:** response file for the silent installation.
 Change options before continuing (as installdir, product key...ports )
  - ex: InstallDir=/usr/sap/XI42
-* **add-host.sh:** adds an alias called "sapboxi42" on /etc/hosts file. This alias is mandatory if you want commit (save) a new image since a container where XI42 is already installed... this "host alias" must to be indicated in  *response.ini*
 
 #### Building the **aurora-prereq** image
 1. Create a build folder on the Docker host.
