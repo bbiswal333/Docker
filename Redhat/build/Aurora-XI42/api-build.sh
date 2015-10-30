@@ -1,9 +1,15 @@
 # Script to build the aurora image on your swarm cluster
  
-#   Parameter : SwarmManagerSrv-FQDN
+#   PARAMETER : SwarmManagerSrv-FQDN
 
 
 #!/bin/bash
+
+if [ $# -ne 1 ]; then
+echo "Usage api-build.sh <SwarmManagerSrv-FQDN>"
+exit 1;
+fi
+
 
 
 #	IMAGES ON THE CLUSTER BEFORE THE BUILD
