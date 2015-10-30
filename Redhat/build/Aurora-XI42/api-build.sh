@@ -1,3 +1,6 @@
+# api-build.sh
+# simon.gomez@sap.com
+
 # Script to build the aurora image on your swarm cluster
  
 #   PARAMETER : SwarmManagerSrv-FQDN
