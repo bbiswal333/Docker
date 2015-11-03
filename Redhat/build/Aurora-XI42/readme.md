@@ -47,7 +47,7 @@ Several containers cohabits: personalize published ports
 Commit the installation container to an image, **aurora** for example
 
 ##### Start a container from the **aurora** image
-docker run -it --privileged --net=host aurora /bin/sh -c "/mnt/startAurora.sh"
+`docker run -it --privileged --net=host aurora /bin/sh -c "/mnt/startAurora.sh"`
 
 #### Portability
 Tested on **Rhel7, Ubuntu 14, Suse 12**
