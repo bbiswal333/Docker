@@ -30,11 +30,13 @@ RUN	yum -y install \
 	mkdir -p /usr/sap/XI42 -m 0755; \
 	chown -R qaunix:td /usr/sap/XI42 ; \
 
-	# XI INSTALL SCRIPTS
+	# XI SCRIPTS
         curl -k -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI42/installAurora.sh > /mnt/installAurora.sh; \
 	curl -k -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI42/response.ini     > /mnt/response.ini; \
-
-	chmod +x /mnt/installAurora.sh
+        curl -k -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI42/startAurora.sh   > /mnt/startAurora.sh; \
+ 
+	chmod +x /mnt/installAurora.sh; \
+        chmod +x /mnt/startAurora.sh
 
 # EXPOSE XI 4.X PORTS
 EXPOSE  6410 6400 2638 8080 8005 8443 6405 10001 10002 10003 10004 10006
