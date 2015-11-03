@@ -31,10 +31,16 @@ Several containers cohabits: personalize published ports
 
 ##### Testing the installation
 
-  http://dockerhost:port/BOE/BI
-  or http://dockerhost:port/BOE/CMC
+http://dockerhost:port/BOE/BI
 
-  ex: http://dewdftv00483.dhcp.pgdev.sap.corp:10001/BOE/BI
+or
+
+http://dockerhost:port/BOE/CMC
+
+ex:	http://dewdftv00483.dhcp.pgdev.sap.corp:10001/BOE/BI
+
+	or
+
 	http://dewdftv00483.dhcp.pgdev.sap.corp:10001/BOE/CMC
 
 #### Running multiple containers on the same host
