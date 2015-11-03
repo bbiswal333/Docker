@@ -19,11 +19,11 @@ Change options before continuing (as installdir, product key...ports )
 
 ##### Starting the container
 
-The container is alone on the host: don't mind the ports publication, publish all with -P
+The container is alone on the host: don't mind the ports publication, publish all with --net=host
 
 The parameter expected by **installAurora.sh** is the buildnum folder in the path "10.17.136.53:/dropzone/aurora_dev/aurora42_cons/**1853_previous**/win64_x64/release/packages/BusinessObjectsServer"
 
-`docker run -it --privileged -P dockerdevregistry:5000/aurora/aurora-prereq /bin/sh -c "/mnt/installAurora.sh 1853_previous"`
+`docker run -it --privileged --net=host dockerdevregistry:5000/aurora/aurora-prereq /bin/sh -c "/mnt/installAurora.sh 1853_previous"`
 
 Several containers cohabits: personalize published ports
 
@@ -37,14 +37,18 @@ Several containers cohabits: personalize published ports
 
 #### Running multiple containers on the same host
 
-**TODO:** run "restart all servers" script at startup
-
 `docker run -it --privileged  -p 6400:6400 -p 6404:6404 -p 6001:6001 -p 2638:2638 -p 3690:3690 -p 10001:10001 -p 10002:10002 -p 10003:10003 -p 10004:10004 --name=container1 dockerdevregistry:5000/aurora/aurora-prereq/bin/sh`
   
 `docker run -it --privileged -p 36400:6400 -p 36404:6404 -p 36001:6001 -p 32638:2638 -p 33690:3690 -p 11001:10001 -p 11002:10002 -p 11003:10003 -p 11004:10004 --name=container2 dockerdevregistry:5000/aurora/aurora-prereq/bin/sh`
 
-#### Saving a container "XI" as an image
 
-syntax:
+#### Running the XI instance inside a container
 
-`docker commit <container_id> <image_name>`
+Commit the installation container to an image, **aurora** for example
+
+##### Start a container from the **aurora** image
+docker run -it --privileged --net=host aurora /bin/sh -c "/mnt/startAurora.sh"
+
+#### Portability
+Tested on **Rhel7, Ubuntu 14, Suse 12**
+Ubuntu 14 may require to force devicemapper with the option **-s devicemapper** in the daemon config file **/etc/default/docker**

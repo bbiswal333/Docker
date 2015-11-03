@@ -16,10 +16,16 @@ if [ $? -ne 0 ]; then
   exit 1; fi
 
 su - qaunix -c "
-  export LANG=en_US.utf8 LC_ALL=en_US.utf8;
-  /mnt/nfs/setup.sh -r /mnt/response.ini;
+
+  export LANG=en_US.utf8 LC_ALL=en_US.utf8
+  /mnt/nfs/setup.sh -r /mnt/response.ini
+
   if [ $? -ne 0 ]; then
-    exit 1; fi"
+    exit 1; fi
+
+  /usr/sap/XI42/sap_bobj/stopservers
+  /usr/sap/XI42/sap_bobj/tomcatshutdown.sh
+  /usr/sap/XI42/sap_bobj/sqlanywhere_shutdown.sh"
 
 status=$?
 
