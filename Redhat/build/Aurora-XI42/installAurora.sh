@@ -15,7 +15,7 @@ if [ $? -ne 0 ]; then
   echo "NFS mount failed"
   exit 1; fi
 
-su - qaunix -c "
+su - qaunix -c '
 set -x
   export LANG=en_US.utf8 LC_ALL=en_US.utf8
 echo LANG=$LANG
@@ -24,12 +24,12 @@ echo LANG=$LANG
   export location=/usr/sap/XI42/sap_bobj
 echo location=$location
   if [ ! -d $location ]; then
-    echo 'XI install failed'
+    echo "XI install failed"
     exit 1; fi
 
   curl -I http://localhost:10001/BOE/BI | grep OK
   if [ $? -ne 0 ]; then
-    echo 'XI install failed'
+    echo "XI install failed"
     exit 1; fi
 
 echo location=$location
@@ -37,7 +37,7 @@ echo location=$location
   ./stopservers
   ./tomcatshutdown.sh
   ./sqlanywhere_shutdown.sh
-  exit 0"
+  exit 0'
 
 status=$?
 
