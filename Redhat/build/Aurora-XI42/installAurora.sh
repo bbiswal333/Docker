@@ -22,16 +22,19 @@ set -x
 
   location=/usr/sap/XI42/sap_bobj
   if [ ! -d $location ]; then
-    echo 'XI install failed'; fi
+    echo 'XI install failed'
+    exit 1; fi
 
-  curl -I http://localhost:10001/BOE/BI | grep "OK"
-  if [ $? -ne 0]; then
-    echo 'XI install failed'; fi
+  curl -I http://localhost:10001/BOE/BI | grep OK
+  if [ $? -ne 0 ]; then
+    echo 'XI install failed'
+    exit 1; fi
 
   cd $location  
   ./stopservers
   ./tomcatshutdown.sh
-  ./sqlanywhere_shutdown.sh"
+  ./sqlanywhere_shutdown.sh
+  exit 0"
 
 status=$?
 
