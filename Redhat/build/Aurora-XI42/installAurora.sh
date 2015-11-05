@@ -4,6 +4,8 @@
 #
 ###############################################################################
 
+#!/bin/bash
+
 # TO BE DEFINED: Buildfolder length to be passed as parameter 
 
 if [ $# -ne 1 ]; then
@@ -14,6 +16,14 @@ mount -t nfs -o nolock 10.17.136.53:/dropzone/aurora_dev/aurora42_cons/$1/linux_
 if [ $? -ne 0 ]; then
   echo "NFS mount failed"
   exit 1; fi
+
+# ALIAS in /etc/hosts
+set -x
+cp /etc/hosts /etc/hosts.old
+if grep 127.0.0.1 /etc/hosts > /dev/null; then
+  sed "/127.0.0.1/s/$/ sapboxi42/" /etc/hosts.old > /etc/hosts
+else
+  echo "127.0.0.1  localhost sapboxi42" >> /etc/hosts; fi
 
 su - qaunix -c '
 
