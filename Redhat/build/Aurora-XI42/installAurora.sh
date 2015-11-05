@@ -21,7 +21,7 @@ if [ $? -ne 0 ]; then
 set -x
 cp /etc/hosts /etc/hosts.old
 if grep 127.0.0.1 /etc/hosts > /dev/null; then
-  sed "/127.0.0.1/s/localhost/localhost  sapboxi42  /" /etc/hosts.old > /etc/hosts
+  sed "/127.0.0.1/s/localhost/localhost $(hostname -s) sapboxi42  /" /etc/hosts.old > /etc/hosts
 else
   echo "127.0.0.1  localhost sapboxi42" >> /etc/hosts; fi
 
