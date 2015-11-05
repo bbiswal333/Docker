@@ -16,16 +16,22 @@ if [ $? -ne 0 ]; then
   exit 1; fi
 
 su - qaunix -c "
-
+set -x
   export LANG=en_US.utf8 LC_ALL=en_US.utf8
   /mnt/nfs/setup.sh -r /mnt/response.ini
 
-  if [ $? -ne 0 ]; then
-    exit 1; fi
+  location=/usr/sap/XI42/sap_bobj
+  if [ ! -d $location ]; then
+    echo 'XI install failed'; fi
 
-  /usr/sap/XI42/sap_bobj/stopservers
-  /usr/sap/XI42/sap_bobj/tomcatshutdown.sh
-  /usr/sap/XI42/sap_bobj/sqlanywhere_shutdown.sh"
+  curl -I http://localhost:10001/BOE/BI | grep "OK"
+  if [ $? -ne 0]; then
+    echo 'XI install failed'; fi
+
+  cd $location  
+  ./stopservers
+  ./tomcatshutdown.sh
+  ./sqlanywhere_shutdown.sh"
 
 status=$?
 
