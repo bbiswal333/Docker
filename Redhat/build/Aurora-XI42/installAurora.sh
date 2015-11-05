@@ -18,9 +18,11 @@ if [ $? -ne 0 ]; then
 su - qaunix -c "
 set -x
   export LANG=en_US.utf8 LC_ALL=en_US.utf8
+echo LANG=$LANG
   /mnt/nfs/setup.sh -r /mnt/response.ini
 
-  location=/usr/sap/XI42/sap_bobj
+  export location=/usr/sap/XI42/sap_bobj
+echo location=$location
   if [ ! -d $location ]; then
     echo 'XI install failed'
     exit 1; fi
@@ -30,7 +32,8 @@ set -x
     echo 'XI install failed'
     exit 1; fi
 
-  cd $location  
+echo location=$location
+  cd $location
   ./stopservers
   ./tomcatshutdown.sh
   ./sqlanywhere_shutdown.sh
