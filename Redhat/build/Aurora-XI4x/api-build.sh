@@ -18,7 +18,7 @@ fi
 #	IMAGES ON THE CLUSTER BEFORE THE BUILD
 
 echo 'Images on the swarm cluster before the build :'
-curl dewdftv01641.dhcp.pgdev.sap.corp:4000/images/json?all=1
+curl $1:4000/images/json?all=1
 
 
 #	DOWNLOADING DOCKERFILE
@@ -40,5 +40,5 @@ rmdir aurora
 
 #	RESULT: IMAGES ON THE CLUSTER AFTER THE BUILD
 echo 'Images on the swarm cluster after the build :'
-curl dewdftv01641.dhcp.pgdev.sap.corp:4000/images/json?all=1
+curl $1:4000/images/json?all=1
 
