@@ -27,13 +27,13 @@ RUN	yum -y install \
 	echo qaunix | passwd --stdin qaunix; \
 
 	# XI INSTALL DIRECTORY
-	mkdir -p /usr/sap/XI42 -m 0755; \
-	chown -R qaunix:td /usr/sap/XI42 ; \
+	mkdir -p /usr/sap/XI4x -m 0755; \
+	chown -R qaunix:td /usr/sap/XI4x ; \
 
 	# XI SCRIPTS
-        curl -k -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI42/installAurora.sh > /mnt/installAurora.sh; \
-	curl -k -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI42/response.ini     > /mnt/response.ini; \
-        curl -k -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI42/startAurora.sh   > /mnt/startAurora.sh; \
+        curl -k -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/installAurora.sh > /mnt/installAurora.sh; \
+	curl -k -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/response.ini     > /mnt/response.ini; \
+        curl -k -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/startAurora.sh   > /mnt/startAurora.sh; \
  
 	chmod +x /mnt/installAurora.sh; \
         chmod +x /mnt/startAurora.sh
