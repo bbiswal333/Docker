@@ -21,7 +21,7 @@ Change options before continuing (as installdir, product key...ports )
 
 The container is alone on the host: don't mind the ports publication, publish all with --net=host
 
-The parameter expected by **installAurora.sh** is the buildnum folder in the path "10.17.136.53:/dropzone/aurora_dev/aurora42_cons/**1781**/linux_x64/release/packages/BusinessObjectsServer"
+The parameter expected by **installAurora.sh** is the buildnum folder in the path "10.17.136.53:/dropzone/aurora_dev/**aurora42_cons/1781**/linux_x64/release/packages/BusinessObjectsServer"
 
 `docker run -it --privileged --net=host dockerdevregistry:5000/aurora/aurora-prereq /bin/sh -c "/mnt/installAurora.sh aurora42_cons/1781"`
 
