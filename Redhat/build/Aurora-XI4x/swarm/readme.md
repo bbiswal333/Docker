@@ -20,6 +20,7 @@ curl -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat
 chmod 777 api-build.sh
 ./api-build.sh <SwarmManagerSrv-FQDN>
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d  '{"Hostname": "","User": "","Memory": 0,"MemorySwap": 0,"AttachStdin": true,"AttachStdout": true,"PortSpecs":null,"AttachStderr": false,"Tty": true,"OpenStdin": true,"StdinOnce": false,"Env": null,"Cmd":[ "/bin/bash","/mnt/installAurora.sh","aurora42_cons/1859" ],"Image": "aurora-image", "WorkingDir": "","DisableNetwork": false,"ExposedPorts": {"22/tcp": {} }, "HostConfig": { "Privileged": true,"NetworkMode": "host" } }' <SwarmManagerSrv-FQDN>:4000/containers/create
+
 curl -v -H "Accept: application/json" -H  "Content-type: application/json" -X POST <SwarmManagerSrv-FQDN>:4000/containers/<container-ID>/start
 
 
