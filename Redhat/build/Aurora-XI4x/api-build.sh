@@ -23,7 +23,7 @@ curl dewdftv01641.dhcp.pgdev.sap.corp:4000/images/json?all=1
 
 #	DOWNLOADING DOCKERFILE
 
-curl -k -s  https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI42/Dockerfile > Dockerfile
+curl -k -s  https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/Dockerfile > Dockerfile
 
 #	BUILD PROCESS THROUGH THE SWARM API 
 
