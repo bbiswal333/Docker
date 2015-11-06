@@ -59,4 +59,4 @@ Tested on **Rhel7, Ubuntu 14, Suse 12**
 
 Ubuntu 14: may require to force devicemapper with the option **-s devicemapper** in the daemon config file **/etc/default/docker**
 
-Suse 12: **installAurora.sh** modifies **/etc/hosts** as follow '**127.0.0.1  localhost  \<ShortMachineName\>  sapboxi4x'**
+Suse 12: **installAurora.sh** and **startAurora.sh** modify **/etc/hosts** as follow '**127.0.0.1  localhost  \<ShortMachineName\>  sapboxi4x'**
