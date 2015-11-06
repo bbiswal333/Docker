@@ -17,8 +17,11 @@ Two solutions:
 On the client:
 
 curl -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/api-build.sh > api-build.sh
+
 chmod 777 api-build.sh
+
 ./api-build.sh <SwarmManagerSrv-FQDN>
+
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d  '{"Hostname": "","User": "","Memory": 0,"MemorySwap": 0,"AttachStdin": true,"AttachStdout": true,"PortSpecs":null,"AttachStderr": false,"Tty": true,"OpenStdin": true,"StdinOnce": false,"Env": null,"Cmd":[ "/bin/bash","/mnt/installAurora.sh","aurora42_cons/1859" ],"Image": "aurora-image", "WorkingDir": "","DisableNetwork": false,"ExposedPorts": {"22/tcp": {} }, "HostConfig": { "Privileged": true,"NetworkMode": "host" } }' <SwarmManagerSrv-FQDN>:4000/containers/create
 
 curl -v -H "Accept: application/json" -H  "Content-type: application/json" -X POST <SwarmManagerSrv-FQDN>:4000/containers/<container-ID>/start
@@ -29,10 +32,12 @@ curl -v -H "Accept: application/json" -H  "Content-type: application/json" -X PO
 On the client:
 
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d  '{"Hostname": "","User": "","Memory": 0,"MemorySwap": 0,"AttachStdin": true,"AttachStdout": true,"PortSpecs":null,"AttachStderr": false,"Tty": true,"OpenStdin": true,"StdinOnce": false,"Env": null,"Cmd":[ "/bin/bash","/mnt/installAurora.sh", "aurora42_cons/1859"],"Image": "dockerdevregistry:5000/aurora/aurora-prereq", "WorkingDir": "","DisableNetwork": false,"ExposedPorts": {"22/tcp": {} }, "HostConfig": { "Privileged": true,"NetworkMode": "host" } }' <SwarmManagerSrv-FQDN>:4000/containers/create
+
 curl -v -H "Accept: application/json" -H  "Content-type: application/json" -X POST <SwarmManagerSrv-FQDN>:4000/containers/<container-ID>/start
 
 Notes: 
 •	For II.1 and II.2, the installation begins when the container is launched.
+
 •	When the installation is finished, the container stop automatically.
 
 
