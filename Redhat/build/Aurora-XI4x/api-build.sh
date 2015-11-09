@@ -23,13 +23,15 @@ curl $1:4000/images/json?all=1
 
 #       DOWNLOADING DOCKERFILE
 mkdir aurora
-curl -k -s  https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/Dockerfile > aurora/Dockerfile
+cd aurora
+curl -k -s  https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/Dockerfile > Dockerfile
 
 
 #       BUILD PROCESS THROUGH THE SWARM API
-tar zcf aurora/Dockerfile.tar.gz aurora/Dockerfile
+tar zcf Dockerfile.tar.gz Dockerfile
+cd ..
 curl -v -X POST -H "Content-Type:application/tar" --data-binary '@aurora/Dockerfile.tar.gz' $1:4000/build?t=aurora-image\&forcerm=1
-rmdir -rf aurora
+rm -rf aurora
 
 
 ## DEBUG PURPOSE
