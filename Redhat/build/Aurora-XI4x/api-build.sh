@@ -9,33 +9,36 @@
 #!/bin/bash
 
 if [ $# -ne 1 ]; then
-  echo "Usage api-build.sh <SwarmManagerSrv-FQDN>"
-  exit 1;
+echo "Usage api-build.sh <SwarmManagerSrv-FQDN>"
+exit 1;
 fi
 
 
 
 #	IMAGES ON THE CLUSTER BEFORE THE BUILD
 
-## DEBUG PURPOSE
 echo 'Images on the swarm cluster before the build :'
-curl $1:4000/images/json?all=1
-##
+curl dewdftv01641.dhcp.pgdev.sap.corp:4000/images/json?all=1
+
 
 #	DOWNLOADING DOCKERFILE
-mkdir aurora
-curl -k -s  https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/Dockerfile > aurora/Dockerfile
+
+curl -k -s  https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/Dockerfile > Dockerfile
 
 #	BUILD PROCESS THROUGH THE SWARM API 
 
+mkdir aurora
+mv Dockerfile aurora/
+cd aurora/
+tar zcf Dockerfile.tar.gz Dockerfile
+cd ..
 
-tar zcf aurora/Dockerfile.tar.gz aurora/Dockerfile
 curl -v -X POST -H "Content-Type:application/tar" --data-binary '@aurora/Dockerfile.tar.gz' $1:4000/build?t=aurora-image\&forcerm=1
-rmdir -rf aurora
+rm aurora/Dockerfile aurora/Dockerfile.tar.gz
+rmdir aurora
 
 
-## DEBUG PURPOSE
 #	RESULT: IMAGES ON THE CLUSTER AFTER THE BUILD
 echo 'Images on the swarm cluster after the build :'
-curl $1:4000/images/json?all=1
-##
+curl dewdftv01641.dhcp.pgdev.sap.corp:4000/images/json?all=1
+
