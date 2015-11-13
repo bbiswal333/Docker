@@ -25,12 +25,16 @@ function Deploy-Consul {
     echo "Failed to start Consul container"
     exit 1; fi
 
-  loop=1
-  while [ $loop -eq 1 ]; do 
-    sleep 10
+  status=1; count=1
+  while [ $status -ne 0 ] && [ $count -le 10 ]; do 
+    sleep 2
     docker -H $1:$2 logs $ID | grep "New leader elected"
-    loop=$?
-  done; }
+    status=$?
+    count=$((count+1)); done 
+
+  if [ $status -ne 0 ]; then
+    echo "Timeout waiting for Consul server starting"
+    exit 1; fi; }
 
 
 #--------------------------------------
