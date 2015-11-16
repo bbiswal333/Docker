@@ -12,10 +12,10 @@ function InitVars {
 
   export consul=dewdftzws023.dhcp.pgdev.sap.corp
   export manager=$consul
-  export nodes=dewdftv00249.dhcp.pgdev.sap.corp
+  export nodes="dewdftv00249.dhcp.pgdev.sap.corp, 10.97.29.81"
   export token=MyCluster
-  export tls=false
-  export port=${dockerports[$tls == true]}
+  export tls=0
+  export port=${dockerports[tls]}
   export managerport=4243; }
 
 
@@ -71,6 +71,6 @@ set -x
 
 InitVars
 
-Deploy-Consul  $consul  $port
-Deploy-Nodes   $nodes   $port $consul $token
-Deploy-Manager $manager $port $consul $token
+Deploy-Consul  $consul   $port
+Deploy-Nodes   "$nodes"  $port $consul $token
+Deploy-Manager $manager  $port $consul $token
