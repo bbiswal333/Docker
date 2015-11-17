@@ -12,11 +12,12 @@ function InitVars {
 
   export consul=dewdftzws023.dhcp.pgdev.sap.corp
   export manager=$consul
-  export nodes="dewdftv00249.dhcp.pgdev.sap.corp, 10.97.29.81"
+  export nodes="dewdftv00249.dhcp.pgdev.sap.corp"
   export token=MyCluster
   export tls=0
   export port=${dockerports[tls]}
-  export managerport=4243; }
+  export managerport=4243
+  export AuroraImg=dockerdevregistry:5000/aurora/aurora42_1781; }
 
 
 #--------------------------------------
@@ -33,7 +34,7 @@ function Deploy-Consul {
 
   while [ $status -ne 0 ] && [ $count -le 10 ]; do 
     sleep 2
-    docker -H $1:$2 logs $ID | grep "New leader elected"
+    docker -H $1:$2 logs $ID 2>&1 | grep "New leader elected"
     status=$?
     count=$((count+1)); done 
 
@@ -58,10 +59,33 @@ function Deploy-Nodes {	   # nodes,$port,$consul,$token
 #--------------------------------------
 function Deploy-Manager {
 
-  docker -H $1:$2 run -d -p $managerport:$2 swarm manage consul://$3:8500/$4
+  ID=$(docker -H $1:$2 run -d -p $managerport:$2 swarm manage consul://$3:8500/$4)
 
   if [ $? -ne 0  ]; then
     echo "Failed to start 'Swarm-Manager' container on '$1'"
+    exit 1; fi
+
+  status=1
+  count=1
+
+  while [ $status -ne 0 ] && [ $count -le 10 ]; do
+    sleep 2
+    docker -H $1:$2 logs $ID 2>&1 | grep "Registered Engine"
+    status=$?
+    count=$((count+1)); done
+
+  if [ $status -ne 0 ]; then
+    echo "Timeout waiting for Swarm-Manager starting on '$1'"
+    exit 1; fi; }
+
+
+#--------------------------------------
+function Deploy-Aurora {
+
+  docker -H $1:$2 run -d --privileged --net=host $3  /bin/sh -c "/mnt/startAurora.sh"
+
+  if [ $? -ne 0  ]; then
+    echo "Failed to start '$3' container on '$1'"
     exit 1; fi; }
 
 
@@ -72,5 +96,8 @@ set -x
 InitVars
 
 Deploy-Consul  $consul   $port
-Deploy-Nodes   "$nodes"  $port $consul $token
-Deploy-Manager $manager  $port $consul $token
+Deploy-Nodes   "$nodes"  $port  $consul $token
+Deploy-Manager $manager  $port  $consul $token
+
+Deploy-Aurora  $manager  $managerport  $AuroraImg
+
