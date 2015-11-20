@@ -1,27 +1,59 @@
 ###############################################################################
 #
 #  AUTHOR: gerald.braunwarth@sap.com	-November 2015- 
-#  PURPOSE: deploy a Swarm cluster
+#  PURPOSE: set up a Swarm cluster
 #
 ###############################################################################
- 
+
 
 #--------------------------------------
-function InitVars {
-  dockerports=(2375 2376)
+function TestFileExists {
 
-  export consul=dewdftzws023.dhcp.pgdev.sap.corp
-  export manager=$consul
-  export nodes="dewdftv00249.dhcp.pgdev.sap.corp"
-  export token=MyCluster
-  export tls=0
+  if [ ! -f $1 ]; then
+    echo "File '$1' not found"
+    exit 1; fi; }
+
+
+#--------------------------------------
+function CheckRequest {
+
+  echo ". Check request"
+
+  mandatory="consul manager nodes token tls"
+
+  for keyword in $mandatory; do
+    eval "var=\"\$$keyword\""
+    if [ ! "${var}" ]; then
+      echo "Keyword '$keyword' missing in '$1'"
+      exit 1; fi
+  done; }
+
+
+#--------------------------------------
+function ReadRequestFile {
+
+  echo
+  echo ". Read request file"
+
+  scriptpath=$(dirname $(readlink -e $0))
+  pathname="$scriptpath/swarm-request.ini"
+
+  TestFileExists "$pathname"
+  source "$pathname"
+  CheckRequest "$pathname"
+
+  dockerports=(2375 2376)
+  tls=0		# overrides 'swarm-request.ini' until TLS implemented
+
   export port=${dockerports[tls]}
-  export managerport=4243
-  export AuroraImg=dockerdevregistry:5000/aurora/aurora42_1781; }
+  export managerport=4243; }
 
 
 #--------------------------------------
 function Deploy-Consul {
+
+  echo
+  echo ". start Consul server on '$1'"
 
   ID=$(docker -H $1:$2 run -d -p 8400:8400 -p 8500:8500 -p 8600:53/udp -h consul progrium/consul -server -bootstrap -ui-dir /ui)
 
@@ -34,7 +66,7 @@ function Deploy-Consul {
 
   while [ $status -ne 0 ] && [ $count -le 10 ]; do 
     sleep 2
-    docker -H $1:$2 logs $ID 2>&1 | grep "New leader elected"
+    str=$(docker -H $1:$2 logs $ID 2>&1 | grep "New leader elected")
     status=$?
     count=$((count+1)); done 
 
@@ -46,18 +78,24 @@ function Deploy-Consul {
 #--------------------------------------
 function Deploy-Nodes {	   # nodes,$port,$consul,$token
 
-  arr=$(echo $1 | tr -d  " ")		# remove blanks
-  arr=$(echo $1 | tr "," "\n")		# split to array
+  echo
+  echo ". Start nodes"
 
-  for nd in $arr; do
-    docker -H $nd:$2 run -d swarm join --advertise=$nd:$2 consul://$3:8500/$4
+  arr=$(echo $1 | tr "," " ")
+
+  for node in $arr; do
+    echo "    start node on '$node'"
+    ID=$(docker -H $node:$2 run -d swarm join --advertise=$node:$2 consul://$3:8500/$4)
     if [ $? -ne 0  ]; then
-      echo "Failed to start 'Swarm-Join' container on '$nd'"
+      echo "Failed to start 'Swarm-Join' container on '$node'"
       exit 1; fi; done; }
 
 
 #--------------------------------------
 function Deploy-Manager {
+
+  echo
+  echo ". Start manager on '$1'"
 
   ID=$(docker -H $1:$2 run -d -p $managerport:$2 swarm manage consul://$3:8500/$4)
 
@@ -70,7 +108,7 @@ function Deploy-Manager {
 
   while [ $status -ne 0 ] && [ $count -le 10 ]; do
     sleep 2
-    docker -H $1:$2 logs $ID 2>&1 | grep "Registered Engine"
+    str=$(docker -H $1:$2 logs $ID 2>&1 | grep "Registered Engine")
     status=$?
     count=$((count+1)); done
 
@@ -80,7 +118,13 @@ function Deploy-Manager {
 
 
 #--------------------------------------
-function Deploy-Aurora {
+function Deploy-Image {
+
+  if [ ! ${3} ]; then
+    return 0; fi
+
+  echo
+  echo ". Start image instance"
 
   docker -H $1:$2 run -d --privileged --net=host $3  /bin/sh -c "/mnt/startAurora.sh"
 
@@ -91,13 +135,18 @@ function Deploy-Aurora {
 
 #---------------  MAIN
 clear
-set -x
+# set -x
 
-InitVars
+ReadRequestFile
 
-Deploy-Consul  $consul   $port
-Deploy-Nodes   "$nodes"  $port  $consul $token
-Deploy-Manager $manager  $port  $consul $token
+Deploy-Consul  "$consul"   $port
+Deploy-Nodes   "$nodes"    $port  $consul $token
+Deploy-Manager "$manager"  $port  $consul $token
 
-Deploy-Aurora  $manager  $managerport  $AuroraImg
+Deploy-Image   "$manager"  $managerport  $image
+
+echo
+echo "*** Swarm cluster successfully deployed ***"
+echo
+echo
 
