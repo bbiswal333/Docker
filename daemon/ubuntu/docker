@@ -1,0 +1,17 @@
+# Docker Upstart and SysVinit configuration file
+
+# Customize location of Docker binary (especially for development testing).
+#DOCKER="/usr/local/bin/docker"
+
+# Use DOCKER_OPTS to modify the daemon startup options.
+#DOCKER_OPTS="--dns 8.8.8.8 --dns 8.8.4.4"
+DOCKER_OPTS="-H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375 --storage-opt dm.basesize=70G --insecure-registry=dockerdevregistry:5000"
+
+# If you need Docker to use an HTTP proxy, it can also be specified here.
+#export http_proxy="http://127.0.0.1:3128/"
+export http_proxy=http://proxy.wdf.sap.corp:8080
+export https_proxy=http://proxy.wdf.sap.corp:8080
+export no_proxy=sap.corp,10.*,localhost,127.0.0.1,0.0.0.0,moo-repo,169.254.169.254,repo
+
+# This is also a handy place to tweak where Docker's temporary files go.
+#export TMPDIR="/mnt/bigdrive/docker-tmp"
