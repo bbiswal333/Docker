@@ -140,7 +140,7 @@ function Deploy-Consul {	# consuls, port
     if [ $consul != $consul01 ]; then
 
       echo "    start Consul on '$consul'"
-      ID=$(docker -H $consul:$2 run -d --net=host progrium/consul -server -ui-dir /ui)
+      ID=$(docker -H $consul:$2 run -d --net=host --restart=always progrium/consul -server -ui-dir /ui)
       OnStatusFailed $? "Failed to start Consul Simple Server on '$consul'"
 
       WaitForStart $consul $2 $ID "Aborting election"
@@ -158,7 +158,7 @@ function Deploy-Consul {	# consuls, port
   OnStatusFailed $? "Failed to delete Bootstrap Server on '$consul01'"
 
   echo "    restart bootstrap as simple server"
-  ID01=$(docker -H $consul01:$2 run -d --net=host progrium/consul -server -ui-dir /ui)
+  ID01=$(docker -H $consul01:$2 run -d --net=host --restart=always progrium/consul -server -ui-dir /ui)
   OnStatusFailed $?  "Failed to restart Bootstrap Server as simple server on '$consul01'"
 
   echo "    wait for bootstrap to re-join the cluster as simple server"
@@ -201,7 +201,7 @@ function Deploy-Manager {	# managers, port, consuls, token
       replication="--replication --advertise $manager:$managerport"; fi
 
     echo "    Start manager on '$manager'"
-    ID=$(docker -H $manager:$2 run -d -p $managerport:$managerport swarm manage -H :$managerport $replication consul://$consul01:8500/$4)
+    ID=$(docker -H $manager:$2 run -d --restart=always -p $managerport:$managerport swarm manage -H :$managerport $replication consul://$consul01:8500/$4)
     OnStatusFailed $?  "Failed to start Swarm-Manager container on '$manager'"
 
     if [ ${#arrManagers[@]} -eq 1 ]; then
