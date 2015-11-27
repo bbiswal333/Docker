@@ -123,8 +123,11 @@ function Deploy-Consul {	# consuls, port
   arrConsuls=($(echo $1 | tr "," " "))
   consul01=${arrConsuls[0]}
 
+  if [ ${#arrConsuls[@]} -eq 1 ]; then
+    restart=--restart=always; fi
+
   echo "    start Consul on '$consul01'"
-  ID01=$(docker -H $consul01:$2 run -d --net=host progrium/consul -server -bootstrap -ui-dir /ui)
+  ID01=$(docker -H $consul01:$2 run -d $restart  --net=host progrium/consul -server -bootstrap -ui-dir /ui)
   OnStatusFailed $?  "Failed to start Consul Bootstrap Server on '$consul01'"
 
   WaitForStart $consul01 $2 $ID01 "New leader elected"
