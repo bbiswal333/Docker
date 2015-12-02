@@ -19,7 +19,7 @@ function CheckRequest {
 
   echo ". Check request"
 
-  mandatory="zookeepers managers nodes token tls"
+  mandatory="zookeepers managers nodes token tls engineport managerport"
 
   for keyword in $mandatory; do
     eval "var=\"\$$keyword\""
@@ -32,7 +32,7 @@ function CheckRequest {
 #--------------------------------------
 function CheckClusterZookeepers {
 
-  array=($(echo $1 | tr "," " "))
+  array=($1)
 
   if [ ${#array[@]} -eq 2 ]; then
     echo "  A Zookeeper cluster requires at least 3 instances"
@@ -42,7 +42,7 @@ function CheckClusterZookeepers {
 #--------------------------------------
 function CheckClusterManagers {
 
-  array=($(echo $1 | tr "," " "))
+  array=($1)
 
   if [ ${#array[@]} -eq 2 ]; then
     echo "  A Swarm-Manager cluster requires at least 3 instances"
@@ -65,11 +65,11 @@ function ReadRequestFile {
   CheckClusterZookeepers "$zookeepers"
   CheckClusterManagers   "$managers"
 
-  dockerports=(2375 2376)
-  tls=0		# overrides 'swarm-request.ini' until TLS implemented
+# dockerports=(2375 2376)
+  tls=0; }		# overrides 'swarm-request.ini' until TLS implemented
 
-  export port=${dockerports[tls]}
-  export managerport=4243; }
+# export port=${dockerports[tls]}
+# export managerport=4243
 
 
 #--------------------------------------
@@ -170,15 +170,13 @@ function OnStatusFailed {	# status, errmsg
 
 
 #--------------------------------------
-function Deploy-Zookeepers {    # zookeepers, port
+function Deploy-Zookeepers {    # zookeepers, engineport
 
   echo
   echo ". Start Zookeepers"
 
-  srv=$1
-
-  arrZookeepers=($(echo $1 | tr "," " "))	# "dewdftv00249  dewdftv00765  dewdftv00766"
-  serversZK=${srv// /}				# "dewdftv00249,dewdftv00765,dewdftv00766"
+  arrZookeepers=(${1//,/ })		# "dewdftv00249  dewdftv00765  dewdftv00766"
+  serversZK=${1// /}			# "dewdftv00249,dewdftv00765,dewdftv00766"
 
   myid=1
 
@@ -188,7 +186,7 @@ function Deploy-Zookeepers {    # zookeepers, port
       clustering="-e MYID=$myid -e SERVERS=$serversZK"; fi
 
     echo "    start Zookeeper on '$zk'"
-    ID=$(docker -H $zk:$port run -d --net=host $clustering mesoscloud/zookeeper:3.4.6-ubuntu-14.04)
+    ID=$(docker -H $zk:$2 run -d --net=host $clustering mesoscloud/zookeeper:3.4.6-ubuntu-14.04)
     OnStatusFailed $?  "Failed to start 'Zookeeper'  on '$zk'"
 
     WaitForStart $zk $2 $ID "binding to port"
@@ -198,49 +196,45 @@ function Deploy-Zookeepers {    # zookeepers, port
 
 
 #--------------------------------------
-function Deploy-Nodes {	   # nodes, port, zookeepers, token
+function Deploy-Nodes {	   # nodes, engineport, zookeepers, token
 
   echo
   echo ". Start nodes"
 
-  srv=$3
-
-  arrNodes=$(echo $1 | tr "," " ")
+  arrNodes=${1//,/ }
 # arrConsuls=($(echo $3 | tr "," " "))
-  serversZK=${srv// /}                          # "dewdftv00249,dewdftv00765,dewdftv00766"
+  serversZK=${3// /}                          # "dewdftv00249,dewdftv00765,dewdftv00766"
 
 # consul01=${arrConsuls[0]}
 
   for node in $arrNodes; do
 
     echo "    start node on '$node'"
-#   ID=$(docker -H $node:$2 run -d swarm join --advertise=$node:$2 consul://$consul01:8500/$4)
-    ID=$(docker -H $node:$2 run -d swarm join --advertise=$node:$2 zk://$serversZK/$4)
+#   ID=$(docker -H $node:$2 run -d --restart=always swarm join --advertise=$node:$2 consul://$consul01:8500/$4)
+    ID=$(docker -H $node:$2 run -d --restart=always swarm join --advertise=$node:$2 zk://$serversZK/$4)
     OnStatusFailed $?  "Failed to start 'Swarm-Join' container on '$node'"; done; }
 
 
 #--------------------------------------
-function Deploy-Managers {	# managers, port, zookeepers, token
+function Deploy-Managers {	# managers, engineport, managerport, zookeepers, token
 
   echo
   echo ". Start managers"
 
-  srv=$3
-
-  arrManagers=($(echo $1 | tr "," " "))
+  arrManagers=(${1//,/ })
 # arrConsuls=($(echo $3 | tr "," " "))
-  serversZK=${srv// /}                          # "dewdftv00249,dewdftv00765,dewdftv00766"
+  serversZK=${4// /}                          # "dewdftv00249,dewdftv00765,dewdftv00766"
 
 # consul01=${arrConsuls[0]}
 
   for manager in ${arrManagers[@]}; do
 
     if [ ${#arrManagers[@]} -gt 1 ]; then
-      replication="--replication --advertise $manager:$managerport"; fi
+      replication="--replication --advertise $manager:$3"; fi
 
     echo "    Start manager on '$manager'"
-#   ID=$(docker -H $manager:$2 run -d --restart=always -p $managerport:$managerport swarm manage -H :$managerport $replication consul://$consul01:8500/$4)
-    ID=$(docker -H $manager:$2 run -d --restart=always -p $managerport:$managerport swarm manage -H :$managerport $replication zk://$serversZK/$4)
+#   ID=$(docker -H $manager:$2 run -d --restart=always -p $3:$3 swarm manage -H :$3 $replication consul://$consul01:8500/$4)
+    ID=$(docker -H $manager:$2 run -d --restart=always -p $3:$3 swarm manage -H :$3 $replication zk://$serversZK/$5)
     OnStatusFailed $?  "Failed to start Swarm-Manager container on '$manager'"
 
     if [ ${#arrManagers[@]} -eq 1 ]; then
@@ -254,7 +248,7 @@ function Deploy-Managers {	# managers, port, zookeepers, token
 
 
 #--------------------------------------
-function Deploy-Images {
+function Deploy-Images {	# managers, managerport, image
 
   if [ ! ${3} ]; then
     return 0; fi
@@ -262,8 +256,11 @@ function Deploy-Images {
   echo
   echo ". Start image instance"
 
+  arrManagers=(${1//,/ })
+  manager=${arrManagers[0]}
+
   echo "    start image '$3'"
-  docker -H $1:$2 run -d --privileged --net=host $3  /bin/sh -c "/mnt/startAurora.sh"
+  docker -H $manager:$2 run -d --privileged --net=host $3  /bin/sh -c "/mnt/startAurora.sh"
   OnStatusFailed $? "Failed to start '$3' container on '$1'"; }
 
 
@@ -278,8 +275,12 @@ function OnDeployed {		# managers, managerport
   echo
   echo
 
-  arrManagers=($(echo $1 | tr "," " "))
+  arrManagers=(${1//,/ })
   manager=${arrManagers[0]}
+
+  echo "COMMAND: docker -H $manager:$2 info"
+  echo
+  echo
 
   docker -H $manager:$2 info; }
 
@@ -290,9 +291,9 @@ clear
 
 ReadRequestFile
 
-Deploy-Zookeepers "$zookeepers" $port
-Deploy-Nodes      "$nodes"      $port  "$zookeepers" $token
-Deploy-Managers   "$managers"   $port  "$zookeepers" $token
+Deploy-Zookeepers "$zookeepers" $engineport
+Deploy-Nodes      "$nodes"      $engineport   "$zookeepers" $token
+Deploy-Managers   "$managers"   $engineport   $managerport "$zookeepers" $token
 
 Deploy-Images     "$managers"   $managerport  $image
 OnDeployed        "$managers"   $managerport
