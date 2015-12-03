@@ -186,7 +186,7 @@ function Deploy-Zookeepers {    # zookeepers, engineport
       clustering="-e MYID=$myid -e SERVERS=$serversZK"; fi
 
     echo "    start Zookeeper on '$zk'"
-    ID=$(docker -H $zk:$2 run -d --net=host $clustering mesoscloud/zookeeper:3.4.6-ubuntu-14.04)
+    ID=$(docker -H $zk:$2 run -d --net=host --restart=always $clustering mesoscloud/zookeeper:3.4.6-ubuntu-14.04)
     OnStatusFailed $?  "Failed to start 'Zookeeper'  on '$zk'"
 
     WaitForStart $zk $2 $ID "binding to port"
@@ -292,6 +292,7 @@ clear
 ReadRequestFile
 
 Deploy-Zookeepers "$zookeepers" $engineport
+exit
 Deploy-Nodes      "$nodes"      $engineport   "$zookeepers" $token
 Deploy-Managers   "$managers"   $engineport   $managerport "$zookeepers" $token
 
