@@ -292,7 +292,6 @@ clear
 ReadRequestFile
 
 Deploy-Zookeepers "$zookeepers" $engineport
-exit
 Deploy-Nodes      "$nodes"      $engineport   "$zookeepers" $token
 Deploy-Managers   "$managers"   $engineport   $managerport "$zookeepers" $token
 
