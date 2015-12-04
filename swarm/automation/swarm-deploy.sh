@@ -7,6 +7,25 @@
 
 
 #--------------------------------------
+function InitVars {
+
+  scriptpath=$(dirname $(readlink -e $0))
+
+  export request="$scriptpath/swarm-request.ini"
+  export log="$scriptpath/swarm-deploy.log"; }
+
+
+#--------------------------------------
+function InitLog {
+  if [ -f $log ]; then
+    rm -f $log; fi; }
+
+
+#--------------------------------------
+function writelog { printf "$1" >> $log; }
+
+
+#--------------------------------------
 function TestFileExists {
 
   if [ ! -f $1 ]; then
@@ -55,21 +74,17 @@ function ReadRequestFile {
   echo
   echo ". Read request file"
 
-  scriptpath=$(dirname $(readlink -e $0))
-  pathname="$scriptpath/swarm-request.ini"
-
-  TestFileExists "$pathname"
-  source "$pathname"
-  CheckRequest "$pathname"
+  TestFileExists "$request"
+  source "$request"
+  CheckRequest "$request"
 
   CheckClusterZookeepers "$zookeepers"
   CheckClusterManagers   "$managers"
 
 # dockerports=(2375 2376)
-  tls=0; }		# overrides 'swarm-request.ini' until TLS implemented
+# export engineport=${dockerports[tls]}
 
-# export port=${dockerports[tls]}
-# export managerport=4243
+  tls=0; }		# overrides 'swarm-request.ini' until TLS implemented
 
 
 #--------------------------------------
@@ -175,6 +190,8 @@ function Deploy-Zookeepers {    # zookeepers, engineport
   echo
   echo ". Start Zookeepers"
 
+  writelog "\nStart Zookeepers\n"
+
   arrZookeepers=(${1//,/ })		# "dewdftv00249  dewdftv00765  dewdftv00766"
   serversZK=${1// /}			# "dewdftv00249,dewdftv00765,dewdftv00766"
 
@@ -186,6 +203,8 @@ function Deploy-Zookeepers {    # zookeepers, engineport
       clustering="-e MYID=$myid -e SERVERS=$serversZK"; fi
 
     echo "    start Zookeeper on '$zk'"
+    writelog "  docker -H $zk:$2 run -d --net=host --restart=always $clustering mesoscloud/zookeeper:3.4.6-ubuntu-14.04\n"
+
     ID=$(docker -H $zk:$2 run -d --net=host --restart=always $clustering mesoscloud/zookeeper:3.4.6-ubuntu-14.04)
     OnStatusFailed $?  "Failed to start 'Zookeeper'  on '$zk'"
 
@@ -201,6 +220,8 @@ function Deploy-Nodes {	   # nodes, engineport, zookeepers, token
   echo
   echo ". Start nodes"
 
+  writelog "\nStart nodes\n"
+
   arrNodes=${1//,/ }
 # arrConsuls=($(echo $3 | tr "," " "))
   serversZK=${3// /}                          # "dewdftv00249,dewdftv00765,dewdftv00766"
@@ -210,6 +231,8 @@ function Deploy-Nodes {	   # nodes, engineport, zookeepers, token
   for node in $arrNodes; do
 
     echo "    start node on '$node'"
+    writelog "  docker -H $node:$2 run -d --restart=always swarm join --advertise=$node:$2 zk://$serversZK/$4\n"
+
 #   ID=$(docker -H $node:$2 run -d --restart=always swarm join --advertise=$node:$2 consul://$consul01:8500/$4)
     ID=$(docker -H $node:$2 run -d --restart=always swarm join --advertise=$node:$2 zk://$serversZK/$4)
     OnStatusFailed $?  "Failed to start 'Swarm-Join' container on '$node'"; done; }
@@ -220,6 +243,8 @@ function Deploy-Managers {	# managers, engineport, managerport, zookeepers, toke
 
   echo
   echo ". Start managers"
+
+  writelog "\nStart managers\n"
 
   arrManagers=(${1//,/ })
 # arrConsuls=($(echo $3 | tr "," " "))
@@ -233,6 +258,8 @@ function Deploy-Managers {	# managers, engineport, managerport, zookeepers, toke
       replication="--replication --advertise $manager:$3"; fi
 
     echo "    Start manager on '$manager'"
+    writelog "  docker -H $manager:$2 run -d --restart=always -p $3:$3 swarm manage -H :$3 $replication zk://$serversZK/$5\n"
+
 #   ID=$(docker -H $manager:$2 run -d --restart=always -p $3:$3 swarm manage -H :$3 $replication consul://$consul01:8500/$4)
     ID=$(docker -H $manager:$2 run -d --restart=always -p $3:$3 swarm manage -H :$3 $replication zk://$serversZK/$5)
     OnStatusFailed $?  "Failed to start Swarm-Manager container on '$manager'"
@@ -256,10 +283,14 @@ function Deploy-Images {	# managers, managerport, image
   echo
   echo ". Start image instance"
 
+  writelog "\nStart images\n"
+
   arrManagers=(${1//,/ })
   manager=${arrManagers[0]}
 
   echo "    start image '$3'"
+  writelog "  docker -H $manager:$2 run -d --privileged --net=host $3  /bin/sh -c \"/mnt/startAurora.sh\"\n"
+
   docker -H $manager:$2 run -d --privileged --net=host $3  /bin/sh -c "/mnt/startAurora.sh"
   OnStatusFailed $? "Failed to start '$3' container on '$1'"; }
 
@@ -277,15 +308,18 @@ function OnDeployed {		# managers, managerport
 
   if [ ! "${balancer}" ]; then
     echo "No balancer defined, command will be run on the first Sw-Manager"
+    writelog "\n\nNo balancer defined, command will be run on the first Sw-Manager\n"
     arrManagers=(${1//,/ })
     balancer=${arrManagers[0]}
   else
-    echo "Balancer defined, command will be run on the balancer"; fi
+    echo "Balancer defined, command will be run on the balancer"
+    writelog "\n\nBalancer defined, command will be run on the balancer\n"; fi
 
   echo
   echo "COMMAND: docker -H $balancer:$2 info"
   echo
   echo
+  writelog "\nCOMMAND: docker -H $balancer:$2 info\n"
 
   docker -H $balancer:$2 info; }
 
@@ -293,6 +327,9 @@ function OnDeployed {		# managers, managerport
 #---------------  MAIN
 clear
 # set -x
+
+InitVars
+InitLog
 
 ReadRequestFile
 

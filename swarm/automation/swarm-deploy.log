@@ -1,0 +1,19 @@
+
+Start Zookeepers
+  docker -H mo-43bcb69fe.mo.sap.corp:2375 run -d --net=host --restart=always -e MYID=1 -e SERVERS=mo-43bcb69fe.mo.sap.corp,mo-213a90007.mo.sap.corp,mo-20ee84ba0.mo.sap.corp mesoscloud/zookeeper:3.4.6-ubuntu-14.04
+  docker -H mo-213a90007.mo.sap.corp:2375 run -d --net=host --restart=always -e MYID=2 -e SERVERS=mo-43bcb69fe.mo.sap.corp,mo-213a90007.mo.sap.corp,mo-20ee84ba0.mo.sap.corp mesoscloud/zookeeper:3.4.6-ubuntu-14.04
+  docker -H mo-20ee84ba0.mo.sap.corp:2375 run -d --net=host --restart=always -e MYID=3 -e SERVERS=mo-43bcb69fe.mo.sap.corp,mo-213a90007.mo.sap.corp,mo-20ee84ba0.mo.sap.corp mesoscloud/zookeeper:3.4.6-ubuntu-14.04
+
+Start nodes
+  docker -H mo-fc937496f.mo.sap.corp:2375 run -d --restart=always swarm join --advertise=mo-fc937496f.mo.sap.corp:2375 zk://mo-43bcb69fe.mo.sap.corp,mo-213a90007.mo.sap.corp,mo-20ee84ba0.mo.sap.corp/MoCluster
+  docker -H mo-c4eeca57a.mo.sap.corp:2375 run -d --restart=always swarm join --advertise=mo-c4eeca57a.mo.sap.corp:2375 zk://mo-43bcb69fe.mo.sap.corp,mo-213a90007.mo.sap.corp,mo-20ee84ba0.mo.sap.corp/MoCluster
+
+Start managers
+  docker -H mo-042c975fa.mo.sap.corp:2375 run -d --restart=always -p 4243:4243 swarm manage -H :4243 --replication --advertise mo-042c975fa.mo.sap.corp:4243 zk://mo-43bcb69fe.mo.sap.corp,mo-213a90007.mo.sap.corp,mo-20ee84ba0.mo.sap.corp/MoCluster
+  docker -H mo-4540090d4.mo.sap.corp:2375 run -d --restart=always -p 4243:4243 swarm manage -H :4243 --replication --advertise mo-4540090d4.mo.sap.corp:4243 zk://mo-43bcb69fe.mo.sap.corp,mo-213a90007.mo.sap.corp,mo-20ee84ba0.mo.sap.corp/MoCluster
+  docker -H mo-fbf82f8aa.mo.sap.corp:2375 run -d --restart=always -p 4243:4243 swarm manage -H :4243 --replication --advertise mo-fbf82f8aa.mo.sap.corp:4243 zk://mo-43bcb69fe.mo.sap.corp,mo-213a90007.mo.sap.corp,mo-20ee84ba0.mo.sap.corp/MoCluster
+
+
+Balancer defined, command will be run on the balancer
+
+COMMAND: docker -H bal.mo.sap.corp:4243 info
