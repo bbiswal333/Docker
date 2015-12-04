@@ -275,14 +275,19 @@ function OnDeployed {		# managers, managerport
   echo
   echo
 
-  arrManagers=(${1//,/ })
-  manager=${arrManagers[0]}
+  if [ ! "${balancer}" ]; then
+    echo "No balancer defined, command will be run on the first Sw-Manager"
+    arrManagers=(${1//,/ })
+    balancer=${arrManagers[0]}
+  else
+    echo "Balancer defined, command will be run on the balancer"; fi
 
-  echo "COMMAND: docker -H $manager:$2 info"
+  echo
+  echo "COMMAND: docker -H $balancer:$2 info"
   echo
   echo
 
-  docker -H $manager:$2 info; }
+  docker -H $balancer:$2 info; }
 
 
 #---------------  MAIN
