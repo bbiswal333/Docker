@@ -203,15 +203,26 @@ function Deploy-Zookeepers {    # zookeepers, engineport
       clustering="-e MYID=$myid -e SERVERS=$serversZK"; fi
 
     echo "    start Zookeeper on '$zk'"
-    writelog "  docker -H $zk:$2 run -d --net=host --restart=always $clustering mesoscloud/zookeeper:3.4.6-ubuntu-14.04\n"
+    writelog "  docker -H $zk:$2 run -d --restart=always --net=host $clustering mesoscloud/zookeeper:3.4.6-ubuntu-14.04\n"
 
-    ID=$(docker -H $zk:$2 run -d --net=host --restart=always $clustering mesoscloud/zookeeper:3.4.6-ubuntu-14.04)
+    ID=$(docker -H $zk:$2 run -d --restart=always --net=host $clustering mesoscloud/zookeeper:3.4.6-ubuntu-14.04)
     OnStatusFailed $?  "Failed to start 'Zookeeper'  on '$zk'"
 
     WaitForStart $zk $2 $ID "binding to port"
     OnStatusFailed $? "Timeout waiting for Zookeeper server starting on '$zk'"
 
     myid=$((myid+1)); done; }
+
+
+#--------------------------------------
+function GetZooEndPoint {
+
+  if [ "${zooLB}" ]; then
+    ZooEndPoint=$zooLB
+  else
+    ZooEndPoint=${1// /}; fi		# "dewdftv00249,dewdftv00765,dewdftv00766"
+
+  echo "$ZooEndPoint"; }
 
 
 #--------------------------------------
@@ -224,17 +235,17 @@ function Deploy-Nodes {	   # nodes, engineport, zookeepers, token
 
   arrNodes=${1//,/ }
 # arrConsuls=($(echo $3 | tr "," " "))
-  serversZK=${3// /}                          # "dewdftv00249,dewdftv00765,dewdftv00766"
+  ZooEndPoint=$(GetZooEndPoint "$3")
 
 # consul01=${arrConsuls[0]}
 
   for node in $arrNodes; do
 
     echo "    start node on '$node'"
-    writelog "  docker -H $node:$2 run -d --restart=always swarm join --advertise=$node:$2 zk://$serversZK/$4\n"
+    writelog "  docker -H $node:$2 run -d --restart=always swarm join --advertise=$node:$2 zk://$ZooEndPoint/$4\n"
 
 #   ID=$(docker -H $node:$2 run -d --restart=always swarm join --advertise=$node:$2 consul://$consul01:8500/$4)
-    ID=$(docker -H $node:$2 run -d --restart=always swarm join --advertise=$node:$2 zk://$serversZK/$4)
+    ID=$(docker -H $node:$2 run -d --restart=always swarm join --advertise=$node:$2 zk://$ZooEndPoint/$4)
     OnStatusFailed $?  "Failed to start 'Swarm-Join' container on '$node'"; done; }
 
 
@@ -248,7 +259,7 @@ function Deploy-Managers {	# managers, engineport, managerport, zookeepers, toke
 
   arrManagers=(${1//,/ })
 # arrConsuls=($(echo $3 | tr "," " "))
-  serversZK=${4// /}                          # "dewdftv00249,dewdftv00765,dewdftv00766"
+  ZooEndPoint=$(GetZooEndPoint "$4")
 
 # consul01=${arrConsuls[0]}
 
@@ -258,10 +269,10 @@ function Deploy-Managers {	# managers, engineport, managerport, zookeepers, toke
       replication="--replication --advertise $manager:$3"; fi
 
     echo "    Start manager on '$manager'"
-    writelog "  docker -H $manager:$2 run -d --restart=always -p $3:$3 swarm manage -H :$3 $replication zk://$serversZK/$5\n"
+    writelog "  docker -H $manager:$2 run -d --restart=always -p $3:$3 swarm manage -H :$3 $replication zk://$ZooEndPoint/$5\n"
 
 #   ID=$(docker -H $manager:$2 run -d --restart=always -p $3:$3 swarm manage -H :$3 $replication consul://$consul01:8500/$4)
-    ID=$(docker -H $manager:$2 run -d --restart=always -p $3:$3 swarm manage -H :$3 $replication zk://$serversZK/$5)
+    ID=$(docker -H $manager:$2 run -d --restart=always -p $3:$3 swarm manage -H :$3 $replication zk://$ZooEndPoint/$5)
     OnStatusFailed $?  "Failed to start Swarm-Manager container on '$manager'"
 
     if [ ${#arrManagers[@]} -eq 1 ]; then
@@ -306,20 +317,24 @@ function OnDeployed {		# managers, managerport
   echo
   echo
 
-  if [ ! "${balancer}" ]; then
-    echo "No balancer defined, command will be run on the first Sw-Manager"
-    writelog "\n\nNo balancer defined, command will be run on the first Sw-Manager\n"
+  if [ ! "${managerLB}" ]; then
+    msg="No Sw-Balancer defined, command will be run on the first Sw-Manager"
+    echo $msg
+    writelog "\n\n$msg\n"
     arrManagers=(${1//,/ })
     balancer=${arrManagers[0]}
   else
-    echo "Balancer defined, command will be run on the balancer"
-    writelog "\n\nBalancer defined, command will be run on the balancer\n"; fi
+    msg="Sw-Balancer defined, command will be run on the Sw-Balancer"
+    echo $msg
+    writelog "\n\n$msg\n"
+    balancer=$managerLB; fi
 
+  msg="COMMAND: docker -H $balancer:$2 info"
   echo
-  echo "COMMAND: docker -H $balancer:$2 info"
+  echo $msg
   echo
   echo
-  writelog "\nCOMMAND: docker -H $balancer:$2 info\n"
+  writelog "\n$msg\n"
 
   docker -H $balancer:$2 info; }
 
