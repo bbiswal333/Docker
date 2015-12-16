@@ -17,15 +17,15 @@ If `zookeepers=` and `managers=` contains several machines, the machines are gat
 3 machines at least are required to build a cluster.  
 If `zooLB=` or `managerLB=` are defined, a load balancer is inserted as endpoint.  
 
-Remark: load balancer solution is discouraged, failover becomes possible and the cluster benefit is lost
+*Remark*: load balancer solution is discouraged, failover becomes possible and the cluster benefit is lost.
 
 **Consul vs Zookeeper**  
 Zookeeper is preferable to Consul:
 - more reliable
 - Swarm-managers and Swarm-nodes container creation accepts all ZK servers while only one endpoint is accepted with Consul.
-  it means: with ZK Swarm-managers manages by itself the ZK failover. It's not the case with Consul
+  It means: with ZK Swarm-managers manages by itself the ZK failover. It's not the case with Consul
 
-**HighEST Availability**
+**HighEST Availability recommendations**
 - Zookeeper, not Consul
 - Zookeeper and Swarm-Managers in clusters
 - No load balancers
