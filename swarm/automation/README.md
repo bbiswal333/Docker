@@ -25,7 +25,7 @@ Zookeeper is preferable to Consul:
 - Swarm-managers and Swarm-nodes container creation accepts all ZK servers while only one endpoint is accepted with Consul.
   it means: with ZK Swarm-managers manages by itself the ZK failover. It's not the case with Consul
 
-**High Availability**
+**HighEST Availability**
 - Zookeeper, not Consul
 - Zookeeper and Swarm-Managers in cluster
 - No load balancer
