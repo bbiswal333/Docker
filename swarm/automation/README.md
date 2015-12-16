@@ -27,6 +27,6 @@ Zookeeper is preferable to Consul:
 
 **HighEST Availability**
 - Zookeeper, not Consul
-- Zookeeper and Swarm-Managers in cluster
-- No load balancer
+- Zookeeper and Swarm-Managers in clusters
+- No load balancers
 - Use ./dockerhost.sh as Swarm-Managers clustering service
