@@ -13,7 +13,7 @@ Usage: `./dockerhost.sh <parameters>` to replace the native command `docker -H <
 Example: `./dockerhost ps -a`
 
 **swarm-request.ini**  
-If `zookeepers=` and `managers=` contains several machines, the machines are gathered in a cluster.  
+If `zookeepers=` and `managers=` contains several machines, the machines are gathered in clusters.  
 3 machines at least are required to build a cluster.  
 If `zooLB=` or `managerLB=` are defined, a load balancer is inserted as endpoint.  
 
