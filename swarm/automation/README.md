@@ -22,4 +22,11 @@ Remark: load balancer solution is discouraged, failover becomes possible and the
 **Consul vs Zookeeper**  
 Zookeeper is preferable to Consul:
 - more reliable
-- Swarm-managers and Swarm-nodes container creation accepts all ZK servers while only one endpoint is accepted with Consul
+- Swarm-managers and Swarm-nodes container creation accepts all ZK servers while only one endpoint is accepted with Consul.
+  it means: with ZK Swarm-managers manages by itself the ZK failover. It's not the case with Consul
+
+**High Availability**
+- Zookeeper, not Consul
+- Zookeeper and Swarm-Managers in cluster
+- No load balancer
+- Use ./dockerhost.sh as Swarm-Managers clustering service
