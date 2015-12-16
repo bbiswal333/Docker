@@ -1,5 +1,5 @@
 ###### Purpose:
-Install tools to perform an NFS mount inside th container
+Install tools to perform an NFS mount inside the container
 
 ###### start a container:
   `docker run -it --privileged dockerdevregistry:5000/rh70/rh7-nfs /bin/sh`
@@ -7,8 +7,7 @@ Install tools to perform an NFS mount inside th container
 Note: the "mount" command requires the **--privileged** mode
 
 ###### Examples of mounts from the container:
-  `mount -r -o nolock \<server>:/\<path  /mnt/nfs`
-
+  `mount -r -o nolock \<server>:/\<path  /mnt/nfs`__
   `mount -w \<server>:/\<path  /mnt/nfs`
 
 
