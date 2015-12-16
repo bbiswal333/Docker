@@ -19,6 +19,9 @@ If `zooLB=` or `managerLB=` are defined, a load balancer is inserted as endpoint
 
 *Remark*: load balancer solution is discouraged, failover becomes possible and the cluster benefit is lost.
 
+**swarm-request.log**  
+Logs the commands ran to create containers : Zookeeper, Swarm-Managers, Swarm-Nodes
+
 **Consul vs Zookeeper**  
 Zookeeper is preferable to Consul:
 - more reliable
