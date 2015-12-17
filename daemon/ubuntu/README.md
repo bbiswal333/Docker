@@ -1,4 +1,4 @@
-This is a standard Docker daemon configuration file under Ubuntu with:
+This is a rich Docker daemon configuration file under Ubuntu with:
 - SAP proxy
 - Docker daemon API opening on tcp port **2375**
 - System file containers forced to **devicemapper**
