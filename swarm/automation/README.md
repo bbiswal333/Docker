@@ -1,4 +1,4 @@
-###### Purpose:
+### Purpose:
 Deploy a swarm cluster with Zookeeper as discovery service
 
 **swarm-deploy.sh:**  
@@ -32,4 +32,4 @@ Zookeeper is preferable to Consul:
 - Zookeeper, not Consul
 - Zookeeper and Swarm-Managers in clusters
 - No load balancers
-- Use ./dockerhost.sh as Swarm-Managers clustering service
+- `./dockerhost.sh` as Swarm-Managers clustering service
