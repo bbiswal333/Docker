@@ -12,7 +12,7 @@ if [ $# -ne 1 ]; then
   echo "Usage installAurora.sh  <BuildFolder>"
   exit 1; fi
 
-mount -t nfs -o nolock 10.17.136.53:/dropzone/aurora_dev/$1/linux_x64/release/packages/BusinessObjectsServer /mnt/nfs/
+mount -t nfs -o nolock derotvi0082.wdf.sap.corp:/dropzone/aurora_dev/$1/linux_x64/release/packages/BusinessObjectsServer /mnt/nfs/
 if [ $? -ne 0 ]; then
   echo "NFS mount failed"
   exit 1; fi
