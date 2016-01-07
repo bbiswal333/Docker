@@ -10,11 +10,12 @@
 
 
 #--------------------------------------
-function RunContainer {
-  docker -H $1:$2 run -d --privileged --net=host $3  /bin/sh  /mnt/startAurora.sh
-  if [ $? -ne 0 ]; then
-    echo "Failed to start the container instance number $4."
-    exit 1; fi; }
+function RunContainers {
+  for num in `seq 1 1 $1`; do
+    docker -H $2:$3 run -d --privileged --net=host $4  /bin/sh  /mnt/startAurora.sh
+    if [ $? -ne 0 ]; then
+      echo "Failed to start the container number $num."
+      exit 1; fi; done; }
 
 
 #---------------  MAIN
@@ -28,11 +29,14 @@ if [ $# -ne 2 ]; then
 scriptpath=$(dirname $(readlink -e $0))
 request="$scriptpath/swarm-request.ini"
 
+if [ ! -f $request ]; then
+  echo "File '$request' not found"
+  exit 1; fi
+
 source "$request"
 
 if [ "${managerLB}" ]; then
-  for num in `seq 1 1 $1`; do
-    RunContainer $managerLB $managerport $2 $num; done
+  RunContainers $1  $managerLB  $managerport  $2
   exit 0; fi
 
 arrManagers=${managers//,/ }
@@ -50,5 +54,4 @@ if [ ! ${bDoIt} ]; then
   echo "No alive Swarm manager member found. Couldn't execute the command"
   exit 1; fi
 
-for num in `seq 1 1 $1`; do
-  RunContainer $manager  $managerport $2 $num; done
+RunContainers $1  $manager  $managerport  $2
