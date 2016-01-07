@@ -14,7 +14,7 @@ Example: `./swarmHA-cmd.sh ps -a`
 Another clustering layer script to start n containers of an Aurora image.  
 Usage: `./swarmHA-run.sh  <NumberOfContainer>  <registry:port/repository/image<:tag>`  
 Example: `./swarmHA-run.sh  25  dockerdevregistry:5000/aurora/aurora42_1781`
-> **swarmHA-cmd.sh** and **swarmHA-run.sh** must be located at the same place as swarm-request.ini.  
+> **swarmHA-cmd.sh** and **swarmHA-run.sh** must be located at the same place as **swarm-request.ini**.  
 
 **swarm-request.ini**  
 If `zookeepers=` and `managers=` contains several machines, the machines are gathered in clusters.  
