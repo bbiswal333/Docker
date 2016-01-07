@@ -4,13 +4,17 @@ Deploy a swarm cluster with Zookeeper as discovery service
 **swarm-deploy.sh:**  
 Read the variables in __swarm-request.ini__ and deploy the cluster.
 
-**dockerhost.sh**  
+**swarmHA-cmd.sh**  
 Takes the role of a clustering layer, searching the first alive Swarm-manager cluster member that responds.  
 Reads __swarm-request.ini__ to retrieve the Swarm-managers and the manager port.  
-> dockerhost.sh must be located at the same place as swarm-request.ini.  
+> swarmHA-cmd.sh must be located at the same place as swarm-request.ini.  
 
-Usage: `./dockerhost.sh <parameters>` to replace the native command `docker -H <host>:<port> <parameters>`  
-Example: `./dockerhost ps -a`
+Usage: `./swarmHA-cmd.sh <parameters>` to replace the native command `docker -H <host>:<port> <parameters>`  
+Example: `./swarmHA-cmd.sh ps -a`
+
+**swarmHA-run.sh**  
+Another clustering layer script like `swarmHA-cmd.sh` to start n containers of an Aurora image.  
+Usage: `./swarmHA-run.sh  <NumberOfContainer>  <registry:port/repository/image/tag`
 
 **swarm-request.ini**  
 If `zookeepers=` and `managers=` contains several machines, the machines are gathered in clusters.  
@@ -32,4 +36,4 @@ Zookeeper is preferable to Consul:
 - Zookeeper, not Consul
 - Zookeeper and Swarm-Managers in clusters
 - No load balancers
-- `./dockerhost.sh` as Swarm-Managers clustering service
+- `./swarmHA-cmd.sh` as Swarm-Managers clustering service
