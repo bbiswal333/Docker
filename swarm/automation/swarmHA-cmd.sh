@@ -7,22 +7,17 @@
 
 #!/bin/sh
 
-#--------------------------------------
-function InitVars {
-
-  scriptpath=$(dirname $(readlink -e $0))
-  export request="$scriptpath/swarm-request.ini"; }
-
 
 #---------------  MAIN
 # clear
-# set -x
 
 if [ $# -eq 0 ]; then
   echo "Missing command, nothing to execute with 'docker -H'"
   exit 1; fi
 
-InitVars
+scriptpath=$(dirname $(readlink -e $0))
+request="$scriptpath/swarm-request.ini"
+
 source "$request"
 
 if [ "${managerLB}" ]; then
@@ -38,5 +33,8 @@ for manager in $arrManagers; do
     continue; fi
   echo
   docker -H $manager:$managerport $*
-  exit
+  exit $?
 done
+
+echo "No alive Swarm manager member found. Couldn't execute the command"
+exit 1
