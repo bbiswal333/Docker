@@ -22,7 +22,7 @@ function RunContainer {
 
 if [ $# -ne 2 ]; then
   echo "Invalid number of parameters."
-  echo "Usage: ./dockerhost-runAurora.sh  <NumberOfContainer>  <registry:port/repository/image/tag"
+  echo "Usage: ./swarmHA-run.sh  <NumberOfContainer>  <registry:port/repository/image/tag"
   exit 1; fi
 
 scriptpath=$(dirname $(readlink -e $0))
