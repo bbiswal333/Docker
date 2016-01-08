@@ -8,7 +8,7 @@
 
 #---------------  MAIN
 clear
-set -x
+#set -x
 
 location=$(dirname $(readlink -e $0))
 
