@@ -1,6 +1,8 @@
 ### Purpose:
 Deploy a swarm cluster with Zookeeper as discovery service
 
+> Requires **Docker 1.9.x** for the Swarm filter feature use.
+
 **swarm-deploy.sh:**  
 Read the variables in __swarm-request.ini__ and deploy the cluster.
 
