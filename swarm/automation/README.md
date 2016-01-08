@@ -27,7 +27,7 @@ If `zooLB=` or `managerLB=` are defined, a load balancer is inserted as endpoint
 Logs the commands ran to create containers : Zookeeper, Swarm-Managers, Swarm-Nodes
 
 **swarm-listnodes.sh**  
-return the nodes list where containers have been deployed in the file **nodeList.txt** 
+returns in the file **nodeList.txt** the nodes where containers have been deployed.  
 
 **Consul vs Zookeeper**  
 Zookeeper is preferable to Consul:
