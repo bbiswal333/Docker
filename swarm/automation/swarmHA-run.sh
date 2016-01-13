@@ -10,6 +10,18 @@
 
 
 #--------------------------------------
+function CheckImagePulled {	# manager, managerport, image
+  status=1
+  while [ $status -ne 0 ]; do
+    str=$(docker -H $1:$2 pull $3 2>&1)
+    status=$?
+    if [ $status -ne 0 ]; then
+      echo "Retry pulling image '$3' in 3 minutes"
+      sleep 3m; fi
+  done; }
+
+
+#--------------------------------------
 function RunContainers {
   for num in `seq 1 1 $1`; do
     docker -H $2:$3 run -d --privileged --net=host --expose=10001 -e filter:port $4  /bin/sh  /mnt/startAurora.sh
@@ -36,7 +48,8 @@ if [ ! -f $request ]; then
 source "$request"
 
 if [ "${managerLB}" ]; then
-  RunContainers $1  $managerLB  $managerport  $2
+  CheckImagePulled     $manager    $managerport  $2
+  RunContainers    $1  $managerLB  $managerport  $2
   exit 0; fi
 
 arrManagers=${managers//,/ }
@@ -54,4 +67,5 @@ if [ ! ${bDoIt} ]; then
   echo "No alive Swarm manager member found. Couldn't execute the command"
   exit 1; fi
 
-RunContainers $1  $manager  $managerport  $2
+CheckImagePulled     $manager  $managerport  $2
+RunContainers    $1  $manager  $managerport  $2
