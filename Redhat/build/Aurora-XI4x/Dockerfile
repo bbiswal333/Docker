@@ -1,6 +1,6 @@
 # WEBI SBOP 4.x prerequisites installation
 
-FROM dockerdevregistry:5000/rh70/rh7-nfs:latest
+FROM dockerdevregistry.wdf.sap.corp:5000/rh70/rh7-nfs:latest
 
 MAINTAINER Antonia Rodrigues <antonia.rodrigues@sap.com>, \
            Gerald Braunwarth <gerald.braunwarth@sap.com>
