@@ -1,5 +1,5 @@
 
-	
+		version=`curl -k https://github.wdf.sap.corp/raw/AuroraXmake/aurora4xInstall/master/version.txt`
 		if [ ! -f swarm-request.ini ]; then
 		    	curl -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/swarm/automation/swarm-request.ini > swarm-request.ini; fi
 		curl -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/swarm/automation/swarmHA-run.sh > swarmHA-run.sh
