@@ -13,21 +13,23 @@ if "%3" equ "" (
   echo Expected parameters: ^<MajorName^> ^<ImageName^> ^<BuildFolder^>. Example: PrepAuroraRepo.cmd  aurora aurora42 aurora42_cons
   goto :eof )
 
+set drop=\\10.17.136.53\dropzone\aurora_dev\%3\version.txt
 set product=aurora
-set folder=%3
 set xmakeProj=aurora4xInstall
-set dropzone=\\10.17.136.53\dropzone\aurora_dev\%folder%
+set cfgOLD=cfg\xmake-OLD.cfg
+set cfg=cfg\xmake.cfg
 
 git config --global http.sslVerify false
 git clone https://%Username%:%Password%@github.wdf.sap.corp/AuroraXmake/aurora4xInstall.git
 
 cd %xmakeProj%
 
-call :AccessFile %dropzone%\version.txt
+call :AccessFile %drop%
 call :AccessFile DockerCommands
+call :AccessFile %cfg%
 
-for /f "tokens=1"   %%i in (%dropzone%\version.txt) do set version=%%i
-for /f "tokens=1-2" %%i in (DockerCommands)         do set runprivileged=%%i && set script=%%j
+for /f "tokens=1"   %%i in (%drop%)         do set version=%%i
+for /f "tokens=1-2" %%i in (DockerCommands) do set runprivileged=%%i && set script=%%j
 
 set version=%version: =%
 set runprivileged=%runprivileged: =%
@@ -35,14 +37,12 @@ set runprivileged=%runprivileged: =%
 echo %runprivileged% %script% %3/%version%> DockerCommands
 echo %version%> version.txt
 
-set fileOLD=cfg\xmake-OLD.cfg
-set file=cfg\xmake.cfg
 
-if exist %fileOLD% del /q %fileOLD%
-ren %file% xmake-OLD.cfg
+if exist %cfgOLD% del /q %cfgOLD%
+ren %cfg% xmake-OLD.cfg
 
-for /f %%i in (%fileOLD%) do call :replaceAidGid %1 %2 %version% "%%i"
-del /q %fileOLD%
+for /f %%i in (%cfgOLD%) do call :replaceAidGid %1 %2 %version% "%%i"
+del /q %cfgOLD%
 
 
 if exist Dockerfile del /q Dockerfile
@@ -86,21 +86,21 @@ set aid=%var:aid=%
 set gid=%var:gid=%
 set plugin=%var:buildplugin=%
 
-rem aid=aurora42_1930
+:: aid=aurora42_1930
 if %var% neq %aid% (
-  echo aid=%2_%3>>%file%
+  echo aid=%2_%3>>%cfg%
   goto :eof )
 
-rem gid=aurora
+:: gid=aurora
 if %var% neq %gid% (
-  echo gid=%1>>%file%
+  echo gid=%1>>%cfg%
   goto :eof )
 
-rem NL before [buildplugin] 
+:: NL before [buildplugin] 
 if %var% neq %plugin% (
-  echo.>>%file% )
+  echo.>>%cfg% )
 
-rem any other unchanged line
-echo %~4>>%file%
+:: any other unchanged line
+echo %~4>>%cfg%
 
 goto :eof
