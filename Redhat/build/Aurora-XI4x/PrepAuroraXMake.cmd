@@ -22,25 +22,29 @@ set dropzone=\\10.17.136.53\dropzone\aurora_dev\%folder%
 git config --global http.sslVerify false
 git clone https://%Username%:%Password%@github.wdf.sap.corp/AuroraXmake/aurora4xInstall.git
 
-call :AccessFile %dropzone%\version.txt
-call :AccessFile %xmakeProj%\DockerCommands
+cd %xmakeProj%
 
-for /f "tokens=1"   %%i in (%dropzone%\version.txt)     do set version=%%i
-for /f "tokens=1-2" %%i in (%xmakeProj%\DockerCommands) do set runprivileged=%%i && set script=%%j
+call :AccessFile %dropzone%\version.txt
+call :AccessFile DockerCommands
+
+for /f "tokens=1"   %%i in (%dropzone%\version.txt) do set version=%%i
+for /f "tokens=1-2" %%i in (DockerCommands)         do set runprivileged=%%i && set script=%%j
 
 set version=%version: =%
 set runprivileged=%runprivileged: =%
 
-echo %runprivileged% %script% %3/%version%> %xmakeProj%\DockerCommands
-echo %version%> %xmakeProj%\version.txt
+echo %runprivileged% %script% %3/%version%> DockerCommands
+echo %version%> version.txt
 
-if exist %xmakeProj%\cfg\xmake-OLD.cfg del /q %xmakeProj%\cfg\xmake-OLD.cfg
-ren %xmakeProj%\cfg\xmake.cfg xmake-OLD.cfg
+set fileOLD=cfg\xmake-OLD.cfg
+set file=cfg\xmake.cfg
 
-for /f %%i in (%xmakeProj%\cfg\xmake-OLD.cfg) do call :replaceAidGid %1 %2 %version% "%%i"
+if exist %fileOLD% del /q %fileOLD%
+ren %file% xmake-OLD.cfg
 
+for /f %%i in (%fileOLD%) do call :replaceAidGid %1 %2 %version% "%%i"
+del /q %fileOLD%
 
-cd %xmakeProj%
 
 if exist Dockerfile del /q Dockerfile
 ..\wget https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/Dockerfile
@@ -70,12 +74,11 @@ goto :eof
 
 
 :replaceAidGid
+
 ::%1 = aurora
 ::%2 = aurora42
 ::%3 = version
 ::%4 = line
-
-set file=%xmakeProj%\cfg\xmake.cfg
 
 set var=%4
 set aid=%var:aid=%
