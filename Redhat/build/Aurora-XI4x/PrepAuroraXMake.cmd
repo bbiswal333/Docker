@@ -11,8 +11,7 @@ cls
 
 if "%3" equ "" (
   echo Expected parameters: ^<MajorName^> ^<ImageName^> ^<BuildFolder^>. Example: PrepAuroraRepo.cmd  aurora aurora42 aurora42_cons
-  goto :eof
-)
+  goto :eof )
 
 set product=aurora
 set folder=%3
@@ -66,6 +65,7 @@ rmdir /s/q %xmakeProj%
 goto :eof
 
 
+::--------------------------------------
 :AccessFile
 if not exist %1 (
   echo Cannot access %1
@@ -73,6 +73,7 @@ if not exist %1 (
 goto :eof
 
 
+::--------------------------------------
 :replaceAidGid
 
 ::%1 = aurora
@@ -85,17 +86,21 @@ set aid=%var:aid=%
 set gid=%var:gid=%
 set plugin=%var:buildplugin=%
 
+rem aid=aurora42_1930
 if %var% neq %aid% (
   echo aid=%2_%3>>%file%
   goto :eof )
 
+rem gid=aurora
 if %var% neq %gid% (
   echo gid=%1>>%file%
   goto :eof )
 
+rem NL before [buildplugin] 
 if %var% neq %plugin% (
   echo.>>%file% )
 
+rem any other unchanged line
 echo %~4>>%file%
 
 goto :eof
