@@ -23,11 +23,11 @@ The container is alone on the host: don't mind the ports publication, publish al
 
 The parameter expected by **installAurora.sh** is the buildnum folder in the path "10.17.136.53:/dropzone/aurora_dev/**aurora42_cons/1781**/linux_x64/release/packages/BusinessObjectsServer"
 
-`docker run -it --privileged --net=host dockerdevregistry:5000/aurora/aurora-prereq /bin/sh -c "/mnt/installAurora.sh aurora42_cons/1781"`
+`docker run -it --privileged --net=host dockerdevregistry:5000/aurora/aurora-prereq /bin/sh /mnt/installAurora.sh aurora42_cons/1781`
 
 Several containers cohabits: personalize published ports
 
-`docker run -it --privileged -p 6400:6400 -p 6404:6404 -p 6001:6001 -p 2638:2638 -p 3690:3690 -p 10001:10001 -p 10002:10002 -p 10003:10003 -p 10004:10004 dockerdevregistry:5000/aurora/aurora-prereq /bin/sh -c /mnt/installAurora.sh aurora42_cons/1781`
+`docker run -it --privileged -p 6400:6400 -p 6404:6404 -p 6001:6001 -p 2638:2638 -p 3690:3690 -p 10001:10001 -p 10002:10002 -p 10003:10003 -p 10004:10004 dockerdevregistry:5000/aurora/aurora-prereq /bin/sh /mnt/installAurora.sh aurora42_cons/1781`
 
 ##### Testing the installation
 
@@ -52,7 +52,7 @@ Several containers cohabits: personalize published ports
 Commit the installation container to an image, **aurora** for example
 
 ##### Start a container from the **aurora** image
-`docker run -it --privileged --net=host aurora /bin/sh -c "/mnt/startAurora.sh"`
+`docker run -it --privileged --net=host aurora /bin/sh /mnt/startAurora.sh`
 
 #### Portability
 Tested on **Rhel7, Ubuntu 14, Suse 12**
