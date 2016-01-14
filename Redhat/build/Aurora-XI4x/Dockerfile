@@ -28,7 +28,7 @@ RUN	yum -y install \
 
 	# XI INSTALL DIRECTORY
 	mkdir -p /usr/sap/XI4x -m 0755; \
-	chown -R qaunix:td /usr/sap/XI4x ; \
+	chown -R qaunix:td /usr/sap/XI4x
 
 	# XI SCRIPTS
 	ADD https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/installAurora.sh  /mnt/installAurora.sh 
