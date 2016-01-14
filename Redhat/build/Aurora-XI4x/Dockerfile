@@ -35,10 +35,9 @@ RUN	yum -y install \
 	ADD https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/response.ini      /mnt/response.ini
 	ADD https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/startAurora.sh    /mnt/startAurora.sh 
 
-
 	RUN chmod +x /mnt/installAurora.sh; \
-        chmod +x /mnt/startAurora.sh; \
-        chmod +r /mnt/response.ini
+            chmod +x /mnt/startAurora.sh; \
+            chmod +r /mnt/response.ini
 
 # EXPOSE XI 4.X PORTS
 EXPOSE  6410 6400 2638 8080 8005 8443 6405 10001 10002 10003 10004 10006
