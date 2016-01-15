@@ -21,13 +21,13 @@ status=1
 while [ $status -ne 0 -a $elapsed -le $timeout ]; do
   mount -t nfs -o nolock $dropShare /mnt/nfs/
   status=$?
-  if [ $status? -ne 0 ]; then
+  if [ $status -ne 0 ]; then
     echo "Drop copy not finished, retry in 3 minutes"
     elapsed=$((elapsed+3))
     sleep 3m; fi
 done
 
-if [ $status? -ne 0 ]; then
+if [ $status -ne 0 ]; then
   echo "  . Dropzone NFS mount failed after 30 minutes of retries"
   echo
   exit 1; fi
