@@ -10,8 +10,10 @@
 cls
 
 if "%3" equ "" (
-  echo Expected parameters: ^<MajorName^> ^<ImageName^> ^<BuildFolder^>. Example: PrepAuroraRepo.cmd  aurora aurora42 aurora42_cons
-  goto :eof )
+  echo Expected parameters: ^<MajorName^> ^<ImageName^> ^<BuildFolder^>
+  echo Example: PrepAuroraRepo.cmd  aurora  aurora42  aurora42_cons
+  echo.
+  exit 1 )
 
 set drop=\\10.17.136.53\dropzone\aurora_dev\%3\version.txt
 set product=aurora
@@ -100,7 +102,7 @@ if %var% neq %gid% (
 if %var% neq %plugin% (
   echo.>>%cfg% )
 
-:: any other unchanged line
+:: Unchanged line
 echo %~4>>%cfg%
 
 goto :eof
