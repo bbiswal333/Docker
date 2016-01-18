@@ -14,8 +14,8 @@ if [ $# -ne 1 ]; then
 
 dropShare=derotvi0082.wdf.sap.corp:/dropzone/aurora_dev/$1/linux_x64/release/packages/BusinessObjectsServer
 
-timeout=
-elapsed=240	# 4 hours!
+timeout=240    # 4 hours!
+elapsed=0
 status=1
 
 while [ $status -ne 0 -a $elapsed -le $timeout ]; do
