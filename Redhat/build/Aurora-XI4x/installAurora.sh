@@ -14,12 +14,12 @@ if [ $# -ne 1 ]; then
 
 dropShare=derotvi0082.wdf.sap.corp:/dropzone/aurora_dev/$1/linux_x64/release/packages/BusinessObjectsServer
 
-timeout=30
-elapsed=0
+timeout=
+elapsed=240	# 4 hours!
 status=1
 
 while [ $status -ne 0 -a $elapsed -le $timeout ]; do
-  mount -t nfs -o nolock $dropShare /mnt/nfs/
+  str=$(mount -t nfs -o nolock $dropShare /mnt/nfs/ 2>&1)
   status=$?
   if [ $status -ne 0 ]; then
     echo "Drop copy not finished, retry in 3 minutes"
