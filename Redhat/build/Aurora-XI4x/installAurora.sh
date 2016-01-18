@@ -28,7 +28,7 @@ while [ $status -ne 0 -a $elapsed -le $timeout ]; do
 done
 
 if [ $status -ne 0 ]; then
-  echo "  . Dropzone NFS mount failed after 30 minutes of retries"
+  echo "  . Dropzone NFS mount failed after $timeout minutes of retries"
   echo
   exit 1; fi
 
