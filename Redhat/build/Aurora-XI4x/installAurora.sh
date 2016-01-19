@@ -7,24 +7,29 @@
 ### TO BE DEFINED: Buildfolder length to be passed as parameter 
 
 #!/bin/bash
+set -x
 
 if [ $# -ne 1 ]; then
   echo "Usage installAurora.sh  <BuildFolder>"
   exit 1; fi
 
-dropShare=derotvi0082.wdf.sap.corp:/dropzone/aurora_dev/$1/linux_x64/release/packages/BusinessObjectsServer
+dropShare=derotvi0082.wdf.sap.corp:/dropzone/aurora_dev/$1/linux_x64/release/packages
 
-timeout=480    # 8 hours
+endpoint=BusinessObjectsServer
+semaphore=packages_copy_done
+
+timeout=960    # 16 hours
 elapsed=0
+inc=5
 status=1
 
 while [ $status -ne 0 -a $elapsed -le $timeout ]; do
   str=$(mount -t nfs -o nolock $dropShare /mnt/nfs/ 2>&1)
   status=$?
   if [ $status -ne 0 ]; then
-    echo "Drop copy not finished, retry in 3 minutes"
-    elapsed=$((elapsed+3))
-    sleep 3m; fi
+    echo "Drop still copying, retry MOUNT in $inc minutes"
+    elapsed=$((elapsed+inc))
+    sleep ${inc}m; fi
 done
 
 if [ $status -ne 0 ]; then
@@ -32,6 +37,9 @@ if [ $status -ne 0 ]; then
   echo
   exit 1; fi
 
+while [ ! -f /mnt/nfs/$semaphore ]; do
+  echo "Waiting for COPYDONE semaphore file, retry in 3 minutes"
+  sleep 3m; done
 
 # ALIAS in /etc/hosts
 cp /etc/hosts /etc/hosts.old
@@ -43,7 +51,9 @@ else
 su - qaunix -c '
 
   export LANG=en_US.utf8 LC_ALL=en_US.utf8
-  /mnt/nfs/setup.sh -r /mnt/response.ini
+  endpoint=BusinessObjectsServer
+
+  /mnt/nfs/$endpoint/setup.sh -r /mnt/response.ini
 
   location=/usr/sap/XI4x/sap_bobj
   if [ ! -d $location ]; then
