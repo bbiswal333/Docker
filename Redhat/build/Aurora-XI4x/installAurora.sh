@@ -60,7 +60,7 @@ su - qaunix -c '
     echo "XI install failed"
     exit 1; fi
 
-  curl -I http://localhost:10001/BOE/BI | grep OK
+  curl -s -I http://localhost:10001/BOE/BI | grep OK
   if [ $? -ne 0 ]; then
     echo "XI install failed"
     exit 1; fi
