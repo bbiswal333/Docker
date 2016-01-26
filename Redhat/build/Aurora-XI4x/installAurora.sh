@@ -57,12 +57,12 @@ su - qaunix -c '
 
   location=/usr/sap/XI4x/sap_bobj
   if [ ! -d $location ]; then
-    echo "XI install failed"
+    echo "Install folder '$location' wasn't created"
     exit 1; fi
 
   curl -s -I http://localhost:10001/BOE/BI | grep OK
   if [ $? -ne 0 ]; then
-    echo "XI install failed"
+    echo "'curl' command to check the installation didn't return a successfull code"
     exit 1; fi
 
   cd $location
