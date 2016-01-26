@@ -7,7 +7,7 @@
 ### TO BE DEFINED: Buildfolder length to be passed as parameter 
 
 #!/bin/bash
-#set -x
+set -x
 
 if [ $# -ne 1 ]; then
   echo "Usage installAurora.sh  <BuildFolder>"
