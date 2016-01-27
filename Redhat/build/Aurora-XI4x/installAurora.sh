@@ -62,7 +62,7 @@ su - qaunix -c '
 
   curl -s -I http://localhost:10001/BOE/BI | grep OK
   if [ $? -ne 0 ]; then
-    echo "'curl' command to check the installation didn't return a successfull code"
+    echo "'curl' command to check the installation didn\'t return a successfull code"
     exit 1; fi
 
   cd $location
