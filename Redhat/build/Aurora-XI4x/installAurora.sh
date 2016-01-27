@@ -57,7 +57,7 @@ su - qaunix -c '
 
   location=/usr/sap/XI4x/sap_bobj
   if [ ! -d $location ]; then
-    echo "Install folder '$location' wasn't created"
+    echo "Install folder '$location' wasn\'t created"
     exit 1; fi
 
   curl -s -I http://localhost:10001/BOE/BI | grep OK
