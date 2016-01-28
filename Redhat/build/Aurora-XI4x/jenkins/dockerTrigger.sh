@@ -11,7 +11,7 @@ dockerrepo="/net/derotvi0127.pgdev.sap.corp/derotvi0127e_bobj/q_unix/Imagesdck/r
 
 ls $dockerrepo>newrepo.txt
 
-fgrep -vf lastrepo.txt newrepo.txt | grep aurora42_${version}
+fgrep -vf lastrepo.txt newrepo.txt | grep $1_${version}
 status=$?
 
 rm -f lastrepo.txt
