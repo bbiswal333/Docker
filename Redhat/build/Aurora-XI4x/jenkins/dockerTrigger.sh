@@ -1,5 +1,5 @@
 # The file lastrepo.txt must exists, it contains the previous repositories list before changes
-set -x
+#set -x
 
 if [ $# -ne 1 ]; then
   echo "Bad number of parameters, expected one parameter <ProductFolder>"
