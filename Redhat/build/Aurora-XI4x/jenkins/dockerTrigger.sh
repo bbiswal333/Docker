@@ -1,6 +1,10 @@
 # The file lastrepo.txt must exists, it contains the previous repositories list before changes
-
 #set -x
+
+if [ $# -ne 1 ]; then
+  echo "Bad number of parameters, expected one parameter <ProductFolder>"
+  echo "Example: dockerTrigger.sh  aurora_42"
+  exit 1; fi
 
 if [ ! -f lastrepo.txt ]; then
   echo "Missing file 'lastrepo.txt' that contains the previous inventory to be compared"
