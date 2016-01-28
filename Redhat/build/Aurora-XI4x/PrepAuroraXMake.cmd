@@ -16,13 +16,12 @@ if "%3" equ "" (
   exit 1 )
 
 set drop=\\10.17.136.53\dropzone\aurora_dev\%3\version.txt
-set product=aurora
 set xmakeProj=aurora4xInstall
 set cfgOLD=cfg\xmake-OLD.cfg
 set cfg=cfg\xmake.cfg
 
 git config --global http.sslVerify false
-git clone https://%Username%:%Password%@github.wdf.sap.corp/AuroraXmake/aurora4xInstall.git
+git clone https://github.wdf.sap.corp/AuroraXmake/aurora4xInstall.git
 
 cd %xmakeProj%
 
@@ -58,7 +57,7 @@ git add --all
 git config --global user.name %Username%
 git config --global user.email %email%
 git config --global push.default matching
-git commit -m"New version"
+git commit -m"Drop version %version%"
 git push -q
 
 cd ..\
