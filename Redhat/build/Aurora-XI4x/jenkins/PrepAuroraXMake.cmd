@@ -20,8 +20,9 @@ set xmakeProj=aurora4xInstall
 set cfgOLD=cfg\xmake-OLD.cfg
 set cfg=cfg\xmake.cfg
 
+:: Password is a Github PersonalTokenAccess
 git config --global http.sslVerify false
-git clone https://github.wdf.sap.corp/AuroraXmake/aurora4xInstall.git
+git clone https://%Password%@github.wdf.sap.corp/AuroraXmake/aurora4xInstall.git
 
 cd %xmakeProj%
 
