@@ -21,4 +21,7 @@ image="dockerdevregistry:5000/aurora/aurora42_${version}-snapshot"
 ./swarmHA-run.sh 2   "$image"
 ./swarm-listnodes.sh "$image"
 
-cat nodesList.txt
+if [ -f nodesList.txt ]; then
+  echo
+  cat nodesList.txt
+  echo; fi
