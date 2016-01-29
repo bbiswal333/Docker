@@ -2,7 +2,7 @@
 #set -x
 
 if [ $# -ne 1 ]; then
-  echo "Bad number of parameters, expected one parameter <ProductFolder>"
+  echo "Expected parameter <ProductFolder>"
   echo "Example: dockerTrigger.sh  aurora_42"
   exit 1; fi
 
