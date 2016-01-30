@@ -12,17 +12,18 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
 
 **Platform**:  
 - A user Jenkins server (Windows)
-- A user Jenkins slave (Linux)
-- A client (Linux) authorized to send commands to the Swarm cluster
+- A user Jenkins slave (Linux) authorized to send commands to the Swarm cluster
 
 **JOB 1: Jenkins user server**  
 
 - A Jenkins file trigger surveys the change of the file 'version.txt' in the Aurora dropzone.  
   \\\10.17.136.53\dropzone\aurora_dev\aurora42_cons\version.txt  
+  Execution: `User Jenkins Master`
 
-- A script updates the Github xMake repository with the dropped version properties  
+- A Windows script updates the Github xMake repository with the dropped version properties  
   script: https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins/PrepAuroraXMake.cmd  
-  
+  Execution: `User Jenkins Master`
+
   Github repo: https://github.wdf.sap.corp/AuroraXmake/aurora4xInstall  
 
 **JOB 2: ci-connect-xMake**  
@@ -30,14 +31,18 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
 
 **JOB 3: Jenkins user server**  
 
-- A Docker trigger script surveys the arrival of the new Aurora image in the Docker repository  
+- A Docker trigger Shell script surveys the arrival of the new Aurora image in the Docker repository  
   https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/dockerTrigger.sh  
+  Execution: `User Jenkins slave (Linux)`
 
-- A script runs the deployment by delegation to scripts of the Swarm deployment package  
+- A Shell script runs the deployment by delegation to the Shell scripts of the Swarm deployment package  
   https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins/deploy.sh  
+  Execution: `User Jenkins slave (Linux)`  
   
   Delegated Swarm deployment scripts:  
   To deploy: https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/swarm/automation/swarmHA-run.sh  
   To list nodes installed with the image: 
   https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/swarm/automation/swarm-listnodes.sh  
+  Execution: `User Jenkins slave (Linux)`  
+
 
