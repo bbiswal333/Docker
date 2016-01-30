@@ -7,8 +7,7 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
 ### Low-level details  
 3 Jenkins jobs automate the workflow.  
 
-> The Docker registry currently used is `dockerdevregistry`.  
-  `Artifactory` will be used as soon as in production
+> `dockerdevregistry` is the currently used  Docker registry. `Artifactory` will be used as soon as in production
 
 **Platform**:  
 - A user Jenkins server (Windows)
@@ -17,8 +16,8 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
 **JOB 1: Jenkins user server**  
 
 - A Jenkins file trigger surveys the change of the file 'version.txt' in the Aurora dropzone.  
-  \\\10.17.136.53\dropzone\aurora_dev\aurora42_cons\version.txt  
-  Execution: `User Jenkins Master`
+  [file:\\\10.17.136.53\dropzone\aurora_dev\aurora42_cons\version.txt]  
+  Execution: `User Jenkins Master`  
 
 - A Windows script updates the Github xMake repository with the dropped version properties  
   script: https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins/PrepAuroraXMake.cmd  
