@@ -23,7 +23,8 @@ Job 3: Jenkins user server
 
 - The Swarm deployment script deploys the image on the Swarm nodes  
   script: https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins/deploy.sh  
-  Called scripts: https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/swarm/automation/swarmHA-run.sh  
+  
+  deploy.sh delegates the deployment to a Swarm deployment pakage script:      https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/swarm/automation/swarmHA-run.sh  
                   https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/swarm/automation/swarm-listnodes.sh  
 
 TO BE CONTINUED  
