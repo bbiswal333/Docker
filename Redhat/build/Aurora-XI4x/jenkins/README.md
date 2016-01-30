@@ -20,6 +20,7 @@ Job 2: ci-connect-xMake
 Job 3: Jenkins user server  
 
 - A Docker trigger script surveys the arrival of the new Aurora image in the Docker repository  
+  https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/dockerTrigger.sh  
 
 - The Swarm deployment script deploys the image on the Swarm nodes  
   script: https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins/deploy.sh  
