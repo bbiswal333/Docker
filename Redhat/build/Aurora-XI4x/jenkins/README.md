@@ -21,7 +21,7 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
   Github repo: https://github.wdf.sap.corp/AuroraXmake/aurora4xInstall  
 
 **JOB 2: ci-connect-xMake**  
-- The Github xMake repository being registered to ci-connect-xMake services, xMake runs the build
+- The Aurora Github xMake repository being registered to ci-connect-xMake services, xMake runs the build
 
 **JOB 3: Jenkins user server**  
 
