@@ -39,7 +39,7 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
   Execution: `User Jenkins slave (Linux)`  
   
   Delegated Swarm deployment scripts:  
-  To deploy: https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/swarm/automation/swarmHA-run.sh  
+  To deploy the containers: https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/swarm/automation/swarmHA-run.sh  
   To list nodes installed with the image: 
   https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/swarm/automation/swarm-listnodes.sh  
   Execution: `User Jenkins slave (Linux)`  
