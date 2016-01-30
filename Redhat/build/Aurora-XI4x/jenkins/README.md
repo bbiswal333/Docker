@@ -1,5 +1,5 @@
 ### Purpose:
-Using Jenkins generates the Docker image of a new Aurora dropped version and instanciates its containers in a Swarm cluster  
+Using Jenkins, generates the Docker image of a new Aurora dropped version and instanciates its containers in a Swarm cluster  
 
 ### Hi-level description
 A new Aurora version is dropped in the dropzone, the dropped version is installed in a Docker container, the container is saved to a Docker image, the image is published to the Docker registry, the image is deployed to N containers in a Swarm cluster, the list of machineNames of deployed nodes is returned in a text file, delivering a ready-to-use platform for the users, testers or developers for example.
