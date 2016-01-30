@@ -1,6 +1,6 @@
 ### Purpose:
 Using Jenkins:  
-A new Aurora version is dropped in the dropzone, the dropped version is installed in a Docker container, the congtainer is saved to a Docker image, the image is published in the Docker registry, the image is deployed to N containers in a Swarm cluster, ready-to-use for the users, testers or developers for example.
+A new Aurora version is dropped in the dropzone, the dropped version is installed in a Docker container, the container is saved to a Docker image, the image is published to the Docker registry, the image is deployed to N containers in a Swarm cluster, the list of machineNames of deployed nodes is returned in a text file, delivering a ready-to-use platform for the users, testers or developers for example.
 
 **Hi-level description**  
 Three Jenkins jobs is enough to automate the workflow.  
@@ -12,6 +12,7 @@ Job 1: Jenkins user server
 
 - A script updates the Github xMake repository with the dropped version properties  
   script: https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins/PrepAuroraXMake.cmd  
+  
   Github repo: https://github.wdf.sap.corp/AuroraXmake/aurora4xInstall  
 
 Job 2: ci-connect-xMake  
@@ -22,11 +23,13 @@ Job 3: Jenkins user server
 - A Docker trigger script surveys the arrival of the new Aurora image in the Docker repository  
   https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/dockerTrigger.sh  
 
-- The Swarm deployment script deploys the image on the Swarm nodes  
-  script: https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins/deploy.sh  
+- A script `deploy.sh` runs the deployment by delegation to scripts of the Swarm deployment package  
+  https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins/deploy.sh  
   
-  deploy.sh delegates the deployment to a Swarm deployment pakage script:      https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/swarm/automation/swarmHA-run.sh  
-                  https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/swarm/automation/swarm-listnodes.sh  
+  Swarm deployment package scripts:  
+  To deploy: https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/swarm/automation/swarmHA-run.sh  
+  To list nodes installed with the image:  
+  https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/swarm/automation/swarm-listnodes.sh  
 
 TO BE CONTINUED  
 
