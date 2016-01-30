@@ -7,6 +7,9 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
 ### Low-level details  
 3 Jenkins jobs automate the workflow.  
 
+> The Docker registry currently used is `dockerdevregistry`.  
+  `Artifactory` will be used as soon as in production
+
 **JOB 1: Jenkins user server**  
 
 - A Jenkins file trigger surveys the change of the file 'version.txt' in the Aurora dropzone.  
@@ -28,10 +31,8 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
 - A script runs the deployment by delegation to scripts of the Swarm deployment package  
   https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins/deploy.sh  
   
-  Swarm deployment package scripts:  
+  Delegated Swarm deployment scripts:  
   To deploy: https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/swarm/automation/swarmHA-run.sh  
   To list nodes installed with the image: 
   https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/swarm/automation/swarm-listnodes.sh  
-
-
 
