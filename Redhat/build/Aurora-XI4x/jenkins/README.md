@@ -10,6 +10,11 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
 > The Docker registry currently used is `dockerdevregistry`.  
   `Artifactory` will be used as soon as in production
 
+**Platform**:  
+- A user Jenkins server (Windows)
+- A user Jenkins slave (Linux)
+- A client (Linux) authorized to send commands to the Swarm cluster
+
 **JOB 1: Jenkins user server**  
 
 - A Jenkins file trigger surveys the change of the file 'version.txt' in the Aurora dropzone.  
