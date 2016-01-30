@@ -20,7 +20,7 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
   Execution: `User Jenkins Master`  
 
 - A Windows script updates the Github xMake repository with the dropped version properties  
-  script: https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins/PrepAuroraXMake.cmd  
+  script: https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/PrepAuroraXMake.cmd  
   Execution: `User Jenkins Master`
 
   Github repo: https://github.wdf.sap.corp/AuroraXmake/aurora4xInstall  
@@ -35,7 +35,7 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
   Execution: `User Jenkins slave (Linux)`
 
 - A Shell script runs the deployment by delegation to the Shell scripts of the Swarm deployment package  
-  https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins/deploy.sh  
+  https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/deploy.sh  
   Execution: `User Jenkins slave (Linux)`  
   
   Delegated Swarm deployment scripts:  
