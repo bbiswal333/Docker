@@ -47,15 +47,16 @@ del /q %cfgOLD%
 
 
 if exist Dockerfile del /q Dockerfile
-..\wget https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/Dockerfile
+..\wget --no-check-certificate https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/Dockerfile
 
 if %errorlevel% neq 0 (
   echo Failed to download reference Dockerfile
   exit 1 )
 
 git add --all
+git config --global user.name "Windows.CMD.Script"
 git config --global push.default matching
-git commit -m"Drop version %version%"
+git commit -m "Drop version %version%"
 git push -q
 
 cd ..\
