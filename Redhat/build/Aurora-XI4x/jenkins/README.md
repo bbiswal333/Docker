@@ -20,7 +20,7 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
   Execution: `User Jenkins Master`  
 
 - A Windows script updates the Github xMake repository with the dropped version properties  
-  script: https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/PrepAuroraXMake.cmd  
+  script: https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/XMakeRepo.cmd  
   Execution: `User Jenkins Master`
 
   Github repo: https://github.wdf.sap.corp/AuroraXmake/aurora4xInstall  
