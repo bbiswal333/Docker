@@ -18,7 +18,7 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
 - A Jenkins file trigger surveys the change of the file 'version.txt' in the Aurora dropzone.  
   [file:\\\10.17.136.53\dropzone\aurora_dev\aurora42_cons\version.txt]  
   Execution: `User Jenkins Master`  
-
+  
 - A Windows script updates the Github xMake repository with the dropped version properties  
   script: https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/XMakeRepo.cmd  
   Execution: `User Jenkins Master`
