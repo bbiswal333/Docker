@@ -53,8 +53,10 @@ if %errorlevel% neq 0 (
   echo Failed to download reference Dockerfile
   exit 1 )
 
+call :GetFullName
+
 git add --all
-git config --global user.name "Windows.CMD.Script"
+git config --global user.name "%username%@%FullName%"
 git config --global push.default matching
 git commit -m "Drop version %version%"
 git push -q
@@ -102,5 +104,17 @@ if %var% neq %plugin% (
 
 :: Unchanged line
 echo %~4>>%cfg%
+
+goto :eof
+
+
+::--------------------------------------
+:GetFullName
+for /F "tokens=2" %%i in ('ping localhost') do set FullName=%%i&& goto :endLoop
+:endLoop
+
+if not defined FullName (
+  echo "Failed to retrieve %computername% Full Name"
+  exit 1 )
 
 goto :eof
