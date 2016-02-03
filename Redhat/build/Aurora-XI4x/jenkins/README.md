@@ -31,7 +31,7 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
 **JOB 3: Jenkins user server**  
 
 - A Docker trigger Shell script surveys the arrival of the new Aurora image in the Docker repository  
-  https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/dockerTrigger.sh  
+  https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/dockerdevregistryTrigger.sh  
   Execution: `User Jenkins slave (Linux)`
 
 - A Shell script runs the deployment by delegation to the Shell scripts of the Swarm deployment package  
