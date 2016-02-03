@@ -13,6 +13,10 @@ if [ ! -f lastrepo.txt ]; then
 dockerrepo="/net/derotvi0127.pgdev.sap.corp/derotvi0127e_bobj/q_unix/Imagesdck/repositories/aurora"
 version=`curl -s -k https://github.wdf.sap.corp/raw/AuroraXmake/aurora4xInstall/master/version.txt`
 
+if [ ! "${version}" ]; then
+  echo "Failed to retrieve version from xMake Github repo"
+  exit 1; fi
+  
 ls $dockerrepo>newrepo.txt
 
 fgrep -vf lastrepo.txt newrepo.txt | grep $1_${version}
