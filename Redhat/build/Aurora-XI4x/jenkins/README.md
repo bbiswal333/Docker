@@ -18,25 +18,30 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
 - A Jenkins file trigger surveys the change of the file 'version.txt' in the Aurora dropzone.  
   [file:\\\10.17.136.53\dropzone\aurora_dev\aurora42_cons\version.txt]  
   Execution: `User Jenkins Master`  
+  Trigger log example: `http://10.97.154.68:8080/job/OnAuroraDrop1_Configure_xMake/lastBuild/triggerCauseAction/`  
   
 - A Windows script updates the Github xMake repository with the dropped version properties  
   script: https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/XMakeRepo.cmd  
-  Execution: `User Jenkins Master`
+  Execution: `User Jenkins Master`  
+  Log example: `http://10.97.154.68:8080/job/OnAuroraDrop1_Configure_xMake/39/console`  
 
   Github repo: https://github.wdf.sap.corp/AuroraXmake/aurora4xInstall  
 
 **JOB 2: ci-connect-xMake**  
-- The Aurora Github xMake repository being registered to ci-connect-xMake services, xMake runs the build
+- The Aurora Github xMake repository being registered to ci-connect-xMake services, xMake runs the build  
+  Log example: `https://xmake-dev.mo.sap.corp:8443/job/AuroraXmake-aurora4xInstall-master-CI-docker_xs/61/console`  
 
 **JOB 3: Jenkins user server**  
 
 - A Docker trigger Shell script surveys the arrival of the new Aurora image in the Docker repository  
   https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/dockerdevregistryTrigger.sh  
-  Execution: `User Jenkins slave (Linux)`
+  Execution: `User Jenkins slave (Linux)`  
+  Trigger log example: `http://10.97.154.68:8080/job/OnAuroraDrop2_DeployTo_Swarm/lastBuild/triggerCauseAction/`  
 
 - A Shell script runs the deployment by delegation to the Shell scripts of the Swarm deployment package  
   https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/deploy.sh  
   Execution: `User Jenkins slave (Linux)`  
+  Log example: `http://10.97.154.68:8080/job/OnAuroraDrop2_DeployTo_Swarm/43/console`  
   
   Delegated Swarm deployment scripts:  
   To deploy the containers: https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/swarm/automation/swarmHA-run.sh  
