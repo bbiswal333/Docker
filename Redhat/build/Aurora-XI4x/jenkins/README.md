@@ -22,6 +22,7 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
   Trigger log example: http://10.97.154.68:8080/job/OnAuroraDrop1_Configure_xMake/39/triggerCauseAction/  
   
 - A Windows script updates the Github xMake repository with the dropped version properties  
+  The matter of an impersonal Github account is solved using a Github PersonalAccessToken.  
   script: https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/XMakeRepo.cmd  
   Executed on: `User Jenkins Master`  
   Log example: http://10.97.154.68:8080/job/OnAuroraDrop1_Configure_xMake/39/console  
