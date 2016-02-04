@@ -10,6 +10,7 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
 > `dockerdevregistry` is the currently used  Docker registry. `Artifactory` will be used as soon as in production
 
 **Platform**:  
+- The corporate ci-connnect / xMake server
 - A user Jenkins server (Windows)
 - A user Jenkins slave (Linux) authorized to send commands to the Swarm cluster
 
