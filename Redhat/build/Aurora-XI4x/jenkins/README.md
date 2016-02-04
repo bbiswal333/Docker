@@ -17,12 +17,14 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
 **JOB 1: Jenkins user server**  
 
 - A Jenkins file trigger surveys the change of the file 'version.txt' in the Aurora dropzone.  
+  
   [file:\\\10.17.136.53\dropzone\aurora_dev\aurora42_cons\version.txt]  
   Executed on: `User Jenkins Master`  
   Trigger log example: http://10.97.154.68:8080/job/OnAuroraDrop1_Configure_xMake/39/triggerCauseAction/  
   
 - A Windows script updates the Github xMake repository with the dropped version properties  
   The matter of an impersonal Github account is solved using a Github PersonalAccessToken.  
+  
   script: https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/XMakeRepo.cmd  
   Executed on: `User Jenkins Master`  
   Log example: http://10.97.154.68:8080/job/OnAuroraDrop1_Configure_xMake/39/console  
@@ -31,24 +33,28 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
 
 **JOB 2: ci-connect-xMake**  
 - The Aurora Github xMake repository being registered to ci-connect-xMake services, xMake runs the build  
+  
   Log example: https://xmake-dev.mo.sap.corp:8443/job/AuroraXmake-aurora4xInstall-master-CI-docker_xs/61/console  
 
 **JOB 3: Jenkins user server**  
 
 - A Docker trigger Shell script surveys the arrival of the new Aurora image in the Docker repository  
-  https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/dockerdevregistryTrigger.sh  
+  
+  Script: https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/dockerdevregistryTrigger.sh  
   Executed on: `User Jenkins slave (Linux)`  
   Trigger log example: http://10.97.154.68:8080/job/OnAuroraDrop2_DeployTo_Swarm/43/triggerCauseAction/  
 
 - A Shell script runs the deployment by delegation to the Shell scripts of the Swarm deployment package  
-  https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/deploy.sh  
+  
+  Script: https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/deploy.sh  
   Executed on: `User Jenkins slave (Linux)`  
   Log example: http://10.97.154.68:8080/job/OnAuroraDrop2_DeployTo_Swarm/43/console  
   
   Delegated Swarm deployment scripts:  
-  To deploy the containers: https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/swarm/automation/swarmHA-run.sh  
-  To list nodes installed with the image: 
-  https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/swarm/automation/swarm-listnodes.sh  
+  
+  To deploy the containers:
+  Script: https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/swarm/automation/swarmHA-run.sh  
+  
+  To list nodes installed with the image:  
+  Script: https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/swarm/automation/swarm-listnodes.sh  
   Executed on: `User Jenkins slave (Linux)`  
-
-
