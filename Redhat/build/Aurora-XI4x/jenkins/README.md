@@ -52,7 +52,7 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
   
   Delegated Swarm deployment scripts:  
   
-  To deploy the containers:
+  To deploy the containers:  
   Executed on: `User Jenkins slave (Linux)`  
   Script: https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/swarm/automation/swarmHA-run.sh  
   
