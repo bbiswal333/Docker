@@ -18,7 +18,7 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
 - A Jenkins file trigger surveys the change of the file 'version.txt' in the Aurora dropzone.  
   [file:\\\10.17.136.53\dropzone\aurora_dev\aurora42_cons\version.txt]  
   Execution: `User Jenkins Master`  
-  Trigger log example: http://10.97.154.68:8080/job/OnAuroraDrop1_Configure_xMake/lastBuild/triggerCauseAction/  
+  Trigger log example: http://10.97.154.68:8080/job/OnAuroraDrop1_Configure_xMake/39/triggerCauseAction/  
   
 - A Windows script updates the Github xMake repository with the dropped version properties  
   script: https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/XMakeRepo.cmd  
@@ -36,7 +36,7 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
 - A Docker trigger Shell script surveys the arrival of the new Aurora image in the Docker repository  
   https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/dockerdevregistryTrigger.sh  
   Execution: `User Jenkins slave (Linux)`  
-  Trigger log example: http://10.97.154.68:8080/job/OnAuroraDrop2_DeployTo_Swarm/lastBuild/triggerCauseAction/  
+  Trigger log example: http://10.97.154.68:8080/job/OnAuroraDrop2_DeployTo_Swarm/43/triggerCauseAction/  
 
 - A Shell script runs the deployment by delegation to the Shell scripts of the Swarm deployment package  
   https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/build/Aurora-XI4x/jenkins/deploy.sh  
