@@ -8,7 +8,7 @@ if [ -f $file ]; then
 # ENDDEBUG
 
 if [ ! -f $file ]; then
-  printf "zookeepers\"$zookeepers\"\n"   >> $file
+  printf "zookeepers=\"$zookeepers\"\n"   >> $file
   printf "managers\"$managers\"\n"       >> $file
   printf "\n# NODES\n# -----\n"           >> $file
   printf "nodes\"$nodes\"\n"             >> $file
