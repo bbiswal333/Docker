@@ -41,4 +41,4 @@ Zookeeper is preferable to Consul:
 - Zookeeper, not Consul
 - Zookeeper and Swarm-Managers in clusters
 - No load balancers
-- `./swarmHA-cmd.sh` as Swarm-Managers clustering service
+- `./swarmHA-cmd.sh` and `./swarmHA-run.sh` as Swarm-Managers clustering services
