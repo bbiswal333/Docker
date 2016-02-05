@@ -1,4 +1,4 @@
-set -x
+#set -x
 
 file=swarm-request.ini
 
