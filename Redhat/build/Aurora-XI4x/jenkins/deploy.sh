@@ -41,3 +41,9 @@ if [ -f nodesList.txt ]; then
   echo "Deployed Swarm nodes:"
   cat nodesList.txt
   echo; fi
+
+if [ -f connectinfo.ini ]; then
+  echo
+  echo "Connexion info"
+  cat connectinfo.ini
+  echo; fi

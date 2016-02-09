@@ -1,7 +1,9 @@
 ###############################################################################
 #
 #  AUTHOR: gerald.braunwarth@sap.com    - November 2015 -
-#  PURPOSE: writes the swarm cluster nodes list into file 'nodesList.txt'
+#  PURPOSE: 
+#      - writes into 'nodesList.txt' the swarm nodes list deployed with the image
+#      - write into connectinfo.ini the connexion info for the first node
 #
 ###############################################################################
 
@@ -9,6 +11,11 @@
 #---------------  MAIN
 clear
 #set -x
+
+if [ $# -ne 1 ]; then
+  echo "Expected parameter <DockerImage>"
+  echo "Example: $0 dockerdevregistry:5000/aurora/aurora42_1950"
+  exit 1; fi
 
 location=$(dirname $(readlink -e $0))
 
@@ -48,7 +55,41 @@ for nodeFQDN in $arrNodes; do
   node="${nodeFQDN%%.*}"
   grep $node $nodesInstall
   if [ $? -eq 0 ]; then
+    if [ ! "${nodeone}" ]; then
+      nodeone=$nodeFQDN; fi
     printf "$node\n" >> $nodesList; fi
 done
 
 rm -f $nodesInstall
+
+
+if [ ! "${nodeone}" ]; then
+  exit 0; fi
+
+
+## retrieve nodeone IP 
+ping=`ping -c 1 $nodeone 2>&1 | grep "("`
+if [ ! "${ping}" ]; then
+  echo "Failed to retrieve $nodeone IP"
+  exit 1; fi
+IP=`echo $ping | awk '$3 { print $3 }'`
+IP=${IP/(/}
+IP=${IP/)/}
+ 
+
+
+## WRITE connectinfo.ini
+curl -s -k  https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/response.ini > response.ini
+
+if [ ! -f response.ini ]; then
+  echo "Failed to retrieve 'response.ini' from Github"
+  exit 1; fi
+
+source response.ini
+
+file=connectinfo.ini
+echo ip=$IP                             >  $file
+echo user=administrator                 >> $file
+echo password=$CMSPassword              >> $file
+echo tomcat_port=$TomcatConnectionPort  >> $file
+echo cms_port=$CMSPort                  >> $file
