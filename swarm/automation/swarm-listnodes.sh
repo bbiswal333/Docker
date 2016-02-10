@@ -10,7 +10,7 @@
 
 #---------------  MAIN
 clear
-set -x
+#set -x
 
 if [ $# -ne 1 ]; then
   echo "Expected parameter <DockerImage>"
@@ -68,13 +68,13 @@ if [ ! "${nodeone}" ]; then
 
 
 ## retrieve nodeone IP 
-ping=`ping -c 1 $nodeone 2>&1 | grep "("`
-if [ ! "${ping}" ]; then
-  echo "Failed to retrieve $nodeone IP"
-  exit 1; fi
-IP=`echo $ping | awk '$3 { print $3 }'`
-IP=${IP/(/}
-IP=${IP/)/}
+#ping=`ping -c 1 $nodeone 2>&1 | grep "("`
+#if [ ! "${ping}" ]; then
+#  echo "Failed to retrieve $nodeone IP"
+#  exit 1; fi
+#IP=`echo $ping | awk '$3 { print $3 }'`
+#IP=${IP/(/}
+#IP=${IP/)/}
  
 
 
@@ -88,7 +88,7 @@ if [ ! -f response.ini ]; then
 source response.ini
 
 file=connectinfo.ini
-echo ip=$IP                             >  $file
+echo ip=$nodeone                        >  $file
 echo user=administrator                 >> $file
 echo password=$CMSPassword              >> $file
 echo tomcat_port=$TomcatConnectionPort  >> $file
