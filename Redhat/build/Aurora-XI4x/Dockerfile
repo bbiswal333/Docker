@@ -2,8 +2,8 @@
 
 FROM dockerdevregistry.wdf.sap.corp:5000/rh70/rh7-nfs:latest
 
-MAINTAINER Antonia Rodrigues <antonia.rodrigues@sap.com>, \
-           Gerald Braunwarth <gerald.braunwarth@sap.com>
+MAINTAINER gerald.braunwarth@sap.com, \
+           simon.gomez@sap.com
 
 RUN	yum -y install \
 	libc.so.* \
@@ -15,11 +15,15 @@ RUN	yum -y install \
   	libstdc++.so.6 \
  	libXcursor* \
   	compat-libstdc++-33-3.2.3-72.el7 \
-  	compat-libstdc++-33-3.2.3-72.el7.i686 ; \
-	yum clean all ; \
+  	compat-libstdc++-33-3.2.3-72.el7.i686 \
+
+        # Functional Testing requirement
+        default-jdk; \
+
+	yum clean all; \
 
 	# ADD locale
-	localedef -v -c -i en_US -f UTF-8 en_US.UTF-8 ; \
+	localedef -c -i en_US -f UTF-8 en_US.UTF-8; \
 	
 	# XI INSTALL, GROUP td AND USER qaunix
 	groupadd td; \
