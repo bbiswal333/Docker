@@ -42,8 +42,17 @@ if [ -f nodesList.txt ]; then
   cat nodesList.txt
   echo; fi
 
+
+pth=/var/jenkins/workspace
+
 if [ -f connectinfo.ini ]; then
+
+  if [ -f $pth/connectinfo.ini ]; then
+    rm -f $pth/connectinfo.ini; fi
+
+  mv connectinfo.ini $pth/
+
   echo
   echo "Connexion info"
-  cat connectinfo.ini
+  cat $pth/connectinfo.ini
   echo; fi
