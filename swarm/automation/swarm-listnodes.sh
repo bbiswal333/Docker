@@ -10,7 +10,7 @@
 
 #---------------  MAIN
 clear
-#set -x
+set -x
 
 if [ $# -ne 1 ]; then
   echo "Expected parameter <DockerImage>"
