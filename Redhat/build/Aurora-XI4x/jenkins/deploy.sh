@@ -36,23 +36,27 @@ GetScript swarm-listnodes.sh
 ./swarmHA-run.sh	2   "$image"
 ./swarm-listnodes.sh	    "$image"
 
-if [ -f nodesList.txt ]; then
+
+file=nodesList.txt
+
+if [ -f $file ]; then
   echo
   echo "Deployed Swarm nodes:"
-  cat nodesList.txt
+  cat $file
   echo; fi
 
 
 pth=/var/jenkins/workspace
+file=connectinfo.ini
 
-if [ -f connectinfo.ini ]; then
+if [ -f $file ]; then
 
-  if [ -f $pth/connectinfo.ini ]; then
-    rm -f $pth/connectinfo.ini; fi
+  if [ -f $pth/$file ]; then
+    rm -f $pth/$file; fi
 
-  mv connectinfo.ini $pth/
+  mv $file $pth/
 
   echo
   echo "Connexion info"
-  cat $pth/connectinfo.ini
+  cat $pth/$file
   echo; fi
