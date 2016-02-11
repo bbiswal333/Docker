@@ -11,7 +11,7 @@ cls
 
 if "%3" equ "" (
   echo Expected parameters: ^<MajorName^> ^<ImageName^> ^<BuildFolder^>
-  echo Example: PrepAuroraRepo.cmd  aurora  aurora42  aurora42_cons
+  echo Example: XMakeRepo.cmd  aurora  aurora42  aurora42_cons
   echo.
   exit 1 )
 
