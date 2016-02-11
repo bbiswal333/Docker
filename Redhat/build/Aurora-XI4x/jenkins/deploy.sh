@@ -15,7 +15,7 @@ function GetScript {
 
 #---------------  MAIN
 
-if [ ! $# -ne 2 ]; then
+if [ $# -ne 2 ]; then
   echo "Expected parameters: <MajorName> <ProductFolder>"
   echo "Example: ./deploy.sh  aurora  aurora42"
   exit 1; fi
