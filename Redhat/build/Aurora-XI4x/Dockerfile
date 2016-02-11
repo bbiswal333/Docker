@@ -5,7 +5,11 @@ FROM dockerdevregistry.wdf.sap.corp:5000/rh70/rh7-nfs:latest
 MAINTAINER gerald.braunwarth@sap.com, \
            simon.gomez@sap.com
 
-RUN	yum -y install \
+RUN	yum clean all; \
+        yum -y swap -- remove systemd-container\* -- install systemd systemd-libs; \
+      # yum -y upgrade; \
+        
+        yum -y install \
 	libc.so.* \
   	libstdc++* \
   	libX11* \
@@ -17,7 +21,7 @@ RUN	yum -y install \
   	compat-libstdc++-33-3.2.3-72.el7 \
   	compat-libstdc++-33-3.2.3-72.el7.i686 \
 
-        # Functional Testing requirement
+        # Functional Testing
         java-1.7.0-openjdk-devel; \
 
 	yum clean all; \
