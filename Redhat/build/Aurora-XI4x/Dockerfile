@@ -18,7 +18,7 @@ RUN	yum -y install \
   	compat-libstdc++-33-3.2.3-72.el7.i686 \
 
         # Functional Testing requirement
-        default-jdk; \
+        java-1.7.0-openjdk-devel; \
 
 	yum clean all; \
 
