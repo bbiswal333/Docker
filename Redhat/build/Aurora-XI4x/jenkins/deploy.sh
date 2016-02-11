@@ -15,9 +15,9 @@ function GetScript {
 
 #---------------  MAIN
 
-if [ ! "${1}" ]; then
-  echo "Expected parameter <ProductFolder>"
-  echo "Example: ./deploy.sh  aurora42"
+if [ ! $# -ne 2 ]; then
+  echo "Expected parameters: <MajorName> <ProductFolder>"
+  echo "Example: ./deploy.sh  aurora  aurora42"
   exit 1; fi
 
 export version=`curl -s -k https://github.wdf.sap.corp/raw/AuroraXmake/aurora4xInstall/master/version.txt`
@@ -25,7 +25,7 @@ if [ ! "${version}" ]; then
   echo "Failed to retrieve version from Github file 'version.txt'"
   exit 1; fi
 export access="https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/swarm/automation"
-export image="dockerdevregistry:5000/aurora/$1_$version-snapshot"
+export image="dockerdevregistry.wdf.sap.corp:5000/$1/$2_$version-snapshot"
 
 echo
 if [ ! -f swarm-request.ini ]; then
@@ -33,8 +33,8 @@ if [ ! -f swarm-request.ini ]; then
 GetScript swarmHA-run.sh
 GetScript swarm-listnodes.sh
 
-./swarmHA-run.sh		2   "$image"
-./swarm-listnodes.sh		"$image"
+./swarmHA-run.sh	2   "$image"
+./swarm-listnodes.sh	    "$image"
 
 if [ -f nodesList.txt ]; then
   echo
