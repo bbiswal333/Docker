@@ -33,6 +33,8 @@ if [ ! -f swarm-request.ini ]; then
 GetScript swarmHA-run.sh
 GetScript swarm-listnodes.sh
 
+echo
+echo "Deploying containers"
 ./swarmHA-run.sh	2   "$image"
 ./swarm-listnodes.sh	    "$image"
 
