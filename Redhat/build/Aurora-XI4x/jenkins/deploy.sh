@@ -54,6 +54,6 @@ if [ -f $file ]; then
   mv -f $file $pth/
 
   echo
-  echo "Connexion info"
+  echo "Connexion info:"
   cat $pth/$file
   echo; fi
