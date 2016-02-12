@@ -51,10 +51,7 @@ file=connectinfo.ini
 
 if [ -f $file ]; then
 
-  if [ -f $pth/$file ]; then
-    rm -f $pth/$file; fi
-
-  mv $file $pth/
+  mv -f $file $pth/
 
   echo
   echo "Connexion info"
