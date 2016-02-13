@@ -5,8 +5,9 @@ FROM dockerdevregistry.wdf.sap.corp:5000/rh70/rh7-nfs:latest
 MAINTAINER gerald.braunwarth@sap.com, \
            simon.gomez@sap.com
 
-RUN	# java-1.7.0-openjdk-devel requires a systemd / dbus upgrade
-	yum clean all; \
+	# java-1.7.0-openjdk-devel requires a systemd / dbus upgrade
+
+RUN	yum clean all; \
         yum -y swap -- remove systemd-container\* -- install systemd systemd-libs; \
       # yum -y upgrade; \
         
