@@ -14,9 +14,8 @@
 
 #--------------------------------------
 function CheckParam {
-  if [ $1 -ne 2 ]; then
-    echo "Expected parameters: <MajorName> <ProductFolder>"
-    echo "Example: ./deploy.sh  aurora  aurora42"
+  if [ $1 -ne 3 ]; then
+    echo "3 expected parameters, example: ./deploy.sh  aurora  aurora42  aurora42_cons"
     exit 1; fi; }
 
 
@@ -144,7 +143,9 @@ function WriteConnnectionFile {
 
   source $response
 
-  echo ip=$nodeone                        >  $connectinfo
+  echo BUILD_NUMBER=$version              >  $connectinfo
+  echo BUILD_STREAM=$1                    >> $connectinfo
+  echo ip=$nodeone                        >> $connectinfo
   echo user=administrator                 >> $connectinfo
   echo password=$CMSPassword              >> $connectinfo
   echo tomcat_port=$TomcatConnectionPort  >> $connectinfo
@@ -162,4 +163,4 @@ CheckParam $#
 InitVars $1 $2
 DeployContainers
 RetrieveDeployedNodes "$2_$version"
-WriteConnnectionFile
+WriteConnnectionFile $3
