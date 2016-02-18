@@ -24,7 +24,7 @@ function CheckImagePulled {	# manager, managerport, image
 #--------------------------------------
 function RunContainers {
   for num in `seq 1 1 $1`; do
-    docker -H $2:$3 run -d --privileged --net=host --expose=10001 -e filter:port $4  /bin/sh  /mnt/startAurora.sh
+    docker -H $2:$3 run -d --privileged --net=host --expose=10001 -e filter:port -v /mnt/container:/host $4  /bin/sh  /mnt/startAurora.sh
     if [ $? -ne 0 ]; then
       echo "Failed to start the container number $num."
       exit 1; fi; done; }
