@@ -146,8 +146,8 @@ function WriteConnnectionFile {
   echo BUILD_NUMBER=$version              >  $connectinfo
   echo BUILD_STREAM=$1                    >> $connectinfo
   echo ip=$nodeone                        >> $connectinfo
-  echo user=administrator                 >> $connectinfo
-  echo password=$CMSPassword              >> $connectinfo
+  echo user=root                          >> $connectinfo
+  echo password=root                      >> $connectinfo
   echo tomcat_port=$TomcatConnectionPort  >> $connectinfo
   echo cms_port=$CMSPort                  >> $connectinfo
 
