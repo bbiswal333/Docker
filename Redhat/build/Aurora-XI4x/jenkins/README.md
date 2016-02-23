@@ -7,7 +7,7 @@ A new Aurora version is dropped in the dropzone, the dropped version is installe
 ### Low-level details  
 3 Jenkins jobs automate the workflow.  
 
-> `dockerdevregistry` is the currently used  Docker registry. `Artifactory` will be used as soon as in production
+> `dockerdevregistry.wdf.sap.corp` is the currently used  Docker registry. `Artifactory` will be used as soon as in production
 
 **Platform**:  
 - The corporate ci-connnect / xMake server
