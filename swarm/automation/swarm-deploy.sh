@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ###############################################################################
 #
 #  AUTHOR: gerald.braunwarth@sap.com	- November 2015 - 
@@ -7,12 +9,17 @@
 
 
 #--------------------------------------
+function InitLocation {
+
+  location=$(dirname $(readlink -e $0))
+  cd $location; }
+
+
+#--------------------------------------
 function InitVars {
 
-  scriptpath=$(dirname $(readlink -e $0))
-
-  export request="$scriptpath/swarm-request.ini"
-  export log="$scriptpath/swarm-deploy.log"; }
+  export request="../swarm-request.ini"
+  export log="swarm-deploy.log"; }
 
 
 #--------------------------------------
@@ -81,10 +88,10 @@ function ReadRequestFile {
   CheckClusterZookeepers "$zookeepers"
   CheckClusterManagers   "$managers"
 
-# dockerports=(2375 2376)
-# export engineport=${dockerports[tls]}
+  tls=0                 # overrides 'swarm-request.ini' until TLS implemented
 
-  tls=0; }		# overrides 'swarm-request.ini' until TLS implemented
+  dockerports=(2375 2376)
+  export engineport=${dockerports[tls]}; }
 
 
 #--------------------------------------
@@ -343,6 +350,7 @@ function OnDeployed {		# managers, managerport
 clear
 # set -x
 
+InitLocation
 InitVars
 InitLog
 

@@ -10,8 +10,6 @@
 ###############################################################################
 
 
-#set -x
-
 #--------------------------------------
 function CheckParam {
   if [ $1 -ne 3 ]; then
@@ -45,9 +43,9 @@ function InitVars {
 function GetFromGithub {
 
   echo "Getting file $2 from Github"
-  curl -s -k $1/$2 > $2
+  curl -s -k $1/$2 > $3/$2
 
-  if [ ! -f $2 ]; then
+  if [ ! -f $3/$2 ]; then
     echo "Failed to get '$2' from github"
     exit 1; fi; }
 
@@ -57,9 +55,9 @@ function DeployContainers {
 
   echo
 
-  if [ ! -f $request ]; then
-    GetFromGithub $gitSwarm $request; fi
-  GetFromGithub $gitSwarm $swarmrun
+  if [ ! -f ../$request ]; then
+    GetFromGithub $gitSwarm $request ../; fi
+  GetFromGithub $gitSwarm $swarmrun ./
 
   echo
   echo "Deploying containers"
@@ -77,7 +75,7 @@ function RetrieveDeployedNodes {
   if [ -f $nodesList ]; then
     rm -f $nodesList; fi
 
-  source "$request"
+  source "../$request"
 
   arrManagers=${managers//,/ }
   for manager in $arrManagers; do
@@ -133,13 +131,12 @@ function WriteConnnectionFile {
 
   ## WRITE connectinfo.ini
   echo
-  GetFromGithub $gitResponse $response
+  GetFromGithub $gitResponse $response ./
 
   echo
-  echo "Connexion info:"
+  echo "Connexion info file:"
 
-  pth="/var/jenkins/workspace"
-  connectinfo="connectinfo.ini"
+  connectinfo="../connectinfo.ini"
 
   source $response
 
@@ -151,13 +148,13 @@ function WriteConnnectionFile {
   echo tomcat_port=$TomcatConnectionPort  >> $connectinfo
   echo cms_port=$CMSPort                  >> $connectinfo
 
-  mv -f $connectinfo $pth/
-
-  cat $pth/$connectinfo
+  cat $connectinfo
   echo; }
 
 
 #---------------  MAIN
+
+#set -x
 
 CheckParam $#
 InitVars $1 $2

@@ -1,12 +1,11 @@
+#!/bin/sh
+
 ###############################################################################
 #
 #  AUTHOR: gerald.braunwarth@sap.com    - November 2015 -
 #  PURPOSE: set up a Swarm cluster 
 #
 ###############################################################################
-
-#!/bin/sh
-#set -x
 
 
 #--------------------------------------
@@ -32,20 +31,23 @@ function RunContainers {
 
 #---------------  MAIN
 # clear
+#set -x
 
 if [ $# -ne 2 ]; then
   echo "Invalid number of parameters."
   echo "Usage: ./swarmHA-run.sh  <NumberOfContainer>  <registry:port/repository/image/tag"
   exit 1; fi
 
-scriptpath=$(dirname $(readlink -e $0))
-request="$scriptpath/swarm-request.ini"
+location=$(dirname $(readlink -e $0))
+cd $location
 
-if [ ! -f $request ]; then
-  echo "File '$request' not found"
+request="swarm-request.ini"
+
+if [ ! -f ../$request ]; then
+  echo "File '../$request' not found"
   exit 1; fi
 
-source "$request"
+source "../$request"
 
 if [ "${managerLB}" ]; then
   CheckImagePulled     $manager    $managerport  $2

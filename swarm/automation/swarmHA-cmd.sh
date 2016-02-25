@@ -15,10 +15,12 @@ if [ $# -eq 0 ]; then
   echo "Missing command, nothing to execute with 'docker -H'"
   exit 1; fi
 
-scriptpath=$(dirname $(readlink -e $0))
-request="$scriptpath/swarm-request.ini"
+location=$(dirname $(readlink -e $0))
+cd $location
 
-source "$request"
+request="swarm-request.ini"
+
+source "../$request"
 
 if [ "${managerLB}" ]; then
   docker -H $managerLB:$managerport $*
