@@ -154,7 +154,7 @@ function WriteConnnectionFile {
 
 #---------------  MAIN
 
-set -x
+#set -x
 
 CheckParam $#
 InitVars $1 $2
