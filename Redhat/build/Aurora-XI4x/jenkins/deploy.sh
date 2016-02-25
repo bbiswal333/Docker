@@ -56,8 +56,8 @@ function DeployContainers {
   echo
 
   if [ ! -f ../$request ]; then
-    GetFromGithub $gitSwarm $request ../; fi
-  GetFromGithub $gitSwarm $swarmrun ./
+    GetFromGithub $gitSwarm $request ..; fi
+  GetFromGithub $gitSwarm $swarmrun .
 
   echo
   echo "Deploying containers"
@@ -131,7 +131,7 @@ function WriteConnnectionFile {
 
   ## WRITE connectinfo.ini
   echo
-  GetFromGithub $gitResponse $response ./
+  GetFromGithub $gitResponse $response .
 
   echo
   echo "Connexion info file:"
