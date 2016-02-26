@@ -1,29 +1,29 @@
 ::****************************************************************
-:: Project: Jenkins integration
 :: Author: gerald.braunwarth@sap.com
+:: Purpose : update xMake repo with a drop properties
 ::****************************************************************
 
-:: %1 = aurora
-:: %2 = aurora42
-:: %3 = aurora42_cons
+:: %1 suite =		aurora				aurora
+:: %2 image =		aurora42_cons		aurora_pi_tp
+:: %3 folder =		aurora42_cons		aurora_pi_tp
+:: %4 xmakerepo = 	aurora4xInstall		aurora_pi_tp
 
 cls
 
-if "%3" equ "" (
-  echo Expected parameters: ^<MajorName^> ^<ImageName^> ^<BuildFolder^>
-  echo Example: XMakeRepo.cmd  aurora  aurora42  aurora42_cons
+if "%4" equ "" (
+  echo Expected parameters: ^<MajorName^> ^<ImageName^> ^<BuildFolder^>  ^<xMakeRepo^>
+  echo Example: XMakeRepo.cmd  aurora  aurora42_cons  aurora42_cons  aurora4xInstall
   echo.
   exit 1 )
 
 set drop=\\10.17.136.53\dropzone\aurora_dev\%3\version.txt
-set xmakeProj=aurora4xInstall
 set cfgOLD=cfg\xmake-OLD.cfg
 set cfg=cfg\xmake.cfg
 
 git config --global http.sslVerify false
-git clone https://%token%@github.wdf.sap.corp/AuroraXmake/aurora4xInstall.git
+git clone https://%token%@github.wdf.sap.corp/AuroraXmake/%4.git
 
-cd %xmakeProj%
+cd %4
 
 call :AccessFile %drop%
 call :AccessFile DockerCommands
@@ -62,7 +62,7 @@ git commit -m "Drop version %version%"
 git push -q
 
 cd ..\
-rmdir /s/q %xmakeProj%
+rmdir /s/q %4
 
 goto :eof
 
