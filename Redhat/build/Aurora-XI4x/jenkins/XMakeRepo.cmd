@@ -9,7 +9,7 @@
 
 cls
 
-if "%4" equ "" (
+if "%3" equ "" (
   echo Expected parameters: ^<Suite^>  ^<BuildFolder^>  ^<xMakeRepo^>
   echo Example: XMakeRepo.cmd  aurora  aurora42_cons  aurora4xInstall
   echo.
