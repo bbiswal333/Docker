@@ -4,26 +4,25 @@
 ::****************************************************************
 
 :: %1 suite =		aurora				aurora
-:: %2 image =		aurora42_cons		aurora_pi_tp
-:: %3 folder =		aurora42_cons		aurora_pi_tp
-:: %4 xmakerepo = 	aurora4xInstall		aurora_pi_tp
+:: %2 folder =		aurora42_cons		aurora_pi_tp
+:: %3 xmakerepo = 	aurora4xInstall		aurora_pi_tp
 
 cls
 
 if "%4" equ "" (
-  echo Expected parameters: ^<MajorName^> ^<ImageName^> ^<BuildFolder^>  ^<xMakeRepo^>
-  echo Example: XMakeRepo.cmd  aurora  aurora42_cons  aurora42_cons  aurora4xInstall
+  echo Expected parameters: ^<Suite^>  ^<BuildFolder^>  ^<xMakeRepo^>
+  echo Example: XMakeRepo.cmd  aurora  aurora42_cons  aurora4xInstall
   echo.
   exit 1 )
 
-set drop=\\10.17.136.53\dropzone\aurora_dev\%3\version.txt
+set drop=\\10.17.136.53\dropzone\aurora_dev\%2\version.txt
 set cfgOLD=cfg\xmake-OLD.cfg
 set cfg=cfg\xmake.cfg
 
 git config --global http.sslVerify false
-git clone https://%token%@github.wdf.sap.corp/AuroraXmake/%4.git
+git clone https://%token%@github.wdf.sap.corp/AuroraXmake/%3.git
 
-cd %4
+cd %3
 
 call :AccessFile %drop%
 call :AccessFile DockerCommands
@@ -35,7 +34,7 @@ for /f "tokens=1-2" %%i in (DockerCommands) do set runprivileged=%%i && set scri
 set version=%version: =%
 set runprivileged=%runprivileged: =%
 
-echo %runprivileged% %script% %3/%version%> DockerCommands
+echo %runprivileged% %script% %2/%version%> DockerCommands
 echo %version%> version.txt
 
 
@@ -62,7 +61,7 @@ git commit -m "Drop version %version%"
 git push -q
 
 cd ..\
-rmdir /s/q %4
+rmdir /s/q %3
 
 goto :eof
 
@@ -79,7 +78,7 @@ goto :eof
 :replaceAidGid
 
 ::%1 = aurora
-::%2 = aurora42
+::%2 = aurora42_cons
 ::%3 = version
 ::%4 = line
 

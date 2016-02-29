@@ -12,8 +12,8 @@
 
 #--------------------------------------
 function CheckParam {
-  if [ $1 -ne 3 ]; then
-    echo "3 expected parameters, example: ./deploy.sh  aurora  aurora42  aurora42_cons"
+  if [ $1 -ne 4 ]; then
+    echo "Expected parameters, example: ./deploy.sh  aurora  aurora42_cons  aurora4xInstall  2"
     exit 1; fi; }
 
 
@@ -27,7 +27,7 @@ function InitVars {
 
   export gitSwarm="https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/swarm/automation"
   export gitResponse="https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x"
-  export gitVersion="https://github.wdf.sap.corp/raw/AuroraXmake/aurora4xInstall/master"
+  export gitVersion="https://github.wdf.sap.corp/raw/AuroraXmake/$3/master"
 
   export version=$(curl -s -k $gitVersion/$versionTxt)
 
@@ -63,7 +63,7 @@ function DeployContainers {
   echo "Deploying containers"
 
   chmod +x $swarmrun
-  ./$swarmrun	 2  "$image"; }
+  ./$swarmrun	 $1  "$image"; }
 
 
 #--------------------------------------
@@ -153,11 +153,12 @@ function WriteConnnectionFile {
 
 
 #---------------  MAIN
+# params  aurora aurora42_cons aurora4xInstall
 
 #set -x
 
 CheckParam $#
-InitVars $1 $2
-DeployContainers
+InitVars $1 $2 $3
+DeployContainers $4
 RetrieveDeployedNodes "$2_$version"
-WriteConnnectionFile $3
+WriteConnnectionFile $2

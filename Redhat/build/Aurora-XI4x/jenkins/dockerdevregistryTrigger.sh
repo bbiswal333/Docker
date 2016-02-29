@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ###############################################################################
 #
 #  AUTHOR: simon.gomez@sap.com
@@ -10,29 +12,33 @@
 
 #set -x
 
-dockerrepo="/net/derotvi0127.pgdev.sap.corp/derotvi0127e_bobj/q_unix/Imagesdck/repositories/aurora"
 
-if [ $# -ne 1 ]; then
-  echo "Expected parameter <ProductFolder>"
-  echo "Example: dockerdevregistryTrigger.sh  aurora_42"
+if [ $# -ne 3 ]; then
+  echo 'Expected parameter <suite>  <ProductFolder>  <xMakeRepo>'
+  echo 'Example: dockerdevregistryTrigger.sh  aurora  aurora42_cons  aurora4xInstall'
+  exit 1
+fi
+
+dockerrepo="/net/derotvi0127.pgdev.sap.corp/derotvi0127e_bobj/q_unix/Imagesdck/repositories/$1"
+
+if [ ! -f 'lastrepo.txt' ]; then
+   curl -s -k 'https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins/lastrepo.txt' > lastrepo.txt
+  if [ ! -f 'lastrepo.txt' ]; then
+    echo 'Failed to get file lastrepo.txt from GitHub'
+    exit 1; fi; fi
+
+version="$(curl -s -k https://github.wdf.sap.corp/raw/AuroraXmake/$3/master/version.txt)"
+
+if [ -z "${version}" ]; then
+  echo 'Failed to retrieve version from xMake Github repo'
   exit 1; fi
 
-if [ ! -f lastrepo.txt ]; then
-  echo "Missing file 'lastrepo.txt' that contains the previous inventory to be compared"
-  exit 1; fi
+ls "${dockerrepo}" > newrepo.txt
 
-version=`curl -s -k https://github.wdf.sap.corp/raw/AuroraXmake/aurora4xInstall/master/version.txt`
-
-if [ ! "${version}" ]; then
-  echo "Failed to retrieve version from xMake Github repo"
-  exit 1; fi
-  
-ls $dockerrepo>newrepo.txt
-
-fgrep -vf lastrepo.txt newrepo.txt | grep $1_${version}
-status=$?
+fgrep -vf lastrepo.txt newrepo.txt | grep $2_${version}
+status="$?"
 
 rm -f lastrepo.txt
-mv  newrepo.txt lastrepo.txt
+mv newrepo.txt lastrepo.txt
 
-exit $status
+exit "${status}"
