@@ -24,8 +24,8 @@ git clone https://%token%@github.wdf.sap.corp/AuroraXmake/%3.git
 
 cd %3
 
-call :AccessFile DockerCommands
 call :AccessFile "%drop%"
+call :AccessFile DockerCommands
 call :AccessFile %cfg%
 
 for /f "tokens=1"   %%i in (%drop%)         do set version=%%i
@@ -53,7 +53,7 @@ if %errorlevel% neq 0 (
   exit 1 )
 
 call :GetFullName
-EXIT
+
 git add --all
 git config --global user.name "%username%@%FullName%"
 git config --global push.default matching
