@@ -24,7 +24,7 @@ git clone https://%token%@github.wdf.sap.corp/AuroraXmake/%3.git
 
 cd %3
 
-call :AccessFile "%drop%"
+call :AccessFile %drop%
 call :AccessFile DockerCommands
 call :AccessFile %cfg%
 
