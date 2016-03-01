@@ -14,7 +14,7 @@ if "%3" equ "" (
   echo Example: XMakeRepo.cmd  aurora  aurora42_cons  aurora4xInstall
   echo.
   exit 1 )
-ECHO ON
+
 set drop=\\10.17.136.53\dropzone\aurora_dev\%2\version.txt
 set cfgOLD=cfg\xmake-OLD.cfg
 set cfg=cfg\xmake.cfg
@@ -24,8 +24,8 @@ git clone https://%token%@github.wdf.sap.corp/AuroraXmake/%3.git
 
 cd %3
 
-call :AccessFile "%drop%"
 call :AccessFile DockerCommands
+call :AccessFile "%drop%"
 call :AccessFile %cfg%
 
 for /f "tokens=1"   %%i in (%drop%)         do set version=%%i
