@@ -14,7 +14,7 @@ if "%3" equ "" (
   echo Example: XMakeRepo.cmd  aurora  aurora42_cons  aurora4xInstall
   echo.
   exit 1 )
-
+ECHO ON
 set drop=\\10.17.136.53\dropzone\aurora_dev\%2\version.txt
 set cfgOLD=cfg\xmake-OLD.cfg
 set cfg=cfg\xmake.cfg
@@ -53,7 +53,7 @@ if %errorlevel% neq 0 (
   exit 1 )
 
 call :GetFullName
-
+EXIT
 git add --all
 git config --global user.name "%username%@%FullName%"
 git config --global push.default matching
