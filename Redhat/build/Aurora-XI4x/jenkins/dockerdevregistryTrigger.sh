@@ -22,7 +22,7 @@ fi
 dockerrepo="/net/derotvi0127.pgdev.sap.corp/derotvi0127e_bobj/q_unix/Imagesdck/repositories/$1"
 
 if [ ! -f 'lastrepo.txt' ]; then
-   curl -s -k 'https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins/lastrepo.txt' > lastrepo.txt
+   curl -s -k 'https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins/$2/lastrepo.txt' > lastrepo.txt
   if [ ! -f 'lastrepo.txt' ]; then
     echo 'Failed to get file lastrepo.txt from GitHub'
     exit 1; fi; fi

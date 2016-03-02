@@ -1,0 +1,1 @@
+  "uri" : "https://dewdftv01813.dhcp.pgdev.sap.corp:443/artifactory/api/storage/devinfrafr/simon/aurora42_1951-snapshot/latest/manifest.json",
