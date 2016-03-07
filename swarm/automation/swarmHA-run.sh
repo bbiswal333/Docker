@@ -9,15 +9,15 @@
 
 
 #--------------------------------------
-function CheckImagePulled {	# manager, managerport, image
+function CheckImagePulled {	# image
   status=1
   while [ $status -ne 0 ]; do
-    str=$(docker -H $1:$2 pull $3 2>&1)
+    str=$(docker pull $1 2>&1)
     status=$?
     if [ $status -ne 0 ]; then
-      echo "Retry pulling image '$3' in 3 minutes"
-      sleep 3m; fi
-  done; }
+      echo "Retry pulling image '$1' in 3 minutes"
+      sleep 3m; fi; done
+  str=$(docker rmi $1 2>&1); }
 
 
 #--------------------------------------
@@ -50,7 +50,7 @@ if [ ! -f ../$request ]; then
 source "../$request"
 
 if [ "${managerLB}" ]; then
-  CheckImagePulled     $manager    $managerport  $2
+  CheckImagePulled $2
   RunContainers    $1  $managerLB  $managerport  $2
   exit 0; fi
 
@@ -69,5 +69,5 @@ if [ ! ${bDoIt} ]; then
   echo "No alive Swarm manager member found. Couldn't execute the command"
   exit 1; fi
 
-CheckImagePulled     $manager  $managerport  $2
+CheckImagePulled $2
 RunContainers    $1  $manager  $managerport  $2
