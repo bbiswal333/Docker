@@ -10,7 +10,6 @@
 
 #--------------------------------------
 function CheckImagePulled {	# image
-set -x
   status=1
   while [ $status -ne 0 ]; do
     str=$(docker pull $1 2>&1)
@@ -18,7 +17,7 @@ set -x
     if [ $status -ne 0 ]; then
       echo "Retry pulling image '$1' in 3 minutes"
       sleep 3m; fi; done
-  str=$(docker rmi $1 2>&1); set +x; }
+  str=$(docker rmi $1 2>&1); }
 
 
 #--------------------------------------
