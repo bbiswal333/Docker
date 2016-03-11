@@ -19,4 +19,6 @@ su - qaunix -c "
   /usr/sap/XI4x/sap_bobj/startservers
   /usr/sap/XI4x/sap_bobj/tomcatstartup.sh"
 
-while true; do sleep 300; done
+/usr/sbin/sshd
+
+while true; do sleep 5; done

@@ -1,17 +1,11 @@
 # WEBI SBOP 4.x prerequisites installation
 
-FROM dockerdevregistry.wdf.sap.corp:5000/rh70/rh7-nfs:latest
+FROM dockerdevregistry.wdf.sap.corp:5000/rh70/rh7-tools:latest
 
-MAINTAINER gerald.braunwarth@sap.com, \
-           simon.gomez@sap.com
 
-	# java-1.7.0-openjdk-devel requires a systemd / dbus upgrade
+MAINTAINER gerald.braunwarth@sap.com, simon.gomez@sap.com
 
-RUN	yum clean all; \
-        yum -y swap -- remove systemd-container\* -- install systemd systemd-libs; \
-      # yum -y upgrade; \
-        
-        yum -y install \
+RUN	yum -y install \
 	libc.so.* \
   	libstdc++* \
   	libX11* \
@@ -49,7 +43,7 @@ RUN	chmod +x /mnt/installAurora.sh; \
         chmod +x /mnt/startAurora.sh; \
         chmod +r /mnt/response.ini
 
-# EXPOSE XI 4.X PORTS
+# EXPOSE Aurora4.x PORTS
 EXPOSE  6410 6400 2638 8080 8005 8443 6405 10001 10002 10003 10004 10006
 
 CMD ["/usr/sbin/init"]
