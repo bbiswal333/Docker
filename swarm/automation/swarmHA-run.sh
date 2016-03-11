@@ -23,7 +23,10 @@ function CheckImagePulled {	# image
 #--------------------------------------
 function RunContainers {
   for num in `seq 1 1 $1`; do
-    docker -H $2:$3 run -d --privileged --net=host --expose=10001 -e filter:port -v /mnt/container:/host $4  /bin/sh  /mnt/startAurora.sh
+    docker -H $2:$3 run -d --privileged -v /mnt/container:/host -e filter:port \
+                           -p 2638:2638 -p 3690:3690 -p 6001:6001 -p 6400:6400 -p 6404:6404 \
+                           -p 10001:10001 -p 10002:10002 -p 10003:10003 -p 10004:10004 \
+                           -p 32770:22 $4  /bin/sh  /mnt/startAurora.sh
     if [ $? -ne 0 ]; then
       echo "Failed to start the container number $num."
       exit 1; fi; done; }
