@@ -11,8 +11,8 @@
 #---------------  MAIN
 # clear
 
-if [ $# -eq 0 ]; then
-  echo " Expected parameter : <SuiteName> to delete related containers and images."
+if [ $# -ne 1 ]; then
+  echo " Expected parameter : <SuiteName>"
   echo " Example: ./undeploy.sh  aurora"
   exit 1; fi
 
