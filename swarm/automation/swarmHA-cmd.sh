@@ -29,7 +29,7 @@ if [ "${managerLB}" ]; then
 arrManagers=${managers//,/ }
 
 for manager in $arrManagers; do
-  docker -H $manager:$managerport $* &> /dev/null
+  docker -H $manager:$managerport version &> /dev/null
   if [ $? -ne 0 ]; then
     echo "'$manager' doesn't respond, trying next cluster member"
     continue; fi
