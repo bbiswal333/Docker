@@ -19,9 +19,13 @@ if [ $# -ne 1 ]; then
 
 # Delete containers (forcing Stop)
 array=$(./swarmHA-cmd.sh ps -a | awk -v value=$1 '$2 ~ value {print $NF}')
-./swarmHA-cmd.sh rm -f -v $array
+
+if [ "${array}" ]; then
+  ./swarmHA-cmd.sh rm -f -v $array; fi
 
 
 # Delete images
 array=$(./swarmHA-cmd.sh images | awk -v value=$1 '$1 ~ value {print $1}')
-./swarmHA-cmd.sh rmi $array
+
+if [ "${array}" ]; then
+  ./swarmHA-cmd.sh rmi $array; fi
