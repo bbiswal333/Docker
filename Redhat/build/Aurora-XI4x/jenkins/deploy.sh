@@ -108,12 +108,12 @@ function RetrieveDeployedNodes {
 
   rm -f $nodesInstall
 
-  cat $nodesList
-  echo
-
   if [ $nodeone = . ]; then
       echo "No deployed node retrieved. Quitting"
-    exit 1; fi; }
+    exit 1; fi
+
+  cat $nodesList
+  echo; }
 
 
 #--------------------------------------
