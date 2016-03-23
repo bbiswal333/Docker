@@ -18,8 +18,8 @@ if [ $# -ne 1 ]; then
 
 
 # Delete containers (forcing Stop)
-echo "DELETING ALL Aurora CONTAINERS"
 echo
+echo "DELETING ALL Aurora CONTAINERS"
 array=$(./swarmHA-cmd.sh ps -a | awk -v value=$1 '$2 ~ value {print $NF}')
 
 if [ "${array}" ]; then
@@ -27,8 +27,8 @@ if [ "${array}" ]; then
 
 
 # Delete images
-echo "DELETING ALL Aurora IMAGES"
 echo
+echo "DELETING ALL Aurora IMAGES"
 array=$(./swarmHA-cmd.sh images | awk -v value=$1 '$1 ~ value {print $1}')
 
 if [ "${array}" ]; then
