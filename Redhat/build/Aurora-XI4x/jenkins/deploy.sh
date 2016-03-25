@@ -190,6 +190,7 @@ function SmokeTest {
   buildMachine="dewdftvu1018.wdf.sap.corp"
   user="pblack"
 
+  chmod +x $fileName
   scp -oStrictHostKeyChecking=no ./$fileName $user@$buildMachine:/build/$user/tmp/$fileName
 
   if [ $? -ne 0 ]; then
