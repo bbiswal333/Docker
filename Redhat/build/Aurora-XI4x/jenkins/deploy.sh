@@ -157,35 +157,54 @@ function SmokeTest {
   IP=${IP/)/}
 
 
-  fileName="RunSmt-$1.sh"
+  template=RunSmokeTest.sh
+  fileName=RunSmt-$1.sh
 
-  {
-    echo "#!/bin/sh"
-    echo
-    echo "## -------------------------------------------------------------------"
-    echo "## Encapsulate the trigerring of the RM script Build.pl"
-    echo "## ------------------------------------------------------------------"
-    echo
-    echo "export RM_TOOL_HOME=/build/pblack/core.build.tools"
-    echo
-    echo "## Variables used by the perl script to generate qrs file :"
-    echo "export ARCHITECTURE=64"
-    echo "export BUILD_INI_FILE=$1.ini"
-    echo "export BUILD_VERSION=$version"
-    echo "export SMTMACHINE=$nodeone"
-    echo "export SMTMACHINE_IP=$IP"
-    echo "export TOMCATPORT=$TomcatConnectionPort"
-    echo "export CMSPORT=$CMSPort"
-    echo
-    echo "cd \$RM_TOOL_HOME"
-    echo
-    echo "#Set Build Ini File"
-    echo "RM_TOOL_INI=\$RM_TOOL_HOME/export/shared/contexts/\${BUILD_INI_FILE}"
-    echo "echo RM Ini file used : \$RM_TOOL_INI"
-    echo
-    echo "#Launch Build.pl script => launch smoke test"
-    echo "perl \$RM_TOOL_HOME/export/shared/Build.pl -\$ARCHITECTURE -dashboard -warning=0 -i=\$RM_TOOL_INI -v=\$BUILD_VERSION -S 1> \${RM_TOOL_HOME}/Buildpl_SMT.log 2>&1"
-  } > $fileName
+  curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins/$template > $filename
+
+  if [ ! -f $filename ]; then
+    echo "Failed to curl file '$template' from Github"
+    exit 1; fi
+
+  sed "
+    / ARCHITECTURE=/s/=.*/=64/
+    / BUILD_INI_FILE=/s/=.*/=$1.ini/
+    / BUILD_VERSION=/s/=.*/=$version/
+    / SMTMACHINE=/s/=.*/=$nodeone/
+    / SMTMACHINE_IP=/s/=.*/=$IP/
+    / TOMCATPORT=/s/=.*/=$TomcatConnectionPort/
+    / CMSPORT=/s/=.*/=$CMSPort/
+    s/Buildpl_SMT.log/Buildpl_SMT-$1.log/
+    " $template > $fileName
+
+
+#  {
+#    echo "#!/bin/sh"
+#    echo
+#    echo "## -------------------------------------------------------------------"
+#    echo "## Encapsulate the trigerring of the RM script Build.pl"
+#    echo "## ------------------------------------------------------------------"
+#    echo
+#    echo "export RM_TOOL_HOME=/build/pblack/core.build.tools"
+#    echo
+#    echo "## Variables used by the perl script to generate qrs file :"
+#    echo "export ARCHITECTURE=64"
+#    echo "export BUILD_INI_FILE=$1.ini"
+#    echo "export BUILD_VERSION=$version"
+#    echo "export SMTMACHINE=$nodeone"
+#    echo "export SMTMACHINE_IP=$IP"
+#    echo "export TOMCATPORT=$TomcatConnectionPort"
+#    echo "export CMSPORT=$CMSPort"
+#    echo
+#    echo "cd \$RM_TOOL_HOME"
+#    echo
+#    echo "#Set Build Ini File"
+#    echo "RM_TOOL_INI=\$RM_TOOL_HOME/export/shared/contexts/\${BUILD_INI_FILE}"
+#    echo "echo RM Ini file used : \$RM_TOOL_INI"
+#    echo
+#    echo "#Launch Build.pl script => launch smoke test"
+#    echo "perl \$RM_TOOL_HOME/export/shared/Build.pl -\$ARCHITECTURE -dashboard -warning=0 -i=\$RM_TOOL_INI -v=\$BUILD_VERSION -S 1> \${RM_TOOL_HOME}/Buildpl_SMT.log 2>&1"
+#  } > $fileName
 
   buildMachine="dewdftvu1018.wdf.sap.corp"
   user="pblack"
@@ -197,11 +216,11 @@ function SmokeTest {
     echo "Failed to scp '$fileName' to build machine '$buildMachine'"
     exit 1; fi
 
-  ssh ${user}@${buildMachine} -oStrictHostKeyChecking=no /build/$user/tmp/$fileName; }
+echo  ssh $user@$buildMachine -oStrictHostKeyChecking=no /build/$user/tmp/$fileName; }
 
 
 #---------------  MAIN
-# params  aurora aurora42_cons aurora4xInstall
+# params  aurora  aurora42_cons  aurora4xInstall  NbContainers
 
 CheckParam $#
 InitVars $1 $2 $3
