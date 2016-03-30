@@ -160,9 +160,9 @@ function SmokeTest {
   template=RunSmokeTest.sh
   fileName=RunSmt-$1.sh
 
-  curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins/$template > $filename
+  curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins/$template > $template
 
-  if [ ! -f $filename ]; then
+  if [ ! -f $template ]; then
     echo "Failed to curl file '$template' from Github"
     exit 1; fi
 
