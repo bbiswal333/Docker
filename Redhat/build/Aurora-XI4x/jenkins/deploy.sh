@@ -216,7 +216,7 @@ function SmokeTest {
     echo "Failed to scp '$fileName' to build machine '$buildMachine'"
     exit 1; fi
 
-echo  ssh $user@$buildMachine -oStrictHostKeyChecking=no /build/$user/tmp/$fileName; }
+  ssh $user@$buildMachine -oStrictHostKeyChecking=no /build/$user/tmp/$fileName; }
 
 
 #---------------  MAIN
