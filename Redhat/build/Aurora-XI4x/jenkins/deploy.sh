@@ -3,9 +3,7 @@
 ###############################################################################
 #
 #  AUTHOR: gerald.braunwarth@sap.com    - February 2016 -
-#  PURPOSE: 
-#      - writes into 'nodesList.txt' the swarm nodes list deployed with the image
-#      - write into connectinfo.ini the connexion info for the first node
+#  PURPOSE: deploy containers and write testing parameters in a file
 #
 ###############################################################################
 
@@ -18,7 +16,7 @@ function CheckParam {
 
 
 #--------------------------------------
-function InitVars {
+function InitVars { # aurora, aurora42_cons, aurora4xInstall
 
   export request="swarm-request.ini"
   export swarmrun="swarmHA-run.sh"
@@ -27,16 +25,15 @@ function InitVars {
 
   export gitSwarm="https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/swarm/automation"
   export gitResponse="https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x"
-  export gitVersion="https://github.wdf.sap.corp/raw/AuroraXmake/$3/master"
+  export gitVersion=https://github.wdf.sap.corp/raw/AuroraXmake/$3/master
 
   export version=$(curl -s -k $gitVersion/$versionTxt)
 
   if [ ! "${version}" ]; then
-    echo "Failed to retrieve version from Github file '$versionTxt'"
+    echo "Failed to curl file '$versionTxt' from Github"
     exit 1; fi
 
-  export image="dockerdevregistry.wdf.sap.corp:5000/$1/$2_$version-snapshot"
-  export nodeone=.; }
+  export image="dockerdevregistry.wdf.sap.corp:5000/$1/$2_$version-snapshot"; }
 
 
 #--------------------------------------
@@ -51,180 +48,113 @@ function GetFromGithub {
 
 
 #--------------------------------------
-function DeployContainers {
+function DeployContainers { # NbContainers
 
   echo
 
   if [ ! -f ../$request ]; then
     GetFromGithub $gitSwarm $request ..; fi
+
   GetFromGithub $gitSwarm $swarmrun .
 
   echo
   echo "Deploying containers"
 
   chmod +x $swarmrun
-  ./$swarmrun	 $1  "$image"; }
+  ./$swarmrun  $1  $image; }
 
 
 #--------------------------------------
-function RetrieveDeployedNodes {
+function checkSource {
 
-  nodesInstall="nodesInstall.txt"
-  nodesList="nodesList.txt"
+  if [ ! -f $1 ]; then
+    echo "File '$1' is missing"
+    exit 1; fi
 
-  if [ -f $nodesList ]; then
-    rm -f $nodesList; fi
+  source $1; }
 
-  source "../$request"
+
+#--------------------------------------
+function RetrieveHost { # aurora42_cons_2000
+
+  checkSource ../$request
 
   arrManagers=${managers//,/ }
   for manager in $arrManagers; do
-    docker -H $manager:$managerport ps &> /dev/null
+    docker -H $manager:$managerport version &> /dev/null
     if [ $? -ne 0 ]; then
       echo "'$manager' doesn't respond, trying next cluster member"
       continue; fi
-    docker -H $manager:$managerport ps -a | grep $1 > $nodesInstall
+    result=$(docker -H $manager:$managerport ps -a | grep $1)
     status=1
     break
   done
 
-  if [ ! ${status} ]; then
+  if [ ! "${status}" ]; then
     echo "No alive Swarm manager member found. Cannot retrieve deployed nodes"
     exit 1; fi
 
-
-  echo
-  echo "Deployed Swarm nodes:"
+  if [ ! "${result}" ]; then
+    echo "No '$1' deployed container retrieved"
+    exit 1; fi
 
   arrNodes=${nodes//,/ }
   for nodeFQDN in $arrNodes; do
     node="${nodeFQDN%%.*}"
-    grep $node $nodesInstall
+    dummy=$(echo $result | grep $node)
     if [ $? -eq 0 ]; then
-      if [ $nodeone = . ]; then
-        nodeone=$nodeFQDN; fi
-      printf "$node\n" >> $nodesList; fi
+      host=$nodeFQDN
+      break; fi
   done
 
-  rm -f $nodesInstall
-
-  if [ $nodeone = . ]; then
-      echo "No deployed node retrieved. Quitting"
+  if [ ! "${host}" ]; then
+    echo "Failed to retrieve the host of '$1' container"
     exit 1; fi
 
-  cat $nodesList
-  echo; }
+  echo $host; }
 
 
 #--------------------------------------
-function WriteConnnectionFile {
+function RetrieveIP { # hostFQDN
 
-  # Write file connectinfo.ini
-  echo
-  GetFromGithub $gitResponse $response .
-
-  echo
-  echo "Connexion info file:"
-
-  connectinfo="../connectinfo.ini"
-
-  source $response
-
-  {
-    echo BUILD_NUMBER=$version
-    echo BUILD_STREAM=$1
-    echo ip=$nodeone
-    echo user=root
-    echo password=root
-    echo tomcat_port=$TomcatConnectionPort
-    echo cms_port=$CMSPort
-  } > $connectinfo
-
-  cat $connectinfo
-  echo; }
-
-
-#--------------------------------------
-function SmokeTest {
-
-  # retrieve nodeone IP
-  ping=$(ping -c 1 $nodeone 2>&1 | grep "(")
+  ping=$(ping -c 1 $1 2>&1 | grep "(")
   if [ ! "${ping}" ]; then
     echo "Failed to retrieve $nodeone IP"
     exit 1; fi
   IP=$(echo $ping | awk '$3 { print $3 }')
   IP=${IP/(/}
   IP=${IP/)/}
+  echo $IP; }
 
 
-  template=RunSmokeTest.sh
-  fileName=RunSmt-$1.sh
+#--------------------------------------
+function TestingParameters {  # aurora42_cons, 2000
 
-  curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins/$template > $template
+  echo
+  GetFromGithub $gitResponse $response .
+  source $response
 
-  if [ ! -f $template ]; then
-    echo "Failed to curl file '$template' from Github"
-    exit 1; fi
+  hostFQDN=$(RetrieveHost $1_$version)
+  hostIP=$(RetrieveIP $hostFQDN)
 
-  sed "
-    / ARCHITECTURE=/s/=.*/=64/
-    / BUILD_INI_FILE=/s/=.*/=$1.ini/
-    / BUILD_VERSION=/s/=.*/=$version/
-    / SMTMACHINE=/s/=.*/=$nodeone/
-    / SMTMACHINE_IP=/s/=.*/=$IP/
-    / TOMCATPORT=/s/=.*/=$TomcatConnectionPort/
-    / CMSPORT=/s/=.*/=$CMSPort/
-    s/Buildpl_SMT.log/Buildpl_SMT-$1.log/
-    " $template > $fileName
-
-
-#  {
-#    echo "#!/bin/sh"
-#    echo
-#    echo "## -------------------------------------------------------------------"
-#    echo "## Encapsulate the trigerring of the RM script Build.pl"
-#    echo "## ------------------------------------------------------------------"
-#    echo
-#    echo "export RM_TOOL_HOME=/build/pblack/core.build.tools"
-#    echo
-#    echo "## Variables used by the perl script to generate qrs file :"
-#    echo "export ARCHITECTURE=64"
-#    echo "export BUILD_INI_FILE=$1.ini"
-#    echo "export BUILD_VERSION=$version"
-#    echo "export SMTMACHINE=$nodeone"
-#    echo "export SMTMACHINE_IP=$IP"
-#    echo "export TOMCATPORT=$TomcatConnectionPort"
-#    echo "export CMSPORT=$CMSPort"
-#    echo
-#    echo "cd \$RM_TOOL_HOME"
-#    echo
-#    echo "#Set Build Ini File"
-#    echo "RM_TOOL_INI=\$RM_TOOL_HOME/export/shared/contexts/\${BUILD_INI_FILE}"
-#    echo "echo RM Ini file used : \$RM_TOOL_INI"
-#    echo
-#    echo "#Launch Build.pl script => launch smoke test"
-#    echo "perl \$RM_TOOL_HOME/export/shared/Build.pl -\$ARCHITECTURE -dashboard -warning=0 -i=\$RM_TOOL_INI -v=\$BUILD_VERSION -S 1> \${RM_TOOL_HOME}/Buildpl_SMT.log 2>&1"
-#  } > $fileName
-
-  buildMachine="dewdftvu1018.wdf.sap.corp"
-  user="pblack"
-
-  chmod +x $fileName
-  scp -oStrictHostKeyChecking=no ./$fileName $user@$buildMachine:/build/$user/tmp/$fileName
-
-  if [ $? -ne 0 ]; then
-    echo "Failed to scp '$fileName' to build machine '$buildMachine'"
-    exit 1; fi
-
-  ssh $user@$buildMachine -oStrictHostKeyChecking=no /build/$user/tmp/$fileName; }
+  (
+    echo buildType=$1
+    echo version=$version
+    echo hostFQDN=$hostFQDN
+    echo hostIP=$hostIP
+    echo SshPort=32770
+    echo user=root
+    echo password=root
+    echo tomcatPort=$TomcatConnectionPort
+    echo cmsPort=$CMSPort
+  ) > ../TestingParameters.txt; }
 
 
 #---------------  MAIN
 # params  aurora  aurora42_cons  aurora4xInstall  NbContainers
+#set -x
 
 CheckParam $#
 InitVars $1 $2 $3
 DeployContainers $4
-RetrieveDeployedNodes "$2_$version"
-WriteConnnectionFile $2
-SmokeTest $2
+TestingParameters $2 $version
