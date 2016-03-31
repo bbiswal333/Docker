@@ -23,6 +23,7 @@ connectinfo="../connectinfo.ini"
   echo BUILD_STREAM=$buildType
   echo BUILD_NUMBER=$version
   echo ip=$hostFQDN
+  echo SshPort=$SshPort
   echo user=$user
   echo password=$password
   echo tomcat_port=$tomcatPort

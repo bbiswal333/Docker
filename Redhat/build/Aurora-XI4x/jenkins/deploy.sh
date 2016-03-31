@@ -119,7 +119,7 @@ function RetrieveIP { # hostFQDN
 
   ping=$(ping -c 1 $1 2>&1 | grep "(")
   if [ ! "${ping}" ]; then
-    echo "Failed to retrieve $nodeone IP"
+    echo "Failed to retrieve $1 IP"
     exit 1; fi
   IP=$(echo $ping | awk '$3 { print $3 }')
   IP=${IP/(/}
