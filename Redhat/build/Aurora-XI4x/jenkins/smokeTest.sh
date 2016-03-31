@@ -7,6 +7,9 @@
 #
 ###############################################################################
 
+echo
+echo "Runnning Smoke Test"
+
 
 file="../TestingParameters.txt"
 
