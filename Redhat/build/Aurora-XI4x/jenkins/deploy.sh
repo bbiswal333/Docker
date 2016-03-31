@@ -134,6 +134,9 @@ function TestingParameters {  # aurora42_cons, 2000
   GetFromGithub $gitResponse $response .
   source $response
 
+  echo
+  echo "Writing testing parameters file '../TestingParameters.txt'"
+
   hostFQDN=$(RetrieveHost $1_$version)
   hostIP=$(RetrieveIP $hostFQDN)
 
