@@ -32,8 +32,10 @@ sed "
   / ARCHITECTURE=/s/=.*/=64/
   / BUILD_INI_FILE=/s/=.*/=$buildType.ini/
   / BUILD_VERSION=/s/=.*/=$version/
-  / SMTMACHINE=/s/=.*/=$hostFQDN/
-  / SMTMACHINE_IP=/s/=.*/=$hostIP/
+# / SMTMACHINE=/s/=.*/=$hostFQDN/
+  / SMTMACHINE=/s/=.*/=localhost/
+# / SMTMACHINE_IP=/s/=.*/=$hostIP/
+  / SMTMACHINE_IP=/s/=.*/=localhost/
   / TOMCATPORT=/s/=.*/=$tomcatPort/
   / CMSPORT=/s/=.*/=$cmsPort/
   s/Buildpl_SMT.log/Buildpl_SMT-$buildType.log/
@@ -49,4 +51,4 @@ if [ $? -ne 0 ]; then
   echo "Failed to scp '$fileName' to build machine '$buildMachine'"
   exit 1; fi
 
-ssh $user@$buildMachine -oStrictHostKeyChecking=no /build/$user/tmp/$fileName; }
+ssh $user@$buildMachine -oStrictHostKeyChecking=no /build/$user/tmp/$fileName
