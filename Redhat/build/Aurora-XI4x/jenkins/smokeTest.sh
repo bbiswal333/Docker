@@ -34,8 +34,7 @@ sed "
   / BUILD_VERSION=/s/=.*/=$version/
 # / SMTMACHINE=/s/=.*/=$hostFQDN/
   / SMTMACHINE=/s/=.*/=localhost/
-# / SMTMACHINE_IP=/s/=.*/=$hostIP/
-  / SMTMACHINE_IP=/s/=.*/=localhost/
+  / SMTMACHINE_IP=/s/=.*/=$hostIP/
   / TOMCATPORT=/s/=.*/=$tomcatPort/
   / CMSPORT=/s/=.*/=$cmsPort/
   s/Buildpl_SMT.log/Buildpl_SMT-$buildType.log/
