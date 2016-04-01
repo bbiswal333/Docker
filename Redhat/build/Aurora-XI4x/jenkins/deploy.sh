@@ -136,6 +136,7 @@ function TestingParameters {  # aurora42_cons, 2000
 
   echo
   echo "Writing testing parameters file '../TestingParameters.txt'"
+  echo
 
   hostFQDN=$(RetrieveHost $1_$version)
   hostIP=$(RetrieveIP $hostFQDN)
