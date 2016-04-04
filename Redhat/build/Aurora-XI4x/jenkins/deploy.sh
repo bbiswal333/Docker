@@ -131,16 +131,18 @@ function RetrieveIP { # hostFQDN
 function TestingParameters {  # aurora42_cons, 2000
 
   echo
+  echo
   GetFromGithub $gitResponse $response .
   source $response
 
   echo
-  echo "Writing testing parameters file '../TestingParameters.txt'"
-  echo
-
+  echo "Retrieving Docker node FQDN"
   hostFQDN=$(RetrieveHost $1_$version)
+
+  echo "Retrieving Docker node IP"
   hostIP=$(RetrieveIP $hostFQDN)
 
+  echo "Writing testing parameters file '../TestingParameters.txt'"
   (
     echo buildType=$1
     echo version=$version
@@ -156,7 +158,6 @@ function TestingParameters {  # aurora42_cons, 2000
 
   echo
   echo "Waiting for /BOE/CMC area to mount"
-set -x
   elapsed=0
   while [ $elapsed -lt 10 ] && ! curl -s -I http://$hostFQDN:10001/BOE/CMC | grep OK; do
     elapsed=$((elapsed+1))
@@ -164,9 +165,7 @@ set -x
 
   if [ $elapsed -ne 10 ]; then msg="mounted"; else msg="not mounted"; fi
   echo "/BOE/CMC is" $msg
-  echo
-
-set +x; }
+  echo; }
 
 
 #---------------  MAIN
