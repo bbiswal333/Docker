@@ -160,6 +160,7 @@ function TestingParameters {  # aurora42_cons, 2000
   echo "Waiting for /BOE/CMC area to mount"
   elapsed=0
   while [ $elapsed -lt 10 ] && ! curl -s -I http://$hostFQDN:10001/BOE/CMC | grep OK; do
+    echo "  Retry in 1 minute"
     elapsed=$((elapsed+1))
     sleep 1m; done
 
