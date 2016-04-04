@@ -151,7 +151,22 @@ function TestingParameters {  # aurora42_cons, 2000
     echo password=root
     echo tomcatPort=$TomcatConnectionPort
     echo cmsPort=$CMSPort
-  ) > ../TestingParameters.txt; }
+  ) > ../TestingParameters.txt
+
+
+  echo
+  echo "Waiting for /BOE/CMC area to mount"
+set -x
+  elapsed=0
+  while [ $elapsed -lt 10 ] && ! curl -s -I http://$hostFQDN:10001/BOE/CMC | grep OK; do
+    elapsed=$((elapsed+1))
+    sleep 1m; done
+
+  if [ $elapsed -ne 10 ]; then msg="mounted"; else msg="not mounted"; fi
+  echo "/BOE/CMC is" $msg
+  echo
+
+set +x; }
 
 
 #---------------  MAIN

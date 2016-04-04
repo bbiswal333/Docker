@@ -51,3 +51,8 @@ if [ $? -ne 0 ]; then
   exit 1; fi
 
 ssh $user@$buildMachine -oStrictHostKeyChecking=no /build/$user/tmp/$fileName
+status=$?
+
+echo $filename "returned exit code" $status
+
+exit 0
