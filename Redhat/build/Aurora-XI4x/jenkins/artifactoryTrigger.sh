@@ -9,7 +9,7 @@
 #
 ###############################################################################
 
-#set -x
+set -x
 
 # $1 suite = aurora
 # $2 folder = aurora42_cons
@@ -18,7 +18,7 @@
 
 if [ $# -ne 3 ]; then
   echo "Expected parameter <Suite> <Folder>"
-  echo "Example: artifactoryTrigger.sh  aurora  aurora42_cons"
+  echo "Example: artifactoryTrigger.sh  aurora  aurora42_cons  aurora42_cons"
   exit 1; fi
 
 if [ ! -f 'prevCurl.txt' ]; then
@@ -27,16 +27,16 @@ if [ ! -f 'prevCurl.txt' ]; then
     echo 'Failed to get file prevCurl.txt from GitHub'
     exit 1; fi; fi
 
-artirepo="https://dewdftv01813.dhcp.pgdev.sap.corp/artifactory/api/storage/devinfrafr/$1/?lastModified"
+artirepo="https://docker.wdf.sap.corp/artifactory/api/storage/cidemo/$1/"
 version=$(curl -s -k https://github.wdf.sap.corp/raw/AuroraXmake/$3/master/version.txt)
 
 if [ ! "${version}" ]; then
   echo "Failed to retrieve version from xMake Github repo"
   exit 1; fi
 
-curl -s -k $artirepo | grep artifactory > newCurl.txt
+curl -s -k $artirepo | grep uri > newCurl.txt
 
-fgrep -vf prevCurl.txt newCurl.txt | grep $1_$version
+fgrep -vf prevCurl.txt newCurl.txt | grep $2_$version-snapshot
 status=$?
 
 rm -f prevCurl.txt
