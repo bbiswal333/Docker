@@ -1,5 +1,6 @@
 # WEBI SBOP 4.x prerequisites installation
 
+FROM docker.wdf.sap.corp:50000/aurora/rh7-tools:latest
 
 MAINTAINER gerald.braunwarth@sap.com, simon.gomez@sap.com
 
