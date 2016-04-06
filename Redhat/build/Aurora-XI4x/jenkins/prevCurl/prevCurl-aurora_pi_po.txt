@@ -1,0 +1,4 @@
+    "uri" : "/aurora_pi_po_551-snapshot",
+    "uri" : "/aurora_pi_po_552-snapshot",
+    "uri" : "/rh7-tools",
+  "uri" : "https://docker.wdf.sap.corp:10443/artifactory/api/storage/cidemo/aurora"
