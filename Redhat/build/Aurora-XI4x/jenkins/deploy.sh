@@ -33,7 +33,7 @@ function InitVars { # aurora, aurora42_cons, aurora4xInstall
     echo "Failed to curl file '$versionTxt' from Github"
     exit 1; fi
 
-  export image="dockerdevregistry.wdf.sap.corp:5000/$1/$2_$version-snapshot"; }
+  export image="docker.wdf.sap.corp:50000/$1/$2_$version-snapshot"; }
 
 
 #--------------------------------------
