@@ -25,7 +25,7 @@ if [ ! -f prevCurl-$2.txt ]; then
     echo "Failed to get file prevCurl-$2.txt from GitHub"
     exit 1; fi; fi
 
-artirepo="https://docker.wdf.sap.corp/artifactory/api/storage/cidemo/$1/"
+artirepo="https://docker.wdf.sap.corp:50000/artifactory/api/storage/cidemo/$1/"
 version=$(curl -s -k https://github.wdf.sap.corp/raw/AuroraXmake/$3/master/version.txt)
 
 if [ ! "${version}" ]; then
