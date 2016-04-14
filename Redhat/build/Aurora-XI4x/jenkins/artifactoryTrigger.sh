@@ -24,9 +24,9 @@ if [ ! -f prevCurl-$2.txt ]; then
     echo "Failed to retrieve 'prevCurl-$2.txt' from GitHub"
     exit 1; fi; fi
 
+version=$(curl -s -k https://github.wdf.sap.corp/raw/AuroraXmake/$3/master/version.txt)
 artirepo=https://docker.wdf.sap.corp:10443/artifactory/list/cidemo/$1/
 artibuild=https://docker.wdf.sap.corp:50000/artifactory/api/storage/cidemo/$1/$2_${version}-snapshot
-version=$(curl -s -k https://github.wdf.sap.corp/raw/AuroraXmake/$3/master/version.txt)
 
 if [ ! "${version}" ]; then
   echo 'Failed to retrieve version from xMake Github repo'
