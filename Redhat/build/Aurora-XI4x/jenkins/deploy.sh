@@ -33,7 +33,8 @@ function InitVars { # aurora, aurora42_cons, aurora4xInstall
     echo "Failed to curl file '$versionTxt' from Github"
     exit 1; fi
 
-  export image="docker.wdf.sap.corp:50000/$1/$2_$version-snapshot"; }
+  export registry="docker.wdf.sap.corp:50000"
+  export image="$1/$2_$version-snapshot"; }
 
 
 #--------------------------------------
@@ -61,7 +62,7 @@ function DeployContainers { # NbContainers
   echo "Deploying containers"
 
   chmod +x $swarmrun
-  ./$swarmrun  $1  $image; }
+  ./$swarmrun  $registry  $image  $1; }
 
 
 #--------------------------------------
@@ -171,7 +172,7 @@ function TestingParameters {  # aurora42_cons, 2000
 
 #---------------  MAIN
 # params  aurora  aurora42_cons  aurora4xInstall  NbContainers
-#set -x
+set -x
 
 CheckParam $#
 InitVars $1 $2 $3
