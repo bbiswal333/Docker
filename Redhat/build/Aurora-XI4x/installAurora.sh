@@ -16,7 +16,7 @@ if [ $# -ne 1 ]; then
 dropShare=derotvi0082.wdf.sap.corp:/dropzone/aurora_dev/$1/linux_x64/release/packages
 
 endpoint=BusinessObjectsServer
-semaphore=packages_copy_done
+#semaphore=packages_copy_done
 
 timeout=960    # 16 hours
 elapsed=0
@@ -37,9 +37,9 @@ if [ $status -ne 0 ]; then
   echo
   exit 1; fi
 
-while [ ! -f /mnt/nfs/$semaphore ]; do
-  echo "Waiting for COPYDONE semaphore file, retry in 3 minutes"
-  sleep 3m; done
+#while [ ! -f /mnt/nfs/$semaphore ]; do
+#  echo "Waiting for COPYDONE semaphore file, retry in 3 minutes"
+#  sleep 3m; done
 
 # ALIAS in /etc/hosts
 cp /etc/hosts /etc/hosts.old
