@@ -25,12 +25,13 @@ if [ ! -f prevCurl-$2.txt ]; then
     exit 1; fi; fi
 
 version=$(curl -s -k https://github.wdf.sap.corp/raw/AuroraXmake/$3/master/version.txt)
-artirepo=https://docker.wdf.sap.corp:10443/artifactory/list/cidemo/$1/
-artibuild=https://docker.wdf.sap.corp:50000/artifactory/api/storage/cidemo/$1/$2_${version}-snapshot
 
 if [ ! "${version}" ]; then
   echo 'Failed to retrieve version from xMake Github repo'
   exit 1; fi
+
+artirepo=https://docker.wdf.sap.corp:10443/artifactory/list/cidemo/$1/
+artibuild=https://docker.wdf.sap.corp:50000/artifactory/api/storage/cidemo/$1/$2_${version}-snapshot
 
 curl -s $artirepo | grep -i 'snapshot' > newCurl-$2.txt
 
