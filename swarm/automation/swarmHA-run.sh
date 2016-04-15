@@ -11,7 +11,6 @@
 #--------------------------------------
 function CheckImagePulled {	# registry:port  repo/image:tag
 
-# artibuild=https://$1/artifactory/api/storage/cidemo/$2
   artibuild=https://$1/artifactory/api/storage/cidemo/$2/latest/manifest.json
 
   status=1
@@ -41,7 +40,6 @@ set -x
 
 if [ $# -ne 3 ]; then
   echo "Invalid number of parameters."
-# echo Usage: ./swarmHA-run.sh  <NumberOfContainer>  <registry:port/repository/image/tag
   echo "Usage: ./swarmHA-run.sh   <registry:port>  <repository/image/tag>  <NbContainers>"
   exit 1; fi
 
@@ -59,7 +57,7 @@ source "../$request"
 if [ "${managerLB}" ]; then
   CheckImagePulled $1 $2
   RunContainers    $manager $managerport $1 $2 $3
-  exit 0; fi
+  exit $?; fi
 
 arrManagers=${managers//,/ }
 
