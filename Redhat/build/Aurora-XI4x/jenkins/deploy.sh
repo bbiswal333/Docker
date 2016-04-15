@@ -62,7 +62,10 @@ function DeployContainers { # NbContainers
   echo "Deploying containers"
 
   chmod +x $swarmrun
-  ./$swarmrun  $registry  $image  $1; }
+  ./$swarmrun  $registry  $image  $1
+
+  if [ $? -ne 0 ]; then
+    exit 1; fi; }
 
 
 #--------------------------------------
@@ -140,8 +143,14 @@ function TestingParameters {  # aurora42_cons, 2000
   echo "Retrieving Docker node FQDN"
   hostFQDN=$(RetrieveHost $1_$version)
 
+  if [ $? -ne 0 ]; then
+    exit 1; fi
+
   echo "Retrieving Docker node IP"
   hostIP=$(RetrieveIP $hostFQDN)
+
+  if [ $? -ne 0 ]; then
+    exit 1; fi
 
   echo "Writing testing parameters file '../TestingParameters.txt'"
   (
