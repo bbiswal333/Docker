@@ -42,12 +42,13 @@ if [ $? -ne 0 ]; then
 grep -vf prevCurl-$2.txt newCurl-$2.txt | grep $2_$version-snapshot
 status=$?
 
-rm -f prevCurl-$2.txt
-mv  newCurl-$2.txt prevCurl-$2.txt
-
-# not a delete after deployment!
 if [ $status -eq 0 ]; then
-  curl -s $artibuild | grep -i 'path'
-  status=$?; fi
+  curl -s ${artirepo}/$2_${version}-snapshot/latest | grep -i 'path'
+  status=$?
+  if [ $status -eq 0 ]; then
+	  rm -f prevCurl-$2.txt
+  	mv  newCurl-$2.txt prevCurl-$2.txt
+  fi
+fi
 
 exit $status
