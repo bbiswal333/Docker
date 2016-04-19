@@ -27,8 +27,7 @@ function InitVars {  # aurora  aurora42_cons  aurora4xInstall
 
   export registry="docker.wdf.sap.corp:51003"
   export image=$1/$2_$version-snapshot
-  export auroraReq=aurora-req
-  export containerName=AuroraBox; }
+  export auroraReq=aurora-req; }
 
 
 #--------------------------------------
@@ -46,21 +45,39 @@ function CheckLoginFile {
 
 
 #--------------------------------------
+function RemoveContainers {
+  array=$(docker ps -a -q)
+  if [ "${array}" ]; then
+    docker rm -f -v $array; fi; }
+
+
+function RemoveImage {
+  array=$(docker images | awk -v value=$1 '$1~value {print $1}')
+  if [ "${array}" ]; then
+    docker rmi $1; fi; }
+
+
+function CleanUp {
+  RemoveContainers
+# RemoveImage $auroraReq
+  RemoveImage $1; }
+
+
+#--------------------------------------
 function PrepareBuild {
 
   # create build folder
   folder=$1-$version
 
-  if [ -d $folder ]; then
-    rm -rf $folder; fi
+  if [ -d builds ]; then
+    rm -rf builds; fi
+  mkdir -p builds/$folder
 
-  mkdir $folder
-  cd $folder
 
   # download Dockerfile to build
-  curl -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/Dockerfile > Dockerfile
+  curl -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/Dockerfile > builds/$folder/Dockerfile
 
-  if [ ! -f Dockerfile ]; then
+  if [ ! -f builds/$folder/Dockerfile ]; then
     echo "Failed to get file 'Dockerfile' from GitHub"
     exit 1; fi; }
 
@@ -77,19 +94,19 @@ function OnError {
 
 #--------------------------------------
 function DockerBuild {
-  docker build -t $auroraReq .
+  docker build -t $auroraReq builds/$1-$version
   OnError $? "docker build has returned an error"; }
 
 
 #--------------------------------------
 function InstallAurora {  # aurora42_cons
-  docker run -t --privileged --net=host --name $containerName $auroraReq /bin/sh /mnt/installAurora.sh $1/$version
+  docker run -t --privileged --net=host --name $1 $auroraReq /bin/sh /mnt/installAurora.sh $1/$version
   OnError $? "Aurora setup has returned an error"; }
 
 
 #--------------------------------------
-function CommitToImage {
-  docker commit $containerName  $registry/$image 2>&1 > /dev/null
+function CommitToImage {  # aurora42_cons
+  docker commit $1  $registry/$image 2>&1 > /dev/null
   OnError $? "Failed to commit the Aurora container to a local image"; }
 
 
@@ -106,12 +123,6 @@ function SaveToRegistry {
   OnError $status "Failed to push image ' $registry/$image'"; }
 
 
-#--------------------------------------
-#function CleanUp {
-  # docker rmi $(docker images -a -q)
-#}
-
-
 #---------------  MAIN
 # params  aurora  aurora42_cons  aurora4xInstall
 set -x
@@ -119,9 +130,9 @@ set -x
 CheckParam $# $0
 InitVars  $1 $2 $3
 CheckLoginFile
+CleanUp $2
 PrepareBuild $2
-DockerBuild
+DockerBuild $2
 InstallAurora $2
-CommitToImage
+CommitToImage $2
 SaveToRegistry
-#CleanUp
