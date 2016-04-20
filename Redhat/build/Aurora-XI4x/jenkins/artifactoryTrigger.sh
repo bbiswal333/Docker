@@ -7,11 +7,11 @@
 #
 ###############################################################################
 
-set -x
-
 # $1 suite = aurora
 # $2 folder = aurora42_cons
 # $3 xmakerepo = aurora4xInstall
+
+set -x
 
 if [ $# -ne 3 ]; then
   echo "Expected parameter <Suite>  <Folder>  <xMakeRepo>"
@@ -46,8 +46,7 @@ if [ $status -eq 0 ]; then
   curl -s ${artirepo}/$2_${version}-snapshot/latest | grep -i 'path'
   status=$?
   if [ $status -eq 0 ]; then
-	  rm -f prevCurl-$2.txt
-  	mv  newCurl-$2.txt prevCurl-$2.txt
+    mv -f newCurl-$2.txt prevCurl-$2.txt
   fi
 fi
 
