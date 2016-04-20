@@ -46,7 +46,7 @@ function CheckLoginFile {
 
 #--------------------------------------
 function RemoveContainers {
-  array=$(docker ps -a -q)
+  array=$(docker ps -a | awk -v value=$auroraReq '$2~value {print $1}')
   if [ "${array}" ]; then
     docker rm -f -v $array; fi; }
 
@@ -54,12 +54,11 @@ function RemoveContainers {
 function RemoveImage {
   array=$(docker images | awk -v value=$1 '$1~value {print $1}')
   if [ "${array}" ]; then
-    docker rmi $1; fi; }
+    docker rmi $array; fi; }
 
 
 function CleanUp {
   RemoveContainers
-# RemoveImage $auroraReq
   RemoveImage $1; }
 
 
