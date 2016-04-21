@@ -43,7 +43,7 @@ grep -vf prevCurl-$2.txt newCurl-$2.txt | grep $2_$version-snapshot
 status=$?
 
 if [ $status -eq 0 ]; then
-  curl -s ${artirepo}/$2_${version}-snapshot/latest | grep -i 'path'
+  curl -s $artibuild | grep -i 'latest'
   status=$?
   if [ $status -eq 0 ]; then
     mv -f newCurl-$2.txt prevCurl-$2.txt
@@ -51,3 +51,4 @@ if [ $status -eq 0 ]; then
 fi
 
 exit $status
+
