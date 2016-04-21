@@ -22,7 +22,7 @@ if [ ! -f prevCurl-$2.txt ]; then
    curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins/prevCurl/prevCurl-$2.txt > prevCurl-$2.txt
   if [ ! -f prevCurl-$2.txt ]; then
     echo "Failed to retrieve 'prevCurl-$2.txt' from GitHub"
-    exit 1; fi; fi
+   exit 1; fi; fi
 
 version=$(curl -s -k https://github.wdf.sap.corp/raw/AuroraXmake/$3/master/version.txt)
 
@@ -36,6 +36,7 @@ artibuild=https://docker.wdf.sap.corp:50000/artifactory/api/storage/cidemo/$1/$2
 curl -s $artirepo | grep -i 'snapshot' > newCurl-$2.txt
 
 if [ $? -ne 0 ]; then
+  rm -f newCurl-$2.txt
   echo "Failed to retrieve '$1' images list from Artifactory"
   exit 1; fi
 
@@ -46,9 +47,8 @@ if [ $status -eq 0 ]; then
   curl -s $artibuild | grep -i 'latest'
   status=$?
   if [ $status -eq 0 ]; then
-    mv -f newCurl-$2.txt prevCurl-$2.txt
-  fi
-fi
+    mv -f newCurl-$2.txt prevCurl-$2.txt; fi; fi
+
+rm -f newCurl-$2.txt
 
 exit $status
-
