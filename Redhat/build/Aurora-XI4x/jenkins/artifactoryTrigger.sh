@@ -30,8 +30,8 @@ if [ ! "${version}" ]; then
   echo 'Failed to retrieve version from xMake Github repo'
   exit 1; fi
 
-artirepo=https://docker.wdf.sap.corp:10443/artifactory/list/cidemo/$1/
-artibuild=https://docker.wdf.sap.corp:50000/artifactory/api/storage/cidemo/$1/$2_${version}-snapshot
+artirepo=https://docker.wdf.sap.corp:10443/artifactory/list/virtual_docker/$1/
+artibuild=https://docker.wdf.sap.corp:50000/artifactory/api/storage/virtual_docker/$1/$2_${version}-snapshot
 
 curl -s $artirepo | grep -i 'snapshot' > newCurl-$2.txt
 
