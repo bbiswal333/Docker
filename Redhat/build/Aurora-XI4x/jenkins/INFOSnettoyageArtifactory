@@ -1,0 +1,37 @@
+To move : POST /api/move/{srcRepoKey}/{srcFilePath}?to=/{targetRepoKey}/{targetFilePath}[&dry=1][&suppressLayouts=0/1(default)][&failFast=0/1]
+ex : POST /api/move/libs-release-local/org/acme?to=/ext-releases-local/org/acme-new&dry=1
+
+To del DELETE /repo-key/path/to/file-or-folder
+ex : DELETE http://localhost:8080/artifactory/libs-release-local/ch/qos/logback/logback-classic/0.9.9
+
+To use Api key : 
+curl -H "X-JFrog-Art-Api:ABcdEF" -X PUT "http://localhost:8081/artifactory/my-repository/my/new/artifact/directory/file.txt" -T Desktop/myNewFile.txt
+
+
+
+
+------------------DEL Folder-----------------------------------------------------------------------------------------
+#parameters   repo-key		folder 		Art-Api		port
+
+curl -H "X-Jfrog-Art-Api:${Art-Api}" -X DELETE https://docker.wdf.sap.corp:${port}/artifactory/${repo-key}/${folder}
+---------------------------------------------------------------------------------------------------------------------
+
+
+
+----------------Del Version------------------------------------------------------------------------------------------
+#parameters   repo-key		folder 		Art-Api		port		auroraType		verionsNumber
+
+curl -H "X-Jfrog-Art-Api:${Art-Api}" -X DELETE https://docker.wdf.sap.corp:${port}/artifactory/${repo-key}/${folder}/${auroraType}_${versionNumber}-snapshot
+---------------------------------------------------------------------------------------------------------------------
+
+
+
+
+--------------Del Type-----------------------------------------------------------------------------------------------
+#parameters   repo-key		folder 		Art-Api		port		auroraType
+
+curl -k -s https://docker.wdf.sap.corp/artifactory/virtual_docker/${repo-key}/ | grep ${auroraType} | cut -d '>' -f 2 | cut -d '/' -f 1 > temp.txt
+for line in $(cat temp.txt); do 
+curl -H "X-Jfrog-Art-Api:${Art-Api}" -X DELETE https://docker.wdf.sap.corp:${port}/artifactory/${repo-key}/${folder}/${line}-snapshot
+ done
+----------------------------------------------------------------------------------------------------------------------
