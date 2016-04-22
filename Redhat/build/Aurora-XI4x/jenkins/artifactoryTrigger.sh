@@ -11,44 +11,47 @@
 # $2 folder = aurora42_cons
 # $3 xmakerepo = aurora4xInstall
 
+#--------------------------------------
+function OnFailed {
+  echo $1
+  exit 1; }
+
+
+function OnUnchanged {
+  if [ $1 -eq 0 ]; then
+    rm -f newCurl-$2.txt
+  	exit 1; fi; }
+
+#---------------  MAIN
+
+# params  aurora  aurora42_cons  aurora4xInstall
 set -x
 
 if [ $# -ne 3 ]; then
   echo "Expected parameter <Suite>  <Folder>  <xMakeRepo>"
-  echo "Example: artifactoryTrigger.sh  aurora  aurora42_cons  aurora42_cons"
-  exit 1; fi
+  OnFailed "Example: artifactoryTrigger.sh  aurora  aurora42_cons  aurora42_cons"; fi
 
 if [ ! -f prevCurl-$2.txt ]; then
    curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins/prevCurl/prevCurl-$2.txt > prevCurl-$2.txt
   if [ ! -f prevCurl-$2.txt ]; then
-    echo "Failed to retrieve 'prevCurl-$2.txt' from GitHub"
-   exit 1; fi; fi
+    OnFailed "Failed to retrieve 'prevCurl-$2.txt' from GitHub"; fi; fi
 
-version=$(curl -s -k https://github.wdf.sap.corp/raw/AuroraXmake/$3/master/version.txt)
+version=$(curl -s https://github.wdf.sap.corp/raw/AuroraXmake/$3/master/version.txt)
 
 if [ ! "${version}" ]; then
-  echo 'Failed to retrieve version from xMake Github repo'
-  exit 1; fi
+  OnFailed 'Failed to retrieve version from xMake Github repo'; fi
 
-artirepo=https://docker.wdf.sap.corp:10443/artifactory/list/virtual_docker/$1/
-artibuild=https://docker.wdf.sap.corp:50000/artifactory/api/storage/virtual_docker/$1/$2_${version}-snapshot
+virtualdocker=https://docker.wdf.sap.corp/artifactory/virtual_docker/$1/$2_$version-snapshot/latest/
 
-curl -s $artirepo | grep -i 'snapshot' > newCurl-$2.txt
+curl -s $virtualdocker > newCurl-$2.txt
 
 if [ $? -ne 0 ]; then
-  rm -f newCurl-$2.txt
-  echo "Failed to retrieve '$1' images list from Artifactory"
-  exit 1; fi
+   OnFailed "Command 'curl' failed to connect to Artifactory server"; fi
 
-grep -vf prevCurl-$2.txt newCurl-$2.txt | grep $2_$version-snapshot
-status=$?
+cat newCurl-$2.txt | grep errors
+OnUnchanged $? $2
 
-if [ $status -eq 0 ]; then
-  curl -s $artibuild | grep -i 'latest'
-  status=$?
-  if [ $status -eq 0 ]; then
-    mv -f newCurl-$2.txt prevCurl-$2.txt; fi; fi
+diff prevCurl-$2.txt newCurl-$2.txt
+OnUnchanged $? $2
 
-rm -f newCurl-$2.txt
-
-exit $status
+mv -f newCurl-$2.txt prevCurl-$2.txt
