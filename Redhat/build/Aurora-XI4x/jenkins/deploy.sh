@@ -26,6 +26,7 @@ function InitVars { # aurora, aurora42_cons, aurora4xInstall
 
   export gitSwarm="https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/swarm/automation"
   export gitResponse="https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x"
+  export gitUndeploy="https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins"
   export gitVersion=https://github.wdf.sap.corp/raw/AuroraXmake/$3/master
 
   export version=$(curl -s -k $gitVersion/$versionTxt)
@@ -40,7 +41,11 @@ function InitVars { # aurora, aurora42_cons, aurora4xInstall
 
 #--------------------------------------
 function CleanUp {
-  ./$undeploy $2; }
+
+  GetFromGithub $gitUndeploy $undeploy .
+
+  chmod +x $undeploy
+  ./$undeploy $1; }
 
 
 #--------------------------------------
