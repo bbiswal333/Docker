@@ -3,13 +3,13 @@
 ###############################################################################
 #
 #  AUTHOR: gerald.braunwarth@sap.com    - November 2015 -
-#  PURPOSE: delete all containers and images from the cluster related to the SuiteName in parameter
+#  PURPOSE: delete containers and images related to the passed parameter
 #
 ###############################################################################
 
 
 #---------------  MAIN
-# clear
+#set -x
 
 if [ $# -ne 1 ]; then
   echo " Expected parameter: <Name>"
@@ -25,6 +25,8 @@ curl -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/swarm/
 if [ ! -f swarmHA-cmd.sh ]; then
   echo "Failed to get 'swarmHA-cmd.sh' from github"
   exit 1; fi
+
+chmod +x swarmHA-cmd.sh
 
 
 # Delete containers (forcing Stop)
