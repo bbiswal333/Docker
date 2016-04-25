@@ -20,6 +20,7 @@ function InitVars { # aurora, aurora42_cons, aurora4xInstall
 
   export request="swarm-request.ini"
   export swarmrun="swarmHA-run.sh"
+  export undeploy="undeploy.sh"
   export versionTxt="version.txt"
   export response="response.ini"
 
@@ -35,6 +36,11 @@ function InitVars { # aurora, aurora42_cons, aurora4xInstall
 
   export registry="docker.wdf.sap.corp:50000"
   export image="$1/$2_$version-snapshot"; }
+
+
+#--------------------------------------
+function CleanUp {
+  ./$undeploy $2; }
 
 
 #--------------------------------------
@@ -185,5 +191,6 @@ set -x
 
 CheckParam $#
 InitVars $1 $2 $3
+CleanUp $2
 DeployContainers $4
 TestingParameters $2 $version
