@@ -40,15 +40,6 @@ function InitVars { # aurora, aurora42_cons, aurora4xInstall
 
 
 #--------------------------------------
-function CleanUp {
-
-  GetFromGithub $gitUndeploy $undeploy .
-
-  chmod +x $undeploy
-  ./$undeploy $1; }
-
-
-#--------------------------------------
 function GetFromGithub {
 
   echo "Getting file $2 from Github"
@@ -57,6 +48,15 @@ function GetFromGithub {
   if [ ! -f $3/$2 ]; then
     echo "Failed to get '$2' from github"
     exit 1; fi; }
+
+
+#--------------------------------------
+function CleanUp {
+
+  GetFromGithub $gitUndeploy $undeploy .
+
+  chmod +x $undeploy
+  ./$undeploy $1; }
 
 
 #--------------------------------------
