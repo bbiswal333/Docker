@@ -9,34 +9,34 @@
 
 
 #--------------------------------------
-function CheckParam {
-  if [ $1 -ne 4 ]; then
-    echo "Expected parameters, example: ./deploy.sh  aurora  aurora42_cons  aurora4xInstall  2"
-    exit 1; fi; }
+function OnError {
+
+  echo
+  echo $1
+  echo
+
+  exit 1; }
 
 
 #--------------------------------------
-function InitVars { # aurora, aurora42_cons, aurora4xInstall
+function CheckParam {
 
-  export request="swarm-request.ini"
-  export swarmrun="swarmHA-run.sh"
-  export undeploy="undeploy.sh"
-  export versionTxt="version.txt"
-  export response="response.ini"
+  if [ $1 -ne 4 ]; then
+    OnError "Expected parameters, example: ./deploy.sh  aurora  aurora42_cons  aurora4xInstall  2"; fi; }
 
-  export gitSwarm="https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/swarm/automation"
-  export gitResponse="https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x"
-  export gitUndeploy="https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins"
-  export gitVersion=https://github.wdf.sap.corp/raw/AuroraXmake/$3/master
 
-  export version=$(curl -s -k $gitVersion/$versionTxt)
+#--------------------------------------
+function OnMissingFile {
 
-  if [ ! "${version}" ]; then
-    echo "Failed to curl file '$versionTxt' from Github"
-    exit 1; fi
+  if [ ! -f $1 ]; then
+    OnError "File '$1' is missing"; fi; }
 
-  export registry="docker.wdf.sap.corp:50000"
-  export image="$1/$2_$version-snapshot"; }
+
+#--------------------------------------
+function OnFailed {
+
+  if [ $1 -ne 0 ]; then
+    exit 1; fi; }
 
 
 #--------------------------------------
@@ -46,16 +46,45 @@ function GetFromGithub {
   curl -s -k $1/$2 > $3/$2
 
   if [ ! -f $3/$2 ]; then
-    echo "Failed to get '$2' from github"
-    exit 1; fi; }
+    OnError "Failed to get '$2' from github"; fi; }
+
+
+#--------------------------------------
+function Init { # aurora, aurora42_cons, aurora4xInstall
+
+  gitUndeploy="https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x/jenkins"
+  export undeploy="undeploy.sh"
+
+  gitSwarm="https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/swarm/automation"
+  export swarmrun="swarmHA-run.sh"
+
+ gitResponse="https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x"
+  export response="response.ini"
+
+  gitVersion=https://github.wdf.sap.corp/raw/AuroraXmake/$3/master
+  versionTxt="version.txt"
+  export version=$(curl -s -k $gitVersion/$versionTxt)
+
+  if [ ! "${version}" ]; then
+    OnError "Failed to curl file '$versionTxt' from Github"; fi
+
+  export request="swarm-request.ini"
+  export registry="docker.wdf.sap.corp:50000"
+  export image="$1/$2_$version-snapshot"
+
+  OnMissingFile ../$request
+
+  GetFromGithub $gitUndeploy $undeploy .
+  GetFromGithub $gitSwarm $swarmrun .
+  GetFromGithub $gitResponse $response .
+
+  chmod +x $undeploy
+  chmod +x $swarmrun; }
 
 
 #--------------------------------------
 function CleanUp {
 
-  GetFromGithub $gitUndeploy $undeploy .
-
-  chmod +x $undeploy
   ./$undeploy $1; }
 
 
@@ -63,36 +92,16 @@ function CleanUp {
 function DeployContainers { # NbContainers
 
   echo
-
-  if [ ! -f ../$request ]; then
-    GetFromGithub $gitSwarm $request ..; fi
-
-  GetFromGithub $gitSwarm $swarmrun .
-
-  echo
   echo "Deploying containers"
 
-  chmod +x $swarmrun
   ./$swarmrun  $registry  $image  $1
-
-  if [ $? -ne 0 ]; then
-    exit 1; fi; }
-
-
-#--------------------------------------
-function checkSource {
-
-  if [ ! -f $1 ]; then
-    echo "File '$1' is missing"
-    exit 1; fi
-
-  source $1; }
+  OnFailed $?; }
 
 
 #--------------------------------------
 function RetrieveHost { # aurora42_cons_2000
 
-  checkSource ../$request
+  source ../$request
 
   arrManagers=${managers//,/ }
   for manager in $arrManagers; do
@@ -106,12 +115,10 @@ function RetrieveHost { # aurora42_cons_2000
   done
 
   if [ ! "${status}" ]; then
-    echo "No alive Swarm manager member found. Cannot retrieve deployed nodes"
-    exit 1; fi
+    OnError "No alive Swarm manager member found. Cannot retrieve deployed nodes"; fi
 
   if [ ! "${result}" ]; then
-    echo "No '$1' deployed container retrieved"
-    exit 1; fi
+    OnError "No '$1' deployed container retrieved"; fi
 
   arrNodes=${nodes//,/ }
   for nodeFQDN in $arrNodes; do
@@ -123,8 +130,7 @@ function RetrieveHost { # aurora42_cons_2000
   done
 
   if [ ! "${host}" ]; then
-    echo "Failed to retrieve the host of '$1' container"
-    exit 1; fi
+    OnError "Failed to retrieve the host of '$1' container"; fi
 
   echo $host; }
 
@@ -134,8 +140,7 @@ function RetrieveIP { # hostFQDN
 
   ping=$(ping -c 1 $1 2>&1 | grep "(")
   if [ ! "${ping}" ]; then
-    echo "Failed to retrieve $1 IP"
-    exit 1; fi
+    OnError "Failed to retrieve $1 IP"; fi
   IP=$(echo $ping | awk '$3 { print $3 }')
   IP=${IP/(/}
   IP=${IP/)/}
@@ -143,25 +148,18 @@ function RetrieveIP { # hostFQDN
 
 
 #--------------------------------------
-function TestingParameters {  # aurora42_cons, 2000
+function TestingParameters {  # aurora42_cons
 
-  echo
-  echo
-  GetFromGithub $gitResponse $response .
   source $response
 
   echo
   echo "Retrieving Docker node FQDN"
   hostFQDN=$(RetrieveHost $1_$version)
-
-  if [ $? -ne 0 ]; then
-    exit 1; fi
+  OnFailed $?
 
   echo "Retrieving Docker node IP"
   hostIP=$(RetrieveIP $hostFQDN)
-
-  if [ $? -ne 0 ]; then
-    exit 1; fi
+  OnFailed $?
 
   echo "Writing testing parameters file '../TestingParameters.txt'"
   (
@@ -191,11 +189,12 @@ function TestingParameters {  # aurora42_cons, 2000
 
 
 #---------------  MAIN
-# params  aurora  aurora42_cons  aurora4xInstall  NbContainers
-set -x
+# Parameters:  aurora  aurora42_cons  aurora4xInstall  NbContainers
+
+#set -x
 
 CheckParam $#
-InitVars $1 $2 $3
+Init $1 $2 $3
 CleanUp $2
 DeployContainers $4
-TestingParameters $2 $version
+TestingParameters $2
