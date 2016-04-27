@@ -35,8 +35,7 @@ function RunContainers {  # manager, managerport, registry:port, repo/image:tag,
 
 
 #---------------  MAIN
-# clear
-set -x
+#set -x
 
 if [ $# -ne 3 ]; then
   echo "Invalid number of parameters."

@@ -25,7 +25,7 @@ function OnUnchanged {
 #---------------  MAIN
 
 # params  aurora  aurora42_cons  aurora4xInstall
-set -x
+#set -x
 
 if [ $# -ne 3 ]; then
   echo "Expected parameter <Suite>  <Folder>  <xMakeRepo>"
