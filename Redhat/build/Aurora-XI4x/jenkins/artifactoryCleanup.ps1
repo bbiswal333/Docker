@@ -28,6 +28,7 @@ $repos    = 'cidemo', 'xmake_snapshot'
 $apiKey = 'AKCp2UNNGgbwi9YrxsAXiGdtMN8FLaTumzzMNiXs2xELzfEDGp9NnqsHhQPK9EXJM8vTsHDC9'
 $header = @{"X-Jfrog-Art-Api" = $apiKey}
 
+Write-Host "Retrieving images list from Artifactory folder 'virtual_docker'"
 $html = Invoke-WebRequest -Uri "$registry/artifactory/virtual_docker/$suite"
 
 if (-not $html.AllElements.Count) {
@@ -38,14 +39,20 @@ $href = $html.AllElements | select href | where { $_ -match $suite } | sort -Pro
 
 foreach ($build in $AllBuild) {
   
+  Write-Host
+  Write-Host "Build 'build'"
+  
   [System.Collections.ArrayList]$versions = $href | where { $_.href -match "$($build)_([0-9])"  }
   $NbDelete = $versions.Count - $max
   
   for ($i = 0; $i -lt $NbDelete; $i++) {
     for ($j = 0; $j -lt 2; $j++) {
+	  Write-Host "Delete from $($repos[$j])"
 	  $result = Invoke-RestMethod -ErrorVariable Err -ErrorAction SilentlyContinue -Method Delete -Header $header -Uri "$($registry):$($ports[$j])/artifactory/$($repos[$j])/$suite/$($versions[0].href)" }
     $versions.RemoveAt(0) }}
 
 # Empty Recycle Bin
+Write-Host
+Write-Host "Empty Trash Can"
 foreach ($repo in $repos) {
   $result = Invoke-RestMethod -ErrorVariable Err -ErrorAction SilentlyContinue -Method Delete -Header $header -Uri "$($registry)/artifactory/api/trash/clean/$repo/$suite" }
