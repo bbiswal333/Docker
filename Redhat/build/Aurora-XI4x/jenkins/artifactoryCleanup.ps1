@@ -52,7 +52,8 @@ foreach ($build in $AllBuild) {
       try {
 	    $result = Invoke-RestMethod -Method Delete -Header $header -Uri "$($registry):$($ports[$j])/artifactory/$($repos[$j])/$suite/$($versions[0].href)" }
 	  catch {
-	    Write-Host "          $_.Exception.Response.StatusDescription" }}
+	    if ($_.Exception.Response.StatusCode.value__ -ne 404) {
+		  Write-Host "          $_.Exception.Response.StatusDescription" }}}
     $versions.RemoveAt(0) }}
 
 # Empty Recycle Bin
