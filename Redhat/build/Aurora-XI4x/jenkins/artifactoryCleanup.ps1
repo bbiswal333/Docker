@@ -40,15 +40,19 @@ $href = $html.AllElements | select href | where { $_ -match $suite } | sort -Pro
 foreach ($build in $AllBuild) {
   
   Write-Host
-  Write-Host "Build 'build'"
+  Write-Host "Build '$build'"
   
   [System.Collections.ArrayList]$versions = $href | where { $_.href -match "$($build)_([0-9])"  }
   $NbDelete = $versions.Count - $max
   
   for ($i = 0; $i -lt $NbDelete; $i++) {
+    Write-Host "  Version '$($versions[0].href)'"
     for ($j = 0; $j -lt 2; $j++) {
-	  Write-Host "Delete from $($repos[$j])"
-	  $result = Invoke-RestMethod -ErrorVariable Err -ErrorAction SilentlyContinue -Method Delete -Header $header -Uri "$($registry):$($ports[$j])/artifactory/$($repos[$j])/$suite/$($versions[0].href)" }
+	  Write-Host "    Delete from folder '$($repos[$j])'"
+      try {
+	    $result = Invoke-RestMethod -Method Delete -Header $header -Uri "$($registry):$($ports[$j])/artifactory/$($repos[$j])/$suite/$($versions[0].href)" }
+	  catch {
+	    $status = $_.Exception.Response.StatusDescription }}
     $versions.RemoveAt(0) }}
 
 # Empty Recycle Bin
