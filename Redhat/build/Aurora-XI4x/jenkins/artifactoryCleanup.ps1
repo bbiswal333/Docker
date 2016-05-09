@@ -46,13 +46,13 @@ foreach ($build in $AllBuild) {
   $NbDelete = $versions.Count - $max
   
   for ($i = 0; $i -lt $NbDelete; $i++) {
-    Write-Host "  Version '$($versions[0].href)'"
+    Write-Host "    Version '$($versions[0].href)'"
     for ($j = 0; $j -lt 2; $j++) {
-	  Write-Host "    Delete from folder '$($repos[$j])'"
+	  Write-Host "      Delete from folder '$($repos[$j])'"
       try {
 	    $result = Invoke-RestMethod -Method Delete -Header $header -Uri "$($registry):$($ports[$j])/artifactory/$($repos[$j])/$suite/$($versions[0].href)" }
 	  catch {
-	    $status = $_.Exception.Response.StatusDescription }}
+	    Write-Host "          $_.Exception.Response.StatusDescription" }}
     $versions.RemoveAt(0) }}
 
 # Empty Recycle Bin
