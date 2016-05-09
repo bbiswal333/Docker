@@ -50,11 +50,11 @@ foreach ($build in $AllBuild) {
     for ($j = 0; $j -lt 2; $j++) {
 	  Write-Host "      Delete from folder '$($repos[$j])'"
       try {
-	    $result = Invoke-RestMethod -Method Delete -Header $header -Uri "$($registry):$($ports[$j])/artifactory/$($repos[$j])/$suite/$($versions[0].href)"
-		sleep -Seconds 4 }
+	    $result = Invoke-RestMethod -Method Delete -Header $header -Uri "$($registry):$($ports[$j])/artifactory/$($repos[$j])/$suite/$($versions[0].href)" }
 	  catch {
 	    if ($_.Exception.Response.StatusCode.value__ -ne 404) {
-		  Write-Host "          $_.Exception.Response.StatusDescription" }}}
+		  Write-Host "          $_.Exception.Response.StatusDescription" }}
+		sleep -Seconds 4 }
     $versions.RemoveAt(0) }}
 
 # Empty Recycle Bin
