@@ -51,7 +51,7 @@ if [ $? -ne 0 ]; then
 cat newCurl-$2.txt | grep errors > /dev/null
 OnUnchanged $? $2
 
-diff prevCurl-$2.txt newCurl-$2.txt
+diff prevCurl-$2.txt newCurl-$2.txt > /dev/null
 OnUnchanged $? $2
 
 mv -f newCurl-$2.txt prevCurl-$2.txt
