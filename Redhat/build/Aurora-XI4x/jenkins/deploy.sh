@@ -42,7 +42,7 @@ function OnFailed {
 #--------------------------------------
 function GetFromGithub {
 
-  echo "Getting file $2 from Github"
+  echo "Getting file '$2' from Github"
   curl -s -k $1/$2 > $3/$2
 
   if [ ! -f $3/$2 ]; then
@@ -58,7 +58,7 @@ function Init { # aurora, aurora42_cons, aurora4xInstall
   gitSwarm="https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/swarm/automation"
   export swarmrun="swarmHA-run.sh"
 
- gitResponse="https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x"
+  gitResponse="https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Aurora-XI4x"
   export response="response.ini"
 
   gitVersion=https://github.wdf.sap.corp/raw/AuroraXmake/$3/master

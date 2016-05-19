@@ -18,8 +18,7 @@ if [ $# -ne 1 ]; then
 
 
 # Download swarmHA-cmd.sh from Github
-echo
-echo "Getting 'swarmHA-cmd.sh' from Github"
+echo "Getting file 'swarmHA-cmd.sh' from Github"
 curl -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/swarm/automation/swarmHA-cmd.sh > swarmHA-cmd.sh
 
 if [ ! -f swarmHA-cmd.sh ]; then
