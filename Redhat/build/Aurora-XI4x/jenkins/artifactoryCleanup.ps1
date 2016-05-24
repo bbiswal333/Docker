@@ -3,6 +3,8 @@
 # Purpose : Cleanup Artifactory keeping 3 last versions of each build type
 #*************************************************************************
 
+# WORKAROUND : http://social.technet.microsoft.com/wiki/contents/articles/29863.powershell-rest-api-invoke-restmethod-gotcha.aspx
+
 # parameters: aurora  3
 
 if ($args.Count -ne 2) {
@@ -14,7 +16,7 @@ $suite = $args[0]
 $max = $args[1]
 
 ## DEBUG
-cls
+#cls
 #$suite = 'aurora'
 #$max = 3
 ## ENDDEBUG
@@ -56,11 +58,16 @@ foreach ($build in $AllBuild) {
 
 	  Write-Host "      Delete from folder '$($repos[$j])'"
 
+	  $uri = "$($registry):$($ports[$j])/artifactory/$($repos[$j])/$suite/$version"
+	  $ServicePoint = [System.Net.ServicePointManager]::FindServicePoint($uri)
+	  
 	  try {
-		$result = Invoke-RestMethod -Method Delete -Header $header -Uri "$($registry):$($ports[$j])/artifactory/api/docker/$($repos[$j])/v2/$suite/$version/manifests/latest"  }
+		Invoke-RestMethod -Method Delete -Header $header -Uri $uri }
 	  catch {
 	    if ($_.Exception.Response.StatusCode.value__ -ne 404) {
-		  Write-Host "          $_.Exception.Response.StatusDescription" }}}
+		  Write-Host "          $_.Exception.Response.StatusDescription" }}
+
+	  $dummy = $ServicePoint.CloseConnectionGroup("") }
 
     $versions.RemoveAt(0) }}
 
@@ -70,3 +77,7 @@ foreach ($build in $AllBuild) {
 #Write-Host "Empty Trash Can"
 #foreach ($repo in $repos) {
 #  $result = Invoke-RestMethod -Method Delete -Header $header -Uri "$($registry)/artifactory/api/trash/clean/$repo/$suite" }
+
+# JFROG
+#$result = Invoke-RestMethod -Method Delete -Header $header -Uri "$($registry):$($ports[$j])/artifactory/api/docker/$($repos[$j])/v2/$suite/$version/manifests/latest"  }
+
