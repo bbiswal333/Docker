@@ -7,14 +7,14 @@
 
 if ($args.Count -ne 2) {
   Write-Host "Expected argument: <SuiteName> <NbVersionsToKeep>"
-  Write-host "Example artifactoryCleanup.ps1  aurora  3"
+  Write-host "Example: artifactoryCleanup.ps1  aurora  3"
   exit 1 }
 
 $suite = $args[0]
 $max = $args[1]
 
 ## DEBUG
-#cls
+cls
 #$suite = 'aurora'
 #$max = 3
 ## ENDDEBUG
@@ -29,36 +29,44 @@ $apiKey = 'AKCp2UNNGgbwi9YrxsAXiGdtMN8FLaTumzzMNiXs2xELzfEDGp9NnqsHhQPK9EXJM8vTs
 $header = @{"X-Jfrog-Art-Api" = $apiKey}
 
 Write-Host "Retrieving images list from Artifactory folder 'virtual_docker'"
-$html = Invoke-WebRequest -Uri "$registry/artifactory/virtual_docker/$suite"
+$html = Invoke-RestMethod -Method Get -Header $header -Uri "$($registry):50000/artifactory/api/storage/virtual_docker/$suite"
 
-if (-not $html.AllElements.Count) {
+if (-not $html.children.Count) {
   Write-Host 'Failed to retrieve Aurora images list from Artifactory server'
   exit 1 }
 
-$href = $html.AllElements | select href | where { $_ -match $suite } | sort -Property href
+$href = $html.children | select uri | where { $_ -match $suite } | sort -Property uri
 
 foreach ($build in $AllBuild) {
   
   Write-Host
   Write-Host "Build '$build'"
   
-  [System.Collections.ArrayList]$versions = $href | where { $_.href -match "$($build)_([0-9])"  }
+  [System.Collections.ArrayList]$versions = $href | where { $_.uri -match "$($build)_([0-9])"  }
   $NbDelete = $versions.Count - $max
   
   for ($i = 0; $i -lt $NbDelete; $i++) {
-    Write-Host "    Version '$($versions[0].href)'"
-    for ($j = 0; $j -lt 2; $j++) {
+
+	$version = $versions[0].uri
+	$version = $version.Substring(1, $version.Length - 1)
+
+	Write-Host "    Version '$version'"
+
+	for ($j = 0; $j -lt 2; $j++) {
+
 	  Write-Host "      Delete from folder '$($repos[$j])'"
-      try {
-	    $result = Invoke-RestMethod -Method Delete -Header $header -Uri "$($registry):$($ports[$j])/artifactory/$($repos[$j])/$suite/$($versions[0].href)" }
+
+	  try {
+		$result = Invoke-RestMethod -Method Delete -Header $header -Uri "$($registry):$($ports[$j])/artifactory/api/docker/$($repos[$j])/v2/$suite/$version/manifests/latest"  }
 	  catch {
 	    if ($_.Exception.Response.StatusCode.value__ -ne 404) {
-		  Write-Host "          $_.Exception.Response.StatusDescription" }}
-		sleep -Seconds 4 }
+		  Write-Host "          $_.Exception.Response.StatusDescription" }}}
+
     $versions.RemoveAt(0) }}
 
+## Cannot empty TrashCan, NO NGINX PORT
 # Empty Recycle Bin
-Write-Host
-Write-Host "Empty Trash Can"
-foreach ($repo in $repos) {
-  $result = Invoke-RestMethod -ErrorVariable Err -ErrorAction SilentlyContinue -Method Delete -Header $header -Uri "$($registry)/artifactory/api/trash/clean/$repo/$suite" }
+#Write-Host
+#Write-Host "Empty Trash Can"
+#foreach ($repo in $repos) {
+#  $result = Invoke-RestMethod -Method Delete -Header $header -Uri "$($registry)/artifactory/api/trash/clean/$repo/$suite" }
