@@ -85,7 +85,7 @@ function Init { # aurora, aurora42_cons, aurora4xInstall
 #--------------------------------------
 function CleanUp {
 
-  ./$undeploy $1; }
+  ./$undeploy $1_[0-9][0-9]*; }
 
 
 #--------------------------------------

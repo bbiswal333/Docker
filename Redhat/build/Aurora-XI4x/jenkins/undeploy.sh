@@ -31,7 +31,7 @@ chmod +x swarmHA-cmd.sh
 # Delete containers (forcing Stop)
 echo
 echo "DELETING '$1' CONTAINERS"
-array=$(./swarmHA-cmd.sh ps -a | awk -v value=$1_[0-9][0-9]* '$2 ~ value {print $NF}')
+array=$(./swarmHA-cmd.sh ps -a | awk -v value=$1 '$2 ~ value {print $NF}')
 
 if [ "${array}" ]; then
   ./swarmHA-cmd.sh rm -f -v $array; fi
@@ -40,7 +40,7 @@ if [ "${array}" ]; then
 # Delete images
 echo
 echo "DELETING '$1' IMAGES"
-array=$(./swarmHA-cmd.sh images | awk -v value=$1_[0-9][0-9]* '$1 ~ value {print $1}')
+array=$(./swarmHA-cmd.sh images | awk -v value=$1 '$1 ~ value {print $1}')
 
 if [ "${array}" ]; then
   ./swarmHA-cmd.sh rmi $array; fi
