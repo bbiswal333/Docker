@@ -2,8 +2,16 @@ FROM docker.wdf.sap.corp:50000/aurora/rh7-tools
 
 MAINTAINER gerald.braunwarth@sap.com
 
+ENV sid="SHN" \
+    saphome="/usr/sap/hana" \
+    newdb_archive="/net/sapmnt.production.makeresults.newdb_archive" \
+    newdb_dev="/net/sapmnt.production.makeresults.newdb_dev"
+
+    ## saphome,sid: delayed variable expansion of previous ENV
+ENV PATH="$PATH:/usr/repo/apache-maven-3.3.3/bin:$saphome/shared/$sid/xs/bin/"
+
 RUN \
-    #### INSTALL MORE CORE LIBS FOR CONTAINERIZED HANA
+    #### INSTALL MORE LIBS FOR CONTAINERIZED HANA
     if ! yum install -y libaio; then exit 1; fi; \
 
     ### INSTALL HANA REQUIREMENTS
@@ -21,7 +29,12 @@ RUN \
     cp /usr/lib64/libcrypto.so.0.9.8e /usr/lib64/libcrypto.so.0.9.8; \
     cp /usr/lib64/libcrypto.so.1.0.1e /usr/lib64/libcrypto.so.1.0.1; \
 
-    #### INSTALL MORE COMMANDS FOR 3RD PARTY COMPONENTS INSTALL \
+    #### INSTALL JDK  (JRE for Hana install / JDK for QA)
+    file=jdk-8u60-linux-x64.rpm; \
+    if ! curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u60-b27/$file > $file; then exit 1; fi; \
+    if ! rpm -ivh $file; then exit 1; fi; \
+
+    #### INSTALL MORE COMMANDS FOR 3RD PARTY INSTALL \
     if ! yum -y install wget tar git which; then exit 1; fi; \
 
     #### HOME FOLDER
@@ -29,21 +42,20 @@ RUN \
     cd /usr/repo; \
 
     #### INSTALL MAVEN
-    file=apache-maven-3.3.3-bin.tar.gz
-#    if ! wget http://apache.mirror.digitalpacific.com.au/maven/maven-3/3.3.3/binaries/$file; then exit 1; fi; \
-#    if ! tar -zxvf $file; then exit 1; fi; \
-#    PATH="$PATH::/usr/repo/apache-maven-3.3.3/bin"; \
-
-    #### INSTALL JDK
-    file=jdk-8u60-linux-x64.rpm
-#    if ! curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u60-b27/$file > $file; then exit 1; fi; \
-#    if ! rpm -ivh $file; then exit 1; fi; \
+    file=apache-maven-3.3.3-bin.tar.gz; \
+    if ! wget http://apache.mirror.digitalpacific.com.au/maven/maven-3/3.3.3/binaries/$file; then exit 1; fi; \
+    if ! tar -zxvf $file; then exit 1; fi; \
 
     #### CLONE SHINE
-#    mkdir git; \
-#    cd git; \
-#    if ! git clone https://github.wdf.sap.corp/refapps/shine.git; then exit 1; fi; \
+    mkdir git; \
+    cd git; \
+    if ! git clone https://github.wdf.sap.corp/refapps/shine.git; then exit 1; fi; \
 
     #### MAVEN BUILD
-#    cd shine; \
-#    if ! mvn clean install -s cfg/settings.xml; then exit 1; fi
+    cd shine; \
+    if ! mvn clean install -s cfg/settings.xml; then exit 1; fi; \
+
+    #### CREATE XSA FOLDERS
+    mkdir -p $saphome/{shared,data,log}; \
+    mkdir -p $newdb_archive; \
+    mkdir    $newdb_dev
