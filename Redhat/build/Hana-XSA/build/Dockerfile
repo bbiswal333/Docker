@@ -29,33 +29,29 @@ RUN \
     cp /usr/lib64/libcrypto.so.0.9.8e /usr/lib64/libcrypto.so.0.9.8; \
     cp /usr/lib64/libcrypto.so.1.0.1e /usr/lib64/libcrypto.so.1.0.1; \
 
+    #### INSTALL MORE COMMANDS FOR 3RD PARTY INSTALL \
+    if ! yum -y install wget tar git which; then exit 1; fi; \
+
+    ### HOME FOLDERS
+    mkdir -p /usr/repo/git; \
+    cd /usr/repo; \
+
     #### INSTALL JDK  (JRE for Hana install / JDK for QA)
     file=jdk-8u60-linux-x64.rpm; \
     if ! curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u60-b27/$file > $file; then exit 1; fi; \
     if ! rpm -ivh $file; then exit 1; fi; \
-
-    #### INSTALL MORE COMMANDS FOR 3RD PARTY INSTALL \
-    if ! yum -y install wget tar git which; then exit 1; fi; \
-
-    #### HOME FOLDER
-    mkdir /usr/repo; \
-    cd /usr/repo; \
+    rm -f $file; \
 
     #### INSTALL MAVEN
     file=apache-maven-3.3.3-bin.tar.gz; \
     if ! wget http://apache.mirror.digitalpacific.com.au/maven/maven-3/3.3.3/binaries/$file; then exit 1; fi; \
     if ! tar -zxvf $file; then exit 1; fi; \
+    rm -f $file; \
 
-    #### CLONE SHINE
-    mkdir git; \
-    cd git; \
-    if ! git clone https://github.wdf.sap.corp/refapps/shine.git; then exit 1; fi; \
-
-    #### MAVEN BUILD
-    cd shine; \
-    if ! mvn clean install -s cfg/settings.xml; then exit 1; fi; \
-
-    #### CREATE XSA FOLDERS
+    #### CREATE INSTALL & QA FOLDERS
     mkdir -p $saphome/{shared,data,log}; \
     mkdir -p $newdb_archive; \
     mkdir    $newdb_dev
+
+#### SSH PURPOSE
+EXPOSE 22
