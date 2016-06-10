@@ -31,19 +31,23 @@ $newdb_archive/HANA_WS_COR/released_weekstones/LastWS/lcm/linuxx86_64/SAP_HANA_L
   --number=97 \
   --hostname=$hostFQDN \
   --sapmnt=$saphome/shared --datapath=$saphome/data --logpath=$saphome/log \
-  -sapadm_password $secret -password $secret -org_manager_password $secret -system_user_password $secret \
+      -sapadm_password      $secret \
+      -password             $secret \
+      -org_manager_password $secret \
+      -system_user_password $secret \
   --org_name=REF \
   --remote_execution=ssh \
   --install_hostagent=off \
   --add_local_roles=xs_worker \
   --import_xs_content=yes \
   --component_dirs=$newdb_dev/POOL_EXT/external_components/XSA_RT/SPS12/LASTWS/XSA_RT/linuxx86_64,$newdb_dev/POOL_EXT/external_components/XSA_RT/SPS12/LASTWS/XSA_CONT
+# --component_dirs=$newdb_dev/POOL_EXT/external_components/XSA_RT/SPS12/LASTREL/XSA_RT/linuxx86_64,$newdb_dev/POOL_EXT/external_components/XSA_RT/SPS12/LASTREL/XSA_CONT
 
 umount $newdb_dev
 umount $newdb_archive
 
 
-#### CLONE SHINE
+#### GIT CLONE SHINE
 cd /usr/repo/git
 if ! git clone https://github.wdf.sap.corp/refapps/shine.git; then exit 1; fi
 
