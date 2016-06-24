@@ -14,41 +14,41 @@ function _PAUSE {
   read -p "PAUSE "; }
 
 
-
 #---------------  MAIN
 
 set -x
 
-## WORKAROUND
-yum install -y cifs-utils
-share=mo-a9901609a
-mkdir /net/$share
-if ! mount -t cifs //$share.mo.sap.corp/XSA /net/$share -o domain=global,user=service.infra.frmwk,password=$(cat /scripts/password); then exit 1; fi
-## ENDWORKAROUND
-_PAUSE
-
-
-#### NFS MOUNTS
-if ! mount -t nfs derotvi0157.wdf.sap.corp:/derotvi0157a_ld9252/q_files        $newdb_archive; then exit 1; fi
-if ! mount -t nfs derotvi0303.wdf.sap.corp:/derotvi0303a_newdb_dev/q_newdb_dev $newdb_dev;     then exit 1; fi
-
-
-hostFQDN=$(hostname -f)
-number=97
+sid="SHN"
+number="97"
 secret="Toor1234"
 org="PROD"
+hostFQDN=$(hostname -f)
+saphome="/usr/sap/hana"
+
+share="mo-a9901609a"		# TEMPORARY
+newdb_archive="sapmnt.production.makeresults.newdb_archive"
+newdb_dev="sapmnt.production.makeresults.newdb_dev"
+
+
+mkdir -p /net/{$share,$newdb_archive,$newdb_dev}
+mkdir -p $saphome/{shared,data,log}
+
+
+#### MOUNTS
+if ! mount -t cifs //$share.mo.sap.corp/XSA /net/$share -o domain=global,user=service.infra.frmwk,password=$(cat /scripts/password); then exit 1; fi
+if ! mount -t nfs  derotvi0157.wdf.sap.corp:/derotvi0157a_ld9252/q_files        /net/$newdb_archive; then exit 1; fi
+if ! mount -t nfs  derotvi0303.wdf.sap.corp:/derotvi0303a_newdb_dev/q_newdb_dev /net/$newdb_dev;     then exit 1; fi
+
 
 # HDBLCM_LOGDIR_COPY="/scripts"
 # HDB_INSTALLER_TRACE_FILE="HDB_INSTALLER_TRACE_FILE"
 
-#### XSA INSTALLATION
-
-#$newdb_archive/NewDB100/rel/120/lcm/linuxx86_64/SAP_HANA_LCM/hdblcm \
-#$newdb_archive/HANA_WS_COR/released_weekstones/LastWS/lcm/linuxx86_64/SAP_HANA_LCM/hdblcm \
-
+#/net/$newdb_archive/NewDB100/rel/120/lcm/linuxx86_64/SAP_HANA_LCM/hdblcm \
+#/net/$newdb_archive/HANA_WS_COR/released_weekstones/LastWS/lcm/linuxx86_64/SAP_HANA_LCM/hdblcm \
 # --xs_components=xsac_monitoring,xsac_services,xsac_shine \
 
-/net/$share/51050846/DATA_UNITS/HDB_LCM_LINUX_X86_64/hdblcm \
+#### XSA INSTALLATION
+if ! /net/$share/51050846/DATA_UNITS/HDB_LCM_LINUX_X86_64/hdblcm \
   -b \
   --action=install \
   --sid=$sid \
@@ -67,20 +67,18 @@ org="PROD"
   --install_hostagent=off \
   --add_local_roles=xs_worker \
   --import_xs_content=yes \
-  --component_dirs=/net/$share/51050846/DATA_UNITS/XSA_RT_10_LINUX_X86_64,/net/$share/51050846/DATA_UNITS/XSA_CONTENT_10
-# --component_dirs=$newdb_dev/POOL_EXT/external_components/XSA_RT/SPS12/LASTWS/XSA_RT/linuxx86_64,$newdb_dev/POOL_EXT/external_components/XSA_RT/SPS12/LASTWS/XSA_CONT
-# --component_dirs=$newdb_dev/POOL_EXT/external_components/XSA_RT/SPS12/LASTREL/XSA_RT/linuxx86_64,$newdb_dev/POOL_EXT/external_components/XSA_RT/SPS12/LASTREL/XSA_CONT
+  --component_dirs=/net/$share/51050846/DATA_UNITS/XSA_RT_10_LINUX_X86_64,/net/$share/51050846/DATA_UNITS/XSA_CONTENT_10; then exit 1; fi
+# --component_dirs=/net/$newdb_dev/POOL_EXT/external_components/XSA_RT/SPS12/LASTWS/XSA_RT/linuxx86_64,/net/$newdb_dev/POOL_EXT/external_components/XSA_RT/SPS12/LASTWS/XSA_CONT
+# --component_dirs=/net/$newdb_dev/POOL_EXT/external_components/XSA_RT/SPS12/LASTREL/XSA_RT/linuxx86_64,/net/$newdb_dev/POOL_EXT/external_components/XSA_RT/SPS12/LASTREL/XSA_CONT
 
-
-umount $newdb_dev
-umount $newdb_archive
-## WORKAROUND
+umount /net/$newdb_dev
+umount /net/$newdb_archive
 umount /net/$share
-## ENDWORKAROUND
 
 
-#### PATH variable
+#### UPDATE PATH variable
 export PATH=$PATH:$saphome/shared/$sid/HDB$number/exe/
+export PATH=$PATH:$saphome/shared/$sid/xs/bin/
 
 
 #### CREATE SHINE USER
@@ -90,7 +88,7 @@ hdbsql -i $number -n localhost:3${number}15 -u SYSTEM -p $secret \
 
 
 #### GIT CLONE SHINE
-cd /usr/repo/git
+cd $HomeBuild/git
 if ! git clone https://github.wdf.sap.corp/refapps/shine.git; then exit 1; fi
 
 
@@ -111,4 +109,4 @@ if ! xs install $file; then exit 1; fi
 
 #### PROPERLY STOP RUNNING APP AND SERVICES
 sidadm=$(echo $sid| tr [A-Z] [a-z])adm
-su - $sidadm -c 'HDB stop'
+su - $sidadm -c "HDB stop; /usr/sap/$sid/SYS/exe/hdb/sapcontrol -nr $number -function StopService"
