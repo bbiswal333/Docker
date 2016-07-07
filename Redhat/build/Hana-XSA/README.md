@@ -15,6 +15,7 @@ Delivers a ready-to-use testing platform for Shine :
 
 **Building an image**  
 > Run the **build.sh** script found in the folder  
+The script does not make the push to Artifactory
 
 **hana-installer** folder  
 > **upload-installer.sh** script : to reduce the image size, the build creates a temporary folder to copy from the global Hana installer Share only the required files and folders to be uploaded in the container  
