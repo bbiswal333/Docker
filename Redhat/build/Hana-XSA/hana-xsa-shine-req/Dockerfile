@@ -28,11 +28,10 @@ RUN \
 
     #### FAILED TO yum install compat-sap-c++.
       ## 4.7 doesn't work, requires 4.8 
-#   if ! curl -j -k -L  http://repo.cloudlinux.com/psbm/6/os/x86_64/RPMS/compat-sap-c++-4.7.2-10.el6_5.x86_64.rpm>compat-sap-c++-4.7.2-10.el6_5.x86_64.rpm; then exit 1 ;fi; \
-    file=compat-sap-c++-4.8.2-16.el6.x86_64.rpm; \
-    if ! curl -j -k -L ftp://mirror.switch.ch/pool/4/mirror/scientificlinux/6.7/x86_64/updates/fastbugs/$file>$file; then exit 1; fi; \
-    if ! rpm -ivh $file; then exit 1; fi; \
-    rm -f $file; \
+#    file=compat-sap-c++-4.8.2-16.el6.x86_64.rpm; \
+#    if ! curl -j -k -L ftp://mirror.switch.ch/pool/4/mirror/scientificlinux/6.7/x86_64/updates/fastbugs/$file>$file; then exit 1; fi; \
+#    if ! rpm -ivh $file; then exit 1; fi; \
+#    rm -f $file; \
 
     #### TEMPORARY WINDOWS SHARE
     yum install -y cifs-utils; \
