@@ -1,1 +1,1 @@
-docker build -t hana-installer .
+docker build -t docker.wdf.sap.corp:51010/hanaxsshine/weekstone/hana-installer .
