@@ -1,6 +1,4 @@
-#FROM docker.wdf.sap.corp:51010/hanaxsshine/weekstone/hana-xsa-req
-#FROM hana-xsa-shine-req
-FROM hana-installer
+FROM docker.wdf.sap.corp:50000/hanaxsshine/weekstone/hana-installer
 
 MAINTAINER gerald.braunwarth@free.fr
 

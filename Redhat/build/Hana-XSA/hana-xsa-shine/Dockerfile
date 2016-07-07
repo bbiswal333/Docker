@@ -1,4 +1,4 @@
-FROM hana-xsa
+FROM docker.wdf.sap.corp:50000/hanaxsshine/weekstone/hana-xsa
 
 MAINTAINER gerald.braunwarth@free.fr
 
