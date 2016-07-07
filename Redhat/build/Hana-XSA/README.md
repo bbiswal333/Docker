@@ -12,16 +12,15 @@ Images below are enumerated in the descending order of build frequency, which al
 **Images alternative architecture**  
 - **full-hana-xs-shine** : a global image for the entire installations and processes, an alternative to the Productive architecture above.
 
-**scripts** folder :  
-Sandbox used  for developping  
-
 **hana-xsa-shine-ports** folder :  
-On-going development, testing the replacement of the container network model **net=host** with **PortsForwarding** to cohabit to containers on the same host, because the ports range of the Hana instance number does not include the Shine UI port  
+>On-going development, testing the replacement of the container network model **net=host** with **PortsForwarding** to cohabit to containers on the same host, because the ports range of the Hana instance number does not include the Shine UI port  
 
-**Building an image**
-Run the **build.sh** script belonging to the folder  
+**Building an image**  
+>Run the **build.sh** script found in the folder  
 
-**hana-installer** folder
-The build creates a temporary folder to copy from the global Hana installer Share only the required files and folders to be uploaded in the container  
+**hana-installer** folder  
+>**upload-installer.sh** script : to reduce the image size, the build creates a temporary folder to copy from the global Hana installer Share only the required files and folders to be uploaded in the container  
+>In the definitive productive mode, this intermediate image will be suppressed, the upload will be integrated in the **hana-xsa** image building  
 
-
+**scripts** folder :  
+>Sandbox used  for developping  
