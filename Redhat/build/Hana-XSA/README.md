@@ -3,7 +3,7 @@ Delivers a ready-to-use testing platform for Shine :
 > Installs HanaDB with XS Monitoring and XS Services, gets the last Shine drop from Github, builds the version with Maven, installs it
 
 **Images productive architecture**  
-Images below are enumerated in the descending order of build frequency, which also  corresponds to the images inheritance graph (**hana-xsa-shine-req** is the base parent)
+> Images below are enumerated in the descending order of build frequency, which also  corresponds to the images inheritance graph (**hana-xsa-shine-req** is the base parent)
 - **hana-xsa-shine-req** : installs Hana + XS + Shine system requirements and 3rd party componnents
 - (temporary) **hana-installer** : uploads Hana+XS installer once for all
 - **hana-xsa**: installs HanaDB and XS Monitoring and XS Services
