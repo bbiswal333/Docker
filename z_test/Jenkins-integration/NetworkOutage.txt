@@ -1,0 +1,30 @@
+aurora_pi_tp_562	mo-070629e15	23:48:32	PUSH Artifactory: use of closed network connection
+aurora_pi_po_559	mo-9a90e4f72	06:02:18	OK
+aurora_rel_cs_122	mo-6a964a9ee	03:39:18	OK
+aurora42_cons_2020	mo-070629e15	03:43:40	PUSH Artifactory: use of closed network connection
+aurora_pi_aolap						N/A
+aurora42_cons_ml_2020	mo-070629e15			INVALID POINTER
+
+
+aurora42_cons_2021	mo-070629e15	03:58:53	PUSH Artifactory: use of closed network connection
+aurora42_cons_ml_2021					INVALID POINTER
+aurora_pi_aolap_52	mo-cea8543bc	11:37:31	PUSH Artifactory: read tcp 10.68.237.43:51003: i/o timeout
+aurora_pi_po_560	mo-9a90e4f72	05:58:58	OK
+aurora_pi_tp_563	mo-070629e15	00:29:52	OK
+aurora_rel_cs_123	mo-6a964a9ee	03:26:26	PUSH Artifactory: read tcp 10.68.237.43:51003: i/o timeout
+
+
+aurora_rel_cs_124	mo-6a964a9ee	03:39:03	PUSH Artifactory: read tcp 10.68.237.43:51003: i/o timeout
+aurora_pi_tp_564	mo-070629e15	00:08:35	PUSH Artifactory: read tcp 10.68.237.43:51003: use of closed network connection
+aurora42_cons_2022	mo-070629e15	03:57:20	OK
+aurora_pi_aolap_53	mo-070629e15	03:59:28	OK
+aurora42_cons_ml_2022	mo-070629e15	08:14:58	INVALID POINTER
+aurora_pi_po_561	mo-9a90e4f72	05:03:51	OK
+
+
+aurora42_cons_2023	mo-070629e15	02:45:51	PUSH Artifactory: read tcp 10.68.237.43:51003: use of closed network connection
+aurora42_cons_ml_2023	mo-070629e15			invalid pointer
+aurora_pi_aolap_54	mo-070629e15	03:55:46	OK
+aurora_pi_po_562	mo-9a90e4f72	05:47:57	OK
+aurora_pi_tp_565	mo-070629e15	00:40:04	PUSH Artifactory: read tcp 10.68.237.43:51003: use of closed network connection
+aurora_rel_cs_125	mo-6a964a9ee	03:10:54	OK
