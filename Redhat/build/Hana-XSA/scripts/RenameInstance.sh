@@ -1,3 +1,5 @@
+#!/bin/bash
+
 set -x
 
 OLDHOST=$($saphome/shared/$sid/hdblcm/hdblcm --list_systems | grep -i 'host:' | awk '$2 { print tolower($2) }')
