@@ -1,0 +1,121 @@
+{
+  "ci_connect": {
+    "ci_connect_github_api_url": "https://ci-connect.mo.sap.corp/api/v3",
+    "ci_connect_service_secret": "GithubTokenOrEncryptedChallenge",
+    "ci_connect_service_id": "AuroraXmake/SmokeTests-service",
+    "ci_connect_service_private_key": "-----BEGIN RSA PRIVATE KEY----- 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 -----END RSA PRIVATE KEY-----",
+    "ci_connect_service_access_key": "i050910"
+  },
+  "job_generator": {
+    "user": "infra.service.frmwk",
+    "password": "Krypt0n1t3!",
+    "purpose": "jenkins"
+  },
+  "info": {
+    "t1": "#########################################################################",
+    "t2": "  You can ignore the parameters below!",
+    "t3": "#########################################################################"
+  },
+  "sap_jenkins": {
+    "user": "tomcat",
+    "applicationName": ""
+  },
+  "sap_jenkins_config": {
+    "jenkinsUrl": null,
+    "dropdown_viewstabbar_plugin": {
+      "activate": true
+    },
+    "local_jobbase": true,
+    "local_jobbase_update_mode": "skip"
+  },
+  "activate_security": {
+    "activate": true
+  },
+  "gerrit_voter": {
+    "gerrit_voter_user": "yourVoter",
+    "gerrit_voter_user_privatekey": "-----BEGIN RSA PRIVATE KEY-----yourVoterPrivateKey-----END RSA PRIVATE KEY-----"
+  },
+  "credentialaccess": {
+    "credentials": [
+      {
+        "purpose": "perforce",
+        "user": "notused",
+        "password": ""
+      },
+      {
+        "purpose": "projectportal",
+        "user": "notused",
+        "password": ""
+      }
+    ]
+  },
+  "sap-nvm": {
+    "nvm_user": "tomcat",
+    "nvm_dir": "~tomcat/.nvm"
+  }
+}
+
+
+
+
+
+
+
+
+
+{
+  "ci_connect": {
+    "ci_connect_github_api_url": "https://ci-connect.mo.sap.corp/api/v3",
+    "ci_connect_service_secret": "GithubTokenOrEncryptedChallenge",
+    "ci_connect_service_id": "AuroraXmake/SmokeTests-service",
+    "ci_connect_service_private_key": "-----BEGIN RSA PRIVATE KEY-----\nMIIJJwIBAAKCAgEAll0VpNPYUXuJ+XJ0hnrXZhEHcGRpRvCwm6oYONR+4g6Nt1Tk\nc4ScPSNOXC7vUDhh2GmRG8u8qJj7pdXM03D6sPD37IIDiQtPLd4lnrUK8s3LoHn/\nMjSG/nsKvhmEct6ZQDRjExOEg/ZVjfZAiQ8Q3URGi4uomnZPY6zl5MrdpbNsMdOI\nlZRIyap1nNnodVvMsiD5aOXnMf/mqAhzAY1544UvfnlBDCOIXFwdRNVIKP/1eQTi\nWLiCQ7L5zKhCLBt+uYLTuPOe49V0jjck4wsVJmM9PNh5X9bt+HVMav4tylHwerLW\nblXLOCR+0e11sAwJ/s7oooc6EDkxXVD6oYnJ2u3lBVruvd/pi+4pkbW5rDt4WuFk\nZprpvuDeCpoESX3p2ijUWFkCgKXWkyeVMM9gyF0W6JOwQtKVK8s/wv5GfGWh+V/9\nqs00Eue7GMsM+K55Xb7+aDjzXuiiYSTOd7mseHg1d7aSDpmTuKIcQUsWyoIilu1l\nLrHDH2Z5FMF0d8opiEX57CHpjGpsdkjaonhnlyfeDHIjj1lH5bxKtdDUWs9yFuiC\ntuAKoI54aVDq+zcU5evBKMDmlUUqs7q/+O7F7oqw4wGmcm7LS4vHu+DcHLNwFfVw\nxWbdGK8HjBeKeshzWaoXrR//DZjvSY57+aO9EZ32M3EroLhW8ibfuHc5XZsCAwEA\nAQKCAgAGbcBpJa2P/kot4hjdTw86i+vXgFOH9u52GVWjyGIMZDbm6bhCwB619nZ5\nNoCA24hDanAL0jAkvTW1J2j0eVYejo7rC7v+9f7SpTbSjEcFjorwN4cTrG9BHh2d\ndxXUm3PN7O93d1QpGDUcNrUXpw8/hpXFjZkN0ZUfW9sQZyQG2576mmKykn5yMNmK\ndT6dFemwi/xd4cZ6usgv0vynyla1xZH8RE7lp/dCi6Wstbm6Fwd1vyG2TV00a8iG\nWYNKw3otkExhEflvIEc1dWIcWvLyizepDFBUKqpN/yXfRTLL/ajcdhz45q4jnlvV\nueNYPYuH22zS1hlDbE6SAM5Wbb+1jcMOI7nKq9MM9Hq2BLjA0wpmI5XtPSmzsrpF\n14CIkHD0msH4H9lt0qiEWh6VjoovPy8Yu6frPAM18Vc4+OXfIXU127SE7+nZ31aB\navIZY8pl5VH2DyDp8ASmfgdiP9/Li8BLmrlydoRVRhRuj8kuTc3dgJbhN+n+npHs\ndHBlHk2nyTCqhC5NrhH20Uz/xPT5YUyMYchT1sCfJDX33MFuuWW9DgBTLQSo4ww8\n3AZk82M9irnD8nJTGXw0X8xJflCII6gow2zodfn7LJUsJJeurulL2pG4BVAko6G9\ntyrmX3XmXwwiOI475f9WpyPbnDrvC8KSOxyD8h51sirxyGcwsQKCAQEAxr3+jbbH\nqsUTcn94+KzttkmdrKtD/RgBv1hYPPqOG4w/pWWbe71m8IjnHSv+811ubWBlmOjD\n/PHh2dF6MgGE5C808x9CqiiAvxPnnXYeCVemFWpdUOjvdmS18zQXjto/dh1BQsuk\nZ3ZM1HOnQd1uYykV253w8z3CrUL04jGcInOeetshxD2bmleTcp+uk811kX7TUwXJ\nf6iSOHcB7GcOChmIyIbfp3xjQrVTkIN659RaAViFDnfs8suFswDJIEtw6/gBawya\nZ1wS3pZVeugS9797HKW0SluMtSrRjR2psKMmq11hHvXgnBc+J4gjaxJVEcb3BotM\nbCbRwlaEyvazVQKCAQEAwa778wyeiKyH4AMJ/UyOqioQKk1ATSagxOHr8WC0Kzng\nV1fQ+xhcwstLr4Kfk0/AI2SoXqvSh5KqMIw5EorECbswhApinZUvAyjb5RdHvi9E\nkgUGPRo8MpkrClQAHvCbuNXxGw57vaU0w9F5Tt3OPDIHsor1fqN2nnvVGpHWHAlp\nQmZDb6/KZ/W9z3x0K8wq4alwdR2f7VCUrBuwuEWDVI+yguVB/kfl+rYermHuJfA+\noBowMcSUmsuMrrLTeYIfrmjO/PU3sm0bNL6U1REoYILacrAm8buogH87dnOeoKaN\ninerJEKxcX5EL7juJob8/JirixVcR5Uw9qiipcatLwKCAQBMRJExVRleoW6LG/wS\nglpe//UwVDEtKU9SXNbP3981Fyc9k7aNT+v3FrKKcV3PiuVbuAiFG55KrZBchJT+\nJ7MV1j/dpPtyTUTLDxptROzV7PrhcQYKjLmIl7FzeWQo//wmmad3uKqIwc9OIGvp\nTM6V4yhuNThIQEU7NFzBiQQ//FqvDvTwWCwkmMMO09StB8W8Zg026Rugj9I9NP5Z\n+Fpc6duiCJA/t+5npSpCZRJ/cPBxX8T//mnB6vSN8xk7+XeGNpBkwltmmuDq5oo7\nNmBBDwxxu+1qM6PVym7MVrvN+25ViOpCdV0SyaCijw34gvp+bfpSWpajUmpgx88C\nDJZZAoIBABcSgEL4yt3fJ6SA2CzLdOdCcYCIiVNneZlajF/JtEy97UKaXHO8+Dfg\nPdjfh6DlzC6rK/9zGnY5+3ojCh1yWF4MZYAlOJArGFmZAXDt8Abw3ItEe/TFbkxc\nwKrPTOBiqzo+iiU9+XGi/4EgMAI8G/hBwXb8ZLg8QsIoYD91Bft7B4X4ZqokV8lA\nlebknXYmMSmGpLXe3JFJmxxRhCC/byCgqZQ8OTtQV04hadA+LD9quhsaY4laMJWs\nD8sz1EtSO/Hr3FR35bWkl6wV0+b5z0SH8fvdjhYX07/S6EN5DHl4vb2z+bgtFbQ+\nZWMF9aCzTenNSgocdky0sguAFTgITdMCggEAPUu371mVu0Egi0L7aLEpU9g4RU5J\nS25asH8uWeeJEvLw3nhEumTtSaCZ46H+4Qeem8++fZ4OUQifpPrU08Zh5z2toUQk\nbzCWDGiYfkqG5HcOc2n2U1kQaY8K/XAIeSffuIGJLM8aARQBH+c3W8c/9PaZKNmW\nLriquq3G/DlQ/ic18oPfJDyZsFnVTHFvEfgVDxq/W+fdgF//AAlV5XmArN1AfG02\nY5+iDzTGiGk3KHX20pvOFqoh5P1Ohl5Er0drzPtmHOhm+eujEt8THUCV25hCuuDm\nTZyekbzN8adxLXdS1Qp7PIfrwjsWZIQXt0/5DT0a1OiGLrwticKoPKUspg==\n-----END RSA PRIVATE KEY-----",
+    "ci_connect_service_access_key": "i050910"
+  },
+  "job_generator": {
+    "user": "i050910",
+    "password": "",
+    "purpose": "jenkins"
+  },
+  "info": {
+    "t1": "#########################################################################",
+    "t2": "  You can ignore the parameters below!",
+    "t3": "#########################################################################"
+  },
+  "sap_jenkins": {
+    "user": "tomcat",
+    "applicationName": ""
+  },
+  "sap_jenkins_config": {
+    "jenkinsUrl": null,
+    "dropdown_viewstabbar_plugin": {
+      "activate": true
+    },
+    "local_jobbase": true,
+    "local_jobbase_update_mode": "skip"
+  },
+  "activate_security": {
+    "activate": true
+  },
+  "gerrit_voter": {
+    "gerrit_voter_user": "yourVoter",
+    "gerrit_voter_user_privatekey": "-----BEGIN RSA PRIVATE KEY-----yourVoterPrivateKey-----END RSA PRIVATE KEY-----"
+  },
+  "credentialaccess": {
+    "credentials": [
+      {
+        "purpose": "perforce",
+        "user": "notused",
+        "password": ""
+      },
+      {
+        "purpose": "projectportal",
+        "user": "notused",
+        "password": ""
+      }
+    ]
+  },
+  "sap-nvm": {
+    "nvm_user": "tomcat",
+    "nvm_dir": "~tomcat/.nvm"
+  }
+}
