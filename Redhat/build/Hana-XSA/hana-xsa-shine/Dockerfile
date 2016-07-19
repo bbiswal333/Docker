@@ -1,6 +1,6 @@
 FROM docker.wdf.sap.corp:50000/hanaxsshine/weekstone/hana-xsa
 
-MAINTAINER gerald.braunwarth@free.fr
+MAINTAINER gerald.braunwarth@sap.com
 
 
 RUN \

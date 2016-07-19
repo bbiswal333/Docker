@@ -1,6 +1,6 @@
 FROM docker.wdf.sap.corp:50000/hanaxsshine/weekstone/hana-xsa-shine-req
 
-MAINTAINER gerald.braunwarth@free.fr
+MAINTAINER gerald.braunwarth@sap.com
 
 #### UPLOAD INSTALLER
 COPY  mo-a9901609a/51050846     /mo-a9901609a/51050846
