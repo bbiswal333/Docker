@@ -34,7 +34,7 @@ RUN \
 #    rm -f $file; \
 
     #### TEMPORARY WINDOWS SHARE
-    yum install -y cifs-utils; \
+#   yum install -y cifs-utils; \
 
     #### INSTALL MORE COMMANDS FOR 3RD PARTY INSTALL \
     if ! yum -y install wget tar git which; then exit 1; fi; \
@@ -50,7 +50,7 @@ RUN \
     rm -f $file; \
 
     #### INSTALL MAVEN
-    file=apache-maven-3.3.3-bin.tar.gz; \
-    if ! wget http://apache.mirror.digitalpacific.com.au/maven/maven-3/3.3.3/binaries/$file; then exit 1; fi; \
+    file=apache-maven-3.3.9-bin.tar.gz; \
+    if ! wget http://apache.mirror.digitalpacific.com.au/maven/maven-3/3.3.9/binaries/$file; then exit 1; fi; \
     if ! tar -zxvf $file; then exit 1; fi; \
     rm -f $file
