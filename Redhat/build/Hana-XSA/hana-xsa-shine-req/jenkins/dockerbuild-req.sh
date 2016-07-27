@@ -7,7 +7,34 @@
 #
 ###############################################################################
 
+
+#--------------------------------------
+function OnError {
+  echo
+  echo $1
+  echo
+  exit 1; }
+
+
+#--------------------------------------
+function CheckLoginFile {
+
+  if [ -f ~/.docker/config-SAVE.json ]; then
+    cat ~/.docker/config-SAVE.json > ~/.docker/config.json
+    return; fi
+
+  if [ -f ~/.docker/config.json ]; then
+    cat ~/.docker/config.json > ~/.docker/config-SAVE.json
+    return; fi;
+
+  OnError "File '~/.docker/config.json' is missing, cannot connect to Artifactory server"; }
+
+
+#---------------  MAIN
 #set -x
+
+repo="docker.wdf.sap.corp:51010"
+image="$repo/hanaxsshine/weekstone/hana-xsa-shine-req"
 
 echo "Create folder 'build'"
 if [ -d build ]; then
@@ -16,12 +43,23 @@ mkdir build
 
 echo "Getting Dockerfile from Github"
 if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa-shine-req/Dockerfile > build/Dockerfile; then
-  echo "Failed to curl Dockerfile"
-  exit 1; fi
+  OnError "Failed to curl Dockerfile"; fi
+
+CheckLoginFile
 
 echo "Running 'docker build'"
-echo
-image="docker.wdf.sap.corp:51010/hanaxsshine/weekstone/hana-xsa-shine-req"
 if ! docker build -t $image build; then
-  echo "Failed to build Dockerfile"
-  exit 1; fi
+  docker rm -f -v $(docker ps -a -q)
+  OnError "Failed to build Dockerfile"; fi
+
+echo "Loging to Artifactory"
+if ! docker login $repo; then
+  OnError "Failed to log to Artifactory"; fi
+
+echo "Pushing image"
+if ! docker push $image; then
+  OnError "Failed to push image to Artifactory"; fi
+
+echo "Deleting local image"
+if ! docker rmi $image; then
+  OnError "Failed to delete local image"; fi
