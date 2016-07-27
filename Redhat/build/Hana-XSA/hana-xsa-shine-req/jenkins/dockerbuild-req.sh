@@ -21,11 +21,11 @@ function CheckLoginFile {
 
   if [ -f ~/.docker/config-SAVE.json ]; then
     cat ~/.docker/config-SAVE.json > ~/.docker/config.json
-    return; fi
+    return 0; fi
 
   if [ -f ~/.docker/config.json ]; then
     cat ~/.docker/config.json > ~/.docker/config-SAVE.json
-    return; fi;
+    return 0; fi;
 
   OnError "File '~/.docker/config.json' is missing, cannot connect to Artifactory server"; }
 
