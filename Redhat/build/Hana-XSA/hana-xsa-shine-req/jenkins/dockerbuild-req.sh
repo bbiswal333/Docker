@@ -42,7 +42,7 @@ if [ -d build ]; then
 mkdir build
 
 echo "Getting Dockerfile from Github"
-if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa-shine-req/Dockerfile > build/Dockerfile; then
+if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa-shine-req/build/Dockerfile > build/Dockerfile; then
   OnError "Failed to curl Dockerfile"; fi
 
 CheckLoginFile
