@@ -71,5 +71,6 @@ if ! docker push $image; then
   OnError "Failed to push image to Artifactory"; fi
 
 
+echo "Renaming local image from Push to Pull tag"
 if ! docker tag $imgPush $imgPull; then OnError "Failed to tag image from Push to Pull"; fi
 if ! docker rmi $imgPush;          then OnError "Failed to delete local Push image"; fi
