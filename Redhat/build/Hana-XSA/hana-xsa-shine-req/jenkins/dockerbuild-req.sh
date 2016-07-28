@@ -61,13 +61,13 @@ docker rmi $imgPush>/dev/null
 
 
 echo "Running 'docker build'"
-if ! docker build -t $image build; then
+if ! docker build -t $imgPush build; then
   docker rm -f -v $(docker ps -a -q)
   OnError "Failed to build Dockerfile"; fi
 
 
 echo "Pushing image"
-if ! docker push $image; then
+if ! docker push $imgPush; then
   OnError "Failed to push image to Artifactory"; fi
 
 docker logout $registry:$push
