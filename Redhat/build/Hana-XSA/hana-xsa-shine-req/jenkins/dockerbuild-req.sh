@@ -52,9 +52,9 @@ if ! docker build -t $image build; then
   docker rm -f -v $(docker ps -a -q)
   OnError "Failed to build Dockerfile"; fi
 
-echo "Loging to Artifactory"
-if ! docker login $repo; then
-  OnError "Failed to log to Artifactory"; fi
+#echo "Loging to Artifactory"
+#if ! docker login $repo; then
+#  OnError "Failed to log to Artifactory"; fi
 
 echo "Pushing image"
 if ! docker push $image; then
