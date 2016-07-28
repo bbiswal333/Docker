@@ -53,7 +53,7 @@ if ! docker build -t $image build; then
   OnError "Failed to build Dockerfile"; fi
 
 echo "Pushing image"
-if ! sudo docker push $image; then
+if ! docker push $image; then
   OnError "Failed to push image to Artifactory"; fi
 
 echo "Deleting local image"
