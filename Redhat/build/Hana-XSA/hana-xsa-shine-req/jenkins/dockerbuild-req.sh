@@ -70,6 +70,8 @@ echo "Pushing image"
 if ! docker push $image; then
   OnError "Failed to push image to Artifactory"; fi
 
+docker logout $registry:$push
+
 
 echo "Renaming local image from Push to Pull tag"
 if ! docker tag $imgPush $imgPull; then OnError "Failed to tag image from Push to Pull"; fi
