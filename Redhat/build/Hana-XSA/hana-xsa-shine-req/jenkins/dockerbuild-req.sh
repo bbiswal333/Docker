@@ -31,7 +31,7 @@ function CheckLoginFile {
 
 
 #---------------  MAIN
-#set -x
+set -x
 
 repo="docker.wdf.sap.corp:51010"
 image="$repo/hanaxsshine/weekstone/hana-xsa-shine-req"
