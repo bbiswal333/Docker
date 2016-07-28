@@ -33,32 +33,43 @@ function CheckLoginFile {
 #---------------  MAIN
 set -x
 
-whoami
-env | sort
+registry="docker.wdf.sap.corp"
+push=51010
+pull=50000
+image="hanaxsshine/weekstone/hana-xsa-shine-req"
+imgPush=$registry:$push/$image
+imgPull=$registry:$pull/$image
 
-repo="docker.wdf.sap.corp:51010"
-image="$repo/hanaxsshine/weekstone/hana-xsa-shine-req"
 
 echo "Create folder 'build'"
 if [ -d build ]; then
   rm -rf build; fi
 mkdir build
 
+
 echo "Getting Dockerfile from Github"
 if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa-shine-req/build/Dockerfile > build/Dockerfile; then
   OnError "Failed to curl Dockerfile"; fi
 
+
 CheckLoginFile
+
+
+echo "Cleanup build"
+docker rmi $imgPull>/dev/null
+docker rmi $imgPush>/dev/null
+
 
 echo "Running 'docker build'"
 if ! docker build -t $image build; then
   docker rm -f -v $(docker ps -a -q)
   OnError "Failed to build Dockerfile"; fi
 
+
 echo "Pushing image"
 if ! docker push $image; then
   OnError "Failed to push image to Artifactory"; fi
 
-echo "Deleting local image"
-if ! docker rmi $image; then
-  OnError "Failed to delete local image"; fi
+
+if ! docker tag $imgPush $imgPull; then OnError "Failed to tag image from Push to Pull"; fi
+if ! docker rmi $imgPush;          then OnError "Failed to delete local Push image"; fi
