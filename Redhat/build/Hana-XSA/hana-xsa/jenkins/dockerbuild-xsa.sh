@@ -19,8 +19,6 @@ function OnError {
 #--------------------------------------
 function PrepareInstaller {
 
-  cd build
-
   if [ -d mount ]; then exit 1; fi
 
   mkdir mount
@@ -38,9 +36,7 @@ function PrepareInstaller {
   cp -r mount/51050846/DATA_UNITS/XSA_CONTENT_10           upload/51050846/DATA_UNITS/
 
   if ! sudo umount mount; then exit 1; fi
-  rm -r mount
-
-  cd ..; }
+  rm -r mount; }
 
 
 #--------------------------------------
@@ -70,16 +66,17 @@ image="hanaxsshine/weekstone/hana-xsa"
 imgPush=$registry:$push/$image
 imgPull=$registry:$pull/$image
 
-echo "Create folder 'build'"
+echo "Create workspace folder 'build'"
 if [ -d build ]; then
   rm -rf build; fi
 mkdir build
+cd build
 
 echo "Filtering HanaXS installer files to upload"
 PrepareInstaller $1 $2
 
 echo "Getting Dockerfile from Github"
-if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/build/Dockerfile > build/Dockerfile; then
+if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/build/Dockerfile > Dockerfile; then
   OnError "Failed to curl Dockerfile"; fi
 
 CheckLoginFile
@@ -90,7 +87,9 @@ dummy=$(docker rmi $imgPush 2>&1)
 
 echo "Running 'docker build'"
 if ! docker build -t $imgPush build; then
-  docker rm -f -v $(docker ps -a -q)
+  dummy=$(docker ps -a -q)
+  if [ "${dummy}" ]; then
+    docker rm -f -v $(docker ps -a -q); fi
   OnError "Failed to build Dockerfile"; fi
 
 echo "Pushing image"
