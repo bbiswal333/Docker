@@ -35,7 +35,7 @@ function PrepareInstaller {
   cp -r mount/51050846/DATA_UNITS/XSA_RT_10_LINUX_X86_64   upload/51050846/DATA_UNITS/
   cp -r mount/51050846/DATA_UNITS/XSA_CONTENT_10           upload/51050846/DATA_UNITS/
 
-  if ! umount mount; then exit 1; fi
+  if ! sudo umount mount; then exit 1; fi
   rm -r mount; }
 
 
