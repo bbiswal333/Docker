@@ -101,6 +101,3 @@ docker logout $registry:$push
 echo "Renaming local image from Push to Pull tag"
 if ! docker tag $imgPush $imgPull; then OnError "Failed to tag image from Push to Pull"; fi
 if ! docker rmi $imgPush;          then OnError "Failed to delete local Push image"; fi
-
-echo "Cleanup build"
-dummy=$(docker rmi $imgPull 2>&1)
