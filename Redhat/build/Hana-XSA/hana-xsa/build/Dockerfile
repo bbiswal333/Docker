@@ -3,7 +3,7 @@ FROM docker.wdf.sap.corp:50000/hanaxsshine/weekstone/hana-installer
 MAINTAINER gerald.braunwarth@sap.com
 
 #### UPLOAD INSTALLER
-#COPY  mo-a9901609a/51050846     /mo-a9901609a/51050846
+COPY  mount/51050846     /mo-a9901609a/51050846
 
 #### HANA INSTALL OPTIONS
 ENV sid="DCK" \
