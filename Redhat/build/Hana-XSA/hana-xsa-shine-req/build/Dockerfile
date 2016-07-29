@@ -2,9 +2,10 @@ FROM docker.wdf.sap.corp:50000/aurora/rh7-tools
 
 MAINTAINER gerald.braunwarth@sap.com
 
-ENV HomeBuild="/usr/repo" \
-    PATH="$PATH:/usr/repo/apache-maven-3.3.3/bin"
-              # /usr/repo: delayed variable expansion
+ENV HomeBuild="usr/repo" \
+    Maven="apache-maven-3.3.9"
+
+ENV PATH="$PATH:/$HomeBuild/$Maven/bin"
 
 RUN \
     #### INSTALL MORE LIBS FOR CONTAINERIZED HANA
@@ -40,8 +41,8 @@ RUN \
     if ! yum -y install wget tar git which; then exit 1; fi; \
 
     ### HOME BUILD FOLDERS
-    mkdir -p $HomeBuild/git; \
-    cd $HomeBuild; \
+    mkdir -p /$HomeBuild/git; \
+    cd /$HomeBuild; \
 
     #### INSTALL JDK  (JRE for Hana install / JDK for QA)
     file=jdk-8u60-linux-x64.rpm; \
@@ -50,7 +51,7 @@ RUN \
     rm -f $file; \
 
     #### INSTALL MAVEN
-    file=apache-maven-3.3.9-bin.tar.gz; \
+    file=$Maven-bin.tar.gz; \
     if ! wget http://apache.mirror.digitalpacific.com.au/maven/maven-3/3.3.9/binaries/$file; then exit 1; fi; \
     if ! tar -zxvf $file; then exit 1; fi; \
     rm -f $file

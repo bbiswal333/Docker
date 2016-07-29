@@ -21,7 +21,7 @@ RUN \
 
 
     #### GIT CLONE SHINE
-    cd $HomeBuild/git; \
+    cd /$HomeBuild/git; \
     if ! git clone https://github.wdf.sap.corp/refapps/shine.git; then exit 1; fi; \
 
 
@@ -35,7 +35,7 @@ RUN \
 
 
     #### INSTALL SHINE
-    file=$(ls $HomeBuild/git/shine/assembly/target/*.ZIP); \
+    file=$(ls /$HomeBuild/git/shine/assembly/target/*.ZIP); \
     if [ ! ${file} ]; then exit 1; fi; \
     if ! xs install $file; then exit 1; fi; \
 
