@@ -86,7 +86,7 @@ dummy=$(docker rmi $imgPull 2>&1)
 dummy=$(docker rmi $imgPush 2>&1)
 
 echo "Running 'docker build'"
-if ! docker build -t $imgPush build; then
+if ! docker build -t $imgPush .; then
   dummy=$(docker ps -a -q)
   if [ "${dummy}" ]; then
     docker rm -f -v $(docker ps -a -q); fi
