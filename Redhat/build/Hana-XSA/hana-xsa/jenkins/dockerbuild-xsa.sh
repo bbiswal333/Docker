@@ -17,9 +17,7 @@ function OnError {
 
 
 #--------------------------------------
-function PrepareInstaller {
-
-  if [ -d mount ]; then exit 1; fi
+function FilterInstaller {
 
   mkdir mount
   if ! sudo mount -t cifs //mo-a9901609a.mo.sap.corp/XSA mount -o domain=global,user=$1,password=$2; then exit 1; fi
@@ -67,13 +65,15 @@ imgPush=$registry:$push/$image
 imgPull=$registry:$pull/$image
 
 echo "Create workspace folder 'build'"
+if [ -d build/mount ]; then
+  OnError "'build/mount' already exists, please fix parent build failure"; fi
 if [ -d build ]; then
   rm -rf build; fi
 mkdir build
 cd build
 
 echo "Filtering HanaXS installer files to upload"
-PrepareInstaller $1 $2
+FilterInstaller $1 $2
 
 echo "Getting Dockerfile from Github"
 if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/build/Dockerfile > Dockerfile; then
