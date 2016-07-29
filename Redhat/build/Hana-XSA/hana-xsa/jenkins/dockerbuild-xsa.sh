@@ -22,7 +22,7 @@ function PrepareInstaller {
   if [ -d mount ]; then exit 1; fi
 
   mkdir mount
-  if ! mount -t cifs //mo-a9901609a.mo.sap.corp/XSA mount -o domain=global,user=$1,password=$2; then exit 1; fi
+  if ! sudo mount -t cifs //mo-a9901609a.mo.sap.corp/XSA mount -o domain=global,user=$1,password=$2; then exit 1; fi
 
   rm -rf upload
   mkdir -p upload/51050846/DATA_UNITS
