@@ -19,6 +19,8 @@ function OnError {
 #--------------------------------------
 function PrepareInstaller {
 
+  cd build
+
   if [ -d mount ]; then exit 1; fi
 
   mkdir mount
@@ -36,7 +38,9 @@ function PrepareInstaller {
   cp -r mount/51050846/DATA_UNITS/XSA_CONTENT_10           upload/51050846/DATA_UNITS/
 
   if ! sudo umount mount; then exit 1; fi
-  rm -r mount; }
+  rm -r mount
+
+  cd ..; }
 
 
 #--------------------------------------
@@ -66,13 +70,13 @@ image="hanaxsshine/weekstone/hana-xsa"
 imgPush=$registry:$push/$image
 imgPull=$registry:$pull/$image
 
-echo "Filtering HanaXS installer files to upload"
-PrepareInstaller $1 $2
-
 echo "Create folder 'build'"
 if [ -d build ]; then
   rm -rf build; fi
 mkdir build
+
+echo "Filtering HanaXS installer files to upload"
+PrepareInstaller $1 $2
 
 echo "Getting Dockerfile from Github"
 if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/build/Dockerfile > build/Dockerfile; then
