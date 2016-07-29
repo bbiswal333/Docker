@@ -5,6 +5,7 @@ MAINTAINER gerald.braunwarth@sap.com
 ENV HomeBuild="usr/repo" \
     Maven="apache-maven-3.3.9"
 
+    # !! Delayed variable expansion
 ENV PATH="$PATH:/$HomeBuild/$Maven/bin"
 
 RUN \
