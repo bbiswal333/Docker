@@ -38,7 +38,7 @@ function FilterInstaller {
 
 
 #--------------------------------------
-function CheckLoginFile {
+function InitArtifactoryLogin {
 
   if [ -f ~/.docker/config-SAVE.json ]; then
     cat ~/.docker/config-SAVE.json > ~/.docker/config.json
@@ -79,11 +79,7 @@ echo "Getting Dockerfile from Github"
 if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/build/Dockerfile > Dockerfile; then
   OnError "Failed to curl Dockerfile"; fi
 
-CheckLoginFile
-
-echo "Cleanup build"
-dummy=$(docker rmi $imgPull 2>&1)
-dummy=$(docker rmi $imgPush 2>&1)
+InitArtifactoryLogin
 
 echo "Running 'docker build'"
 if ! docker build -t $imgPush .; then
@@ -99,5 +95,6 @@ if ! docker push $imgPush; then
 docker logout $registry:$push
 
 echo "Renaming local image from Push to Pull tag"
+dummy=$(docker rmi $imgPull 2>&1)
 if ! docker tag $imgPush $imgPull; then OnError "Failed to tag image from Push to Pull"; fi
 if ! docker rmi $imgPush;          then OnError "Failed to delete local Push image"; fi
