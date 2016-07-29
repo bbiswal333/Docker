@@ -56,8 +56,8 @@ CheckLoginFile
 
 
 echo "Cleanup build"
-docker rmi $imgPull>/dev/null
-docker rmi $imgPush>/dev/null
+dummy=$(docker rmi $imgPull 2>&1)
+dummy=$(docker rmi $imgPush 2>&1)
 
 
 echo "Running 'docker build'"
