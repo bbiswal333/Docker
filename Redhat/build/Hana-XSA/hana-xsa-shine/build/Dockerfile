@@ -22,7 +22,8 @@ RUN \
 
     #### GIT CLONE SHINE
     cd /$HomeBuild/git; \
-    if ! git clone https://github.wdf.sap.corp/refapps/shine.git; then exit 1; fi; \
+#   if ! git clone https://github.wdf.sap.corp/refapps/shine.git; then exit 1; fi; \
+    if ! git clone https://github.wdf.sap.corp/refapps/shine/tree/rev-1.1.12; then exit 1; fi; \
 
 
     #### BUILD SHINE WITH MAVEN
