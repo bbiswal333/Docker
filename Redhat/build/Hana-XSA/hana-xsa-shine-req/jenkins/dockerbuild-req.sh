@@ -17,7 +17,7 @@ function OnError {
 
 
 #--------------------------------------
-function CheckLoginFile {
+function InitArtifactoryLogin {
 
   if [ -f ~/.docker/config-SAVE.json ]; then
     cat ~/.docker/config-SAVE.json > ~/.docker/config.json
@@ -40,19 +40,20 @@ image="hanaxsshine/weekstone/hana-xsa-shine-req"
 imgPush=$registry:$push/$image
 imgPull=$registry:$pull/$image
 
-echo "Create folder 'build'"
+echo "Create workspace folder 'build'"
 if [ -d build ]; then
   rm -rf build; fi
 mkdir build
+cd build
 
 echo "Getting Dockerfile from Github"
-if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa-shine-req/build/Dockerfile > build/Dockerfile; then
+if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa-shine-req/build/Dockerfile > Dockerfile; then
   OnError "Failed to curl Dockerfile"; fi
 
-CheckLoginFile
+InitArtifactoryLogin
 
 echo "Running 'docker build'"
-if ! docker build -t $imgPush build; then
+if ! docker build -t $imgPush .; then
   dummy=$(docker ps -a -q)
   if [ "${dummy}" ]; then
     docker rm -f -v $(docker ps -a -q); fi
