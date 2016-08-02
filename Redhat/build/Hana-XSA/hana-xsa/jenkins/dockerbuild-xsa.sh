@@ -51,6 +51,20 @@ function InitArtifactoryLogin {
   OnError "File '~/.docker/config.json' is missing, cannot connect to Artifactory server"; }
 
 
+#--------------------------------------
+function DeleteFailedBuildsContainers {
+  dummy=$(docker ps -a -q)
+  if [ "${dummy}" ]; then
+    docker rm -f -v $(docker ps -a -q); fi; }
+
+
+#--------------------------------------
+function DeleteFailedBuildsImages {
+  imageId=$(docker images | awk -v name='<none>' '$1==name { print $3 }')
+  if [ "${imageId}" ]; then
+    docker rmi $imageId; fi; }
+
+
 #---------------  MAIN
 set -x
 
@@ -81,11 +95,11 @@ if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/maste
 
 InitArtifactoryLogin
 
+DeleteFailedBuildsContainers
+DeleteFailedBuildsImages
+
 echo "Running 'docker build'"
 if ! docker build -t $imgPush .; then
-  dummy=$(docker ps -a -q)
-  if [ "${dummy}" ]; then
-    docker rm -f -v $(docker ps -a -q); fi
   OnError "Failed to build Dockerfile"; fi
 
 echo "Pushing image"
