@@ -1,6 +1,0 @@
-
-Jenkins Server
-mo-b105d4aa7	10.97.154.68
-
-Slave Jenkins : Manager + node
-dewdftv01652.dhcp.pgdev.sap.corp
