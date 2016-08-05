@@ -47,6 +47,11 @@ function DeleteFailedBuildsImages {
 #---------------  MAIN
 set -x
 
+if [ $# -ne 1 ]; then
+  echo "Expected parameter: Github branch to build the Shine version"
+  echo "Example: ./dockerbuild-shine.sh rev-1.1.12"
+  exit 1; fi
+
 registry="docker.wdf.sap.corp"
 push=51010
 pull=50000
@@ -70,7 +75,7 @@ DeleteFailedBuildsContainers
 DeleteFailedBuildsImages
 
 echo "Running 'docker build'"
-if ! docker build -t $imgPush .; then
+if ! docker build --build-arg branch=$1 -t $imgPush .; then
   OnError "Failed to build Dockerfile"; fi
 
 echo "Pushing image"

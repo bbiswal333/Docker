@@ -1,5 +1,8 @@
 FROM docker.wdf.sap.corp:50000/hanaxsshine/weekstone/hana-xsa
 
+# rev-1.1.12 is stable
+ARG branch
+
 MAINTAINER gerald.braunwarth@sap.com
 
 
@@ -22,7 +25,7 @@ RUN \
 
     #### GIT CLONE SHINE
     cd /$HomeBuild/git; \
-    if ! git clone -b rev-1.1.12 https://github.wdf.sap.corp/refapps/shine.git; then exit 1; fi; \
+    if ! git clone -b $branch https://github.wdf.sap.corp/refapps/shine.git; then exit 1; fi; \
 
 
     #### BUILD SHINE WITH MAVEN
