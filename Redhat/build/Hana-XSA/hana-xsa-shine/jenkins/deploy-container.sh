@@ -53,6 +53,7 @@ DeleteImages
 echo "Getting '$curlScript' from github"
 if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa-shine/jenkins/$curlScript > $curlScript; then
   OnError "Failed to curl '$curlScript' from Github"; fi
+chmod +x $curlScript
 
 echo "Deploying container"
 pth=$(pwd)
