@@ -20,7 +20,7 @@ function OnError {
 function DeleteContainers {
   dummy=$(docker ps -a -q)
   if [ $? -ne 0 ]; then
-    OnError "Failed to run 'docker ps'"; fi
+    OnError "Failed to run 'docker ps'. Is docker daemon running ?"; fi
   if [ "${dummy}" ]; then
     docker rm -f -v $dummy; fi; }
 
@@ -40,7 +40,7 @@ set -x
 
 if [ $# -ne 2 ]; then
   echo "Expected parameters: <SID>  <InstanceNumber>"
-  echo "Example: ./RenameInstance.sh  DCK  00"
+  echo "Example: ./deploy-shine.sh  DCK  00"
   exit 1; fi
 
 image="hana-xsa-shine"

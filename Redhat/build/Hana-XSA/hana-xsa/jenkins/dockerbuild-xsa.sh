@@ -54,6 +54,8 @@ function InitArtifactoryLogin {
 #--------------------------------------
 function DeleteFailedBuildsContainers {
   dummy=$(docker ps -a -q)
+  if [ $? -ne 0 ]; then
+    OnError "Failed to run 'docker ps'. Is docker daemon running ?"; fi
   if [ "${dummy}" ]; then
     docker rm -f -v $(docker ps -a -q); fi; }
 
