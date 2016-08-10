@@ -19,6 +19,8 @@ function OnError {
 #--------------------------------------
 function DeleteContainers {
   dummy=$(docker ps -a -q)
+  if [ $? -ne 0 ] then
+    OnError "Failed to run 'docker ps'"; fi
   if [ "${dummy}" ]; then
     docker rm -f -v $dummy; fi; }
 
@@ -26,6 +28,8 @@ function DeleteContainers {
 #--------------------------------------
 function DeleteImages {
   dummy=$(docker images -q)
+  if [ $? -ne 0 ] then
+    OnError "Failed to run 'docker images'"; fi
   if [ "${dummy}" ]; then
     docker rmi $dummy; fi; }
 
