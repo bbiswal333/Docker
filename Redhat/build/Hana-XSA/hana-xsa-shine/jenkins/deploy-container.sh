@@ -3,7 +3,7 @@
 ###############################################################################
 #
 #  AUTHOR: gerald.braunwarth@sap.com    - August 2016 -
-#  PURPOSE: deploy a hana-xsa-shine container from the image
+#  PURPOSE: deploy hana-xsa / hana-xsa-shine container from the image
 #
 ###############################################################################
 
@@ -38,13 +38,12 @@ function DeleteImages {
 #---------------  MAIN
 set -x
 
-if [ $# -ne 2 ]; then
-  echo "Expected parameters: <SID>  <InstanceNumber>"
-  echo "Example: ./deploy-shine.sh  DCK  00"
+if [ $# -ne 3 ]; then
+  echo "Expected parameters:  <image>  <SID>  <InstanceNumber>"
+  echo "Example: ./deploy-container.sh  hana-xsa-shine  DCK  00"
   exit 1; fi
 
-image="hana-xsa-shine"
-imgPull=docker.wdf.sap.corp:50000/hanaxsshine/weekstone/$image
+imgPull=docker.wdf.sap.corp:50000/hanaxsshine/weekstone/$1
 curlScript="RenameInstance.sh"
 
 echo "Cleanup host, delete existing containers and images"
@@ -57,5 +56,5 @@ if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/maste
 
 echo "Deploying container"
 pth=$(pwd)
-if ! docker run -t --net=host -v $pth:/scripts $imgPull "/scripts/$curlScript $1 $2"; then
-  OnError "Failed to start '$image' container"; fi
+if ! docker run -t --net=host -v $pth:/scripts $imgPull /bin/sh "/scripts/$curlScript $1 $2"; then
+  OnError "Failed to start '$1' container"; fi
