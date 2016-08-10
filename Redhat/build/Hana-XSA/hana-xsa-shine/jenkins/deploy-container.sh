@@ -56,5 +56,5 @@ if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/maste
 
 echo "Deploying container"
 pth=$(pwd)
-if ! docker run -t --net=host -v $pth:/scripts $imgPull /bin/sh "/scripts/$curlScript $1 $2"; then
+if ! docker run -t --net=host -v $pth:/scripts $imgPull /bin/sh "/scripts/$curlScript $2 $3"; then
   OnError "Failed to start '$1' container"; fi
