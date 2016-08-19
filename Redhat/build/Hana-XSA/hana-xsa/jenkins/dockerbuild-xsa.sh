@@ -19,22 +19,19 @@ function OnError {
 #--------------------------------------
 function FilterInstaller {
 
-  mkdir mount
-  if ! sudo mount -t cifs //mo-a9901609a.mo.sap.corp/XSA mount -o domain=global,user=$1,password=$2; then exit 1; fi
+  rel=../../hana-installers
+  mkdir -p upload/{RT,XSA,more}
 
-  rm -rf upload
-  mkdir -p upload/51050846/DATA_UNITS
-
-  cp mount/51050846/*            upload/51050846/
-  cp mount/51050846/DATA_UNITS/* upload/51050846/DATA_UNITS/
-
-  cp -r mount/51050846/DATA_UNITS/HDB_LCM_LINUX_X86_64     upload/51050846/DATA_UNITS/
-  cp -r mount/51050846/DATA_UNITS/HDB_SERVER_LINUX_X86_64  upload/51050846/DATA_UNITS/
-  cp -r mount/51050846/DATA_UNITS/XSA_RT_10_LINUX_X86_64   upload/51050846/DATA_UNITS/
-  cp -r mount/51050846/DATA_UNITS/XSA_CONTENT_10           upload/51050846/DATA_UNITS/
-
-  if ! sudo umount mount; then exit 1; fi
-  rm -r mount; }
+  cp    $rel/SAPCAR*                                          upload/
+  cp -r $rel/SAP_HANA_LCM                                     upload/
+  cp    $rel/SAP_HANA_DATABASE*.SAR                           upload/
+  cp    $rel/xs.onpremise.runtime.hanainstallation*[0-9].SAR  upload/RT
+  cp    $rel/jobscheduler-assembly*[0-9].zip                  upload/
+  cp    $rel/*MONITORING*                                     upload/XSA/
+  cp    $rel/sap-xsac-hrtt*[0-9].zip                          upload/more
+  cp    $rel/sap-xsac-di*[0-9].zip                            upload/more/
+  cp    $rel/sap-xsac-webide*[0-9].zip                        upload/more/
+  cp    $rel/*[0-9].mtaext                                    upload/more/; }
 
 
 #--------------------------------------
@@ -70,9 +67,6 @@ function DeleteFailedBuildsImages {
 #---------------  MAIN
 set -x
 
-if [ $# -ne 2 ]; then
-  OnError "Expected parameters: GLOBAL\<login> <password>"; fi
-
 registry="docker.wdf.sap.corp"
 push=51010
 pull=50000
@@ -81,22 +75,22 @@ imgPush=$registry:$push/$image
 imgPull=$registry:$pull/$image
 
 echo "Create workspace folder 'build'"
-if [ -d build/mount ]; then
-  OnError "'build/mount' already exists, please fix parent build failure"; fi
 if [ -d build ]; then
   rm -rf build; fi
 mkdir build
 cd build
 
-echo "Filtering HanaXS installer files to upload"
+echo "Filtering Hana and XS installers to upload"
 FilterInstaller $1 $2
 
 echo "Getting Dockerfile from Github"
 if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/build/Dockerfile > Dockerfile; then
   OnError "Failed to curl Dockerfile"; fi
 
+echo "Initialize Artifactory login"
 InitArtifactoryLogin
 
+echo "Clean up failed previous builds"
 DeleteFailedBuildsContainers
 DeleteFailedBuildsImages
 
