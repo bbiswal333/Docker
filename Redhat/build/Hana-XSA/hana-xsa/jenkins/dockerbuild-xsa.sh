@@ -81,7 +81,7 @@ mkdir build
 cd build
 
 echo "Filtering Hana and XS installers to upload"
-FilterInstaller $1 $2
+FilterInstaller
 
 echo "Getting Dockerfile from Github"
 if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/build/Dockerfile > Dockerfile; then
