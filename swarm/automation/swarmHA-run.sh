@@ -11,7 +11,7 @@
 #--------------------------------------
 function CheckImagePulled {	# registry:port  repo/image:tag
 
-  artibuild=https://$1/artifactory/api/storage/virtual_docker/$2/latest/manifest.json
+  artibuild=https://$1/artifactory/api/storage/xmake_allrepos/$2/latest/manifest.json
 
   status=1
   while [ $status -ne 0 ]; do

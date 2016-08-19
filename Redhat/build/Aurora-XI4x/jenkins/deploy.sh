@@ -69,7 +69,7 @@ function Init { # aurora, aurora42_cons, aurora4xInstall
     OnError "Failed to curl file '$versionTxt' from Github"; fi
 
   export request="swarm-request.ini"
-  export registry="docker.wdf.sap.corp:50000"
+  export registry="docker.wdf.sap.corp:50002"
   export image="$1/$2_$version-snapshot"
 
   OnMissingFile ../$request
