@@ -31,7 +31,7 @@ $apiKey = 'AKCp2UNNGgbwi9YrxsAXiGdtMN8FLaTumzzMNiXs2xELzfEDGp9NnqsHhQPK9EXJM8vTs
 $header = @{"X-Jfrog-Art-Api" = $apiKey}
 
 Write-Host "Retrieving images list from Artifactory folder 'virtual_docker'"
-$html = Invoke-RestMethod -Method Get -Header $header -Uri "$($registry):50000/artifactory/api/storage/virtual_docker/$suite"
+$html = Invoke-RestMethod -Method Get -Header $header -Uri "$($registry):50002/artifactory/api/storage/xmake_allrepos/$suite"
 
 if (-not $html.children.Count) {
   Write-Host 'Failed to retrieve Aurora images list from Artifactory server'
