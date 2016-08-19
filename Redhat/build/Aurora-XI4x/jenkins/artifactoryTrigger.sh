@@ -41,7 +41,7 @@ version=$(curl -s https://github.wdf.sap.corp/raw/AuroraXmake/$3/master/version.
 if [ ! "${version}" ]; then
   OnFailed 'Failed to retrieve version from xMake Github repo'; fi
 
-virtualdocker=https://docker.wdf.sap.corp/artifactory/virtual_docker/$1/$2_$version-snapshot/latest/
+virtualdocker=https://docker.wdf.sap.corp/artifactory/xmake_allrepos/$1/$2_$version-snapshot/latest/
 
 curl -s $virtualdocker > newCurl-$2.txt
 
