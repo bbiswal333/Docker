@@ -48,7 +48,7 @@ curlScript="RenameInstance.sh"
 
 echo "Cleanup host, delete existing containers and images"
 DeleteContainers
-DeleteImages
+#DeleteImages
 
 echo "Getting '$curlScript' from github"
 if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa-shine/jenkins/$curlScript > $curlScript; then
@@ -57,5 +57,20 @@ chmod +x $curlScript
 
 echo "Deploying container"
 pth=$(pwd)
-if ! docker run -dt --net=host -v $pth:/scripts $imgPull /bin/sh /scripts/$curlScript $2 $3; then
+ID=$(docker run -d --net=host -v $pth:/scripts $imgPull /bin/sh /scripts/$curlScript $2 $3)
+if [ ! "${ID}" ]; then
   OnError "Failed to start '$1' container"; fi
+
+echo "Renaming instance and starting HANA"
+status=1
+while [ $status -ne 0 ]; do
+  sleep 5
+  if docker logs $ID | grep -i "Log file written to" > /dev/null; then
+    status=0; fi; done
+
+# return log to Jenkins
+docker logs $ID
+
+# set return status
+if ! docker logs $ID | grep -i "SAP HANA system renamed" > /dev/null; then
+  exit 1; fi
