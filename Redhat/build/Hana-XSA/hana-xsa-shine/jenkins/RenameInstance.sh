@@ -33,4 +33,5 @@ if ! $saphome/shared/$sid/hdblcm/hdblcm -b --action=rename_system \
   echo "Failed to rename instance";
   exit 1; fi
 
+set +x
 while true; do sleep 5; done
