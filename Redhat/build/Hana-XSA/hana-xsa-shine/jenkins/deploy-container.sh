@@ -73,5 +73,5 @@ while [ $status -ne 0 ]; do
 docker logs $ID
 
 # set return status
-if ! docker logs $ID | grep -i "SAP HANA system renamed" > /dev/null; then
+if ! docker logs $ID 2>&1 | grep -i "SAP HANA system renamed" > /dev/null; then
   exit 1; fi
