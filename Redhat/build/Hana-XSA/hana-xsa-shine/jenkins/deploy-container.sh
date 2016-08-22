@@ -48,7 +48,7 @@ curlScript="RenameInstance.sh"
 
 echo "Cleanup host, delete existing containers and images"
 DeleteContainers
-#DeleteImages
+# DeleteImages
 
 echo "Getting '$curlScript' from github"
 if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa-shine/jenkins/$curlScript > $curlScript; then
