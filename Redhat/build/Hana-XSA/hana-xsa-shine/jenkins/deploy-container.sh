@@ -66,7 +66,7 @@ set +x
 status=1
 while [ $status -ne 0 ]; do
   sleep 10
-  if docker logs $ID | grep -i "Log file written to" > /dev/null; then
+  if docker logs $ID 2>&1 | grep -i "Log file written to" > /dev/null; then
     status=0; fi; done
 
 # return log to Jenkins
