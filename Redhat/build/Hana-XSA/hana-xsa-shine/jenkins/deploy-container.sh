@@ -62,9 +62,10 @@ if [ ! "${ID}" ]; then
   OnError "Failed to start '$1' container"; fi
 
 echo "Renaming instance and starting HANA"
+set +x
 status=1
 while [ $status -ne 0 ]; do
-  sleep 5
+  sleep 10
   if docker logs $ID | grep -i "Log file written to" > /dev/null; then
     status=0; fi; done
 
