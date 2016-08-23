@@ -1,4 +1,5 @@
-FROM docker.mo.sap.corp/library/rhel:latest
+#FROM docker.mo.sap.corp/library/rhel:latest
+FROM docker.wdf.sap.corp:51022/rhel:7.2_sap
 
 MAINTAINER gerald.braunwarth@sap.com, simon.gomez@sap.com
 
