@@ -15,6 +15,11 @@ if [ $# -ne 3 ]; then
   echo "Example: ./delete-xsa.sh  <ApiKey>  hana-xsa  latest"
   exit 1; fi
 
-if ! curl -s -H X-JFrog-Art-Api:$1 -X DELETE https://docker.wdf.sap.corp:51010/artifactory/refapps/hanaxsshine/weekstone/$2/$3; then
+# RED HAT only:
+# 'no_proxy' variable configured by old Chef recipes are too poor for the alias 'docker.wdf.sap.corp'
+registry=docker.wdf.sap.corp
+no_proxy=$registry,$no_proxy
+
+if ! curl -s -H X-JFrog-Art-Api:$1 -X DELETE https://$registry:51010/artifactory/refapps/hanaxsshine/weekstone/$2/$3; then
   echo "Failed to delete image"
   exit 1; fi
