@@ -14,8 +14,10 @@ RUN \
 
     ### INSTALL HANA REQUIREMENTS
       # (nfs-utils installed by rh7-tools parent image)
+      # compat-sap-c++ replaced with compat-sap-c++-5
+
     if ! yum install -y unzip gcc-c++ gtk2 libicu xulrunner sudo tcsh libssh2 expect cairo graphviz iptraf-ng krb5-workstation krb5-libs.i686 \
-                        nfs-utils lm_sensors rsyslog compat-sap-c++ openssl098e openssl PackageKit-gtk-module libcanberra-gtk2 libtool-ltdl \
+                        nfs-utils lm_sensors rsyslog compat-sap-c++ compat-sap-c++-5 openssl098e openssl PackageKit-gtk-module libcanberra-gtk2 libtool-ltdl \
                         xorg-x11-xauth compat-libstdc++-33 numactl; then exit 1; fi; \
 
 #    if ! ln -s /usr/lib64/libssl.so.0.9.8e /usr/lib64/libssl.so.0.9.8; then exit 1; fi; \
