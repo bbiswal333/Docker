@@ -1,4 +1,4 @@
-FROM docker.wdf.sap.corp:50000/aurora/rh7-tools
+FROM docker.wdf.sap.corp:50000/aurora/rh7-tools:1.0
 
 MAINTAINER gerald.braunwarth@sap.com
 
