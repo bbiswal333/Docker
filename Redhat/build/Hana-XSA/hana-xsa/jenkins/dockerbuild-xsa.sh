@@ -20,7 +20,7 @@ function OnError {
 function FilterInstaller {
 
   rel=../../hana-installers
-  mkdir -p upload/{RT,XSA,more}
+  mkdir -p upload/{RT,XSA}
 
   cp    $rel/SAPCAR*                                          upload/
   cp -r $rel/SAP_HANA_LCM                                     upload/
@@ -28,10 +28,10 @@ function FilterInstaller {
   cp    $rel/xs.onpremise.runtime.hanainstallation*[0-9].SAR  upload/RT
   cp    $rel/jobscheduler-assembly*[0-9].zip                  upload/
   cp    $rel/*MONITORING*                                     upload/XSA/
-  cp    $rel/sap-xsac-hrtt*[0-9].zip                          upload/more
-  cp    $rel/sap-xsac-di*[0-9].zip                            upload/more/
-  cp    $rel/sap-xsac-webide*[0-9].zip                        upload/more/
-  cp    $rel/*[0-9].mtaext                                    upload/more/; }
+  cp    $rel/sap-xsac-hrtt*[0-9].zip                          upload/XSA/
+  cp    $rel/sap-xsac-di*[0-9].zip                            upload/XSA/
+  cp    $rel/sap-xsac-webide*[0-9].zip                        upload/XSA/
+  cp    $rel/*[0-9].mtaext                                    upload/XSA/; }
 
 
 #--------------------------------------

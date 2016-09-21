@@ -65,23 +65,23 @@ RUN \
       if ! xs login -a https://$(hostname):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then exit 1; fi; fi; \
 
     #### INSTALL HRTT
-    file=$(ls /installer/more/sap-xsac-hrtt*[0-9].zip); \
+    file=$(ls /installer/XSA/sap-xsac-hrtt*[0-9].zip); \
     if [ ! "${file}" ]; then exit 1; fi; \
     if ! xs install $file -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
 
     #### INSTALL DI
-    di=$(ls /installer/more/sap-xsac-di*[0-9].zip | grep -v "DICORE"); \
-    ma=$(ls /installer/more/sap-xsac-di*.mtaext); \
+    di=$(ls /installer/XSA/sap-xsac-di*[0-9].zip | grep -v "DICORE"); \
+    ma=$(ls /installer/XSA/sap-xsac-di*.mtaext); \
     if [ ! "${di}" ]; then exit 1; fi; \
     if [ ! "${ma}" ]; then exit 1; fi; \
     if ! xs install $di -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
 
     #### INSTALL WEBIDE
-#    wb=$(ls /installer/more/sap-xsac-webide*[0-9].zip | grep -v "XSACSAP"); \
-#    ma=$(ls /installer/more/sap-xsac-webide*.mtaext); \
-#    if [ ! "${wb}" ]; then exit 1; fi; \
-#    if [ ! "${ma}" ]; then exit 1; fi; \
-#    if ! xs install $wb -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+    wb=$(ls /installer/XSA/sap-xsac-webide*[0-9].zip | grep -v "XSACSAP"); \
+    ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
+    if [ ! "${wb}" ]; then exit 1; fi; \
+    if [ ! "${ma}" ]; then exit 1; fi; \
+    if ! xs install $wb -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
 
     #### DELETE INSTALLER
     if ! rm -rf /installer; then exit 1; fi; \
