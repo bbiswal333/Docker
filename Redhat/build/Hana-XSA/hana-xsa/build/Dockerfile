@@ -59,32 +59,40 @@ RUN \
       --import_xs_content=yes \
       --component_dirs=/installer/RT,installer/XSA; then exit 1; fi; \
 
+    #### ADD HRTT + DI_CORE + WEB_IDE
+#    if ! /installer/SAP_HANA_LCM/hdblcm \
+#      -b \
+#      --action=update \
+#      –-components=xs \
+#      –-xs_components=xsac_hrtt,xsac_di_core,xsac_sap_web_ide \
+#      --xs_content_cfg=installer/XSA; then exit 1; fi; \
+
     #### LOGIN TO XSA
-    if ! xs login -a https://$(hostname):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then \
-      echo "Retry 'xs login'"; \
-      if ! xs login -a https://$(hostname):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then exit 1; fi; fi; \
+#    if ! xs login -a https://$(hostname):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then \
+#      echo "Retry 'xs login'"; \
+#      if ! xs login -a https://$(hostname):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then exit 1; fi; fi; \
 
     #### INSTALL HRTT
-    file=$(ls /installer/XSA/sap-xsac-hrtt*[0-9].zip); \
-    if [ ! "${file}" ]; then exit 1; fi; \
-    if ! xs install $file -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+#    file=$(ls /installer/XSA/sap-xsac-hrtt*[0-9].zip); \
+#    if [ ! "${file}" ]; then exit 1; fi; \
+#    if ! xs install $file -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
 
     #### INSTALL DI
-    di=$(ls /installer/XSA/sap-xsac-di*[0-9].zip | grep -v "DICORE"); \
-    ma=$(ls /installer/XSA/sap-xsac-di*.mtaext); \
-    if [ ! "${di}" ]; then exit 1; fi; \
-    if [ ! "${ma}" ]; then exit 1; fi; \
-    if ! xs install $di -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+#    di=$(ls /installer/XSA/sap-xsac-di*[0-9].zip | grep -v "DICORE"); \
+#    ma=$(ls /installer/XSA/sap-xsac-di*.mtaext); \
+#    if [ ! "${di}" ]; then exit 1; fi; \
+#    if [ ! "${ma}" ]; then exit 1; fi; \
+#    if ! xs install $di -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
 
     #### INSTALL WEBIDE
-    wb=$(ls /installer/XSA/sap-xsac-webide*[0-9].zip | grep -v "XSACSAP"); \
-    ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
-    if [ ! "${wb}" ]; then exit 1; fi; \
-    if [ ! "${ma}" ]; then exit 1; fi; \
-    if ! xs install $wb -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+#    wb=$(ls /installer/XSA/sap-xsac-webide*[0-9].zip | grep -v "XSACSAP"); \
+#    ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
+#    if [ ! "${wb}" ]; then exit 1; fi; \
+#    if [ ! "${ma}" ]; then exit 1; fi; \
+#    if ! xs install $wb -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
 
     #### DELETE INSTALLER
-    if ! rm -rf /installer; then exit 1; fi; \
+#    if ! rm -rf /installer; then exit 1; fi; \
 
     #### STOP HANA
     sidadm=$(echo $sid | awk '{ print tolower($0) }')adm; \
