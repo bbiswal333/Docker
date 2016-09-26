@@ -22,26 +22,24 @@ function FilterInstaller {
   rel=../../hana-installers
   mkdir -p upload/{RT,XSA}
 
-#  cp    $rel/SAPCAR*                                          upload/
-#  cp -r $rel/SAP_HANA_LCM                                     upload/
-#  cp    $rel/SAP_HANA_DATABASE*.SAR                           upload/
-#  cp    $rel/xs.onpremise.runtime.hanainstallation*[0-9].SAR  upload/RT
-#  cp    $rel/jobscheduler-assembly*[0-9].zip                  upload/
-#  cp    $rel/*MONITORING*                                     upload/XSA/
-#  cp    $rel/sap-xsac-hrtt*[0-9].zip                          upload/XSA/
-#  cp    $rel/sap-xsac-di*[0-9].zip                            upload/XSA/
-#  cp    $rel/sap-xsac-webide*[0-9].zip                        upload/XSA/
-#  cp    $rel/*[0-9].mtaext                                    upload/XSA/; }
-
   cp    $rel/SAPCAR*                                          upload/
   cp -r $rel/SAP_HANA_LCM                                     upload/
   cp    $rel/SAP_HANA_DATABASE*.SAR                           upload/
-  cp    $rel/xs.onpremise.runtime.hanainstallation*           upload/RT
-  cp    $rel/jobscheduler-assembly*                           upload/
-  cp    $rel/sap-xsac-admin*                                  upload/XSA/
-  cp    $rel/sap-xsac-hrtt*                                   upload/XSA/
-  cp    $rel/sap-xsac-di*                                     upload/XSA/
-  cp    $rel/sap-xsac-webide*                                 upload/XSA/; }
+
+  cp    $rel/xs.onpremise.runtime.hanainstallation*[0-9].SAR  upload/RT
+  cp    $rel/jobscheduler-assembly*[0-9].zip                  upload/
+  cp    $rel/*MONITORING*                                     upload/XSA/
+  cp    $rel/sap-xsac-hrtt*[0-9].zip                          upload/XSA/
+  cp    $rel/*XSACDICORE*                                     upload/XSA/
+  cp    $rel/sap-xsac-webide*[0-9].zip                        upload/XSA/
+  cp    $rel/*[0-9].mtaext                                    upload/XSA/; }
+
+#  cp    $rel/xs.onpremise.runtime.hanainstallation*           upload/RT
+#  cp    $rel/jobscheduler-assembly*                           upload/
+#  cp    $rel/sap-xsac-admin*                                  upload/XSA/
+#  cp    $rel/sap-xsac-hrtt*                                   upload/XSA/
+#  cp    $rel/sap-xsac-di*                                     upload/XSA/
+#  cp    $rel/sap-xsac-webide*                                 upload/XSA/; }
 
 
 #--------------------------------------
@@ -92,7 +90,7 @@ cd build
 
 echo "Filtering Hana and XS installers to upload"
 FilterInstaller
-
+exit
 echo "Getting Dockerfile from Github"
 if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/build/Dockerfile > Dockerfile; then
   OnError "Failed to curl Dockerfile"; fi
