@@ -49,15 +49,15 @@ RUN \
           -system_user_password $secret \
       --org_name=$org \
       --prod_space_name=$prod \
-      --components=xs \
-      --xs_components=xsac_monitoring,xsac_services \
-      --system_usage=custom \
-      --sapmnt=$saphome/shared --datapath=$saphome/data --logpath=$saphome/log \
       --remote_execution=ssh \
       --install_hostagent=off \
-      --add_local_roles=xs_worker \
+      --system_usage=custom \
+      --sapmnt=$saphome/shared --datapath=$saphome/data --logpath=$saphome/log \
+      --components=server,xs \
+      --xs_components=xsac_monitoring,xsac_services \
       --import_xs_content=yes \
-      --component_dirs=/installer/RT,installer/XSA; then exit 1; fi; \
+      --add_local_roles=xs_worker \
+      --component_dirs=/installer/RT,/installer/XSA; then exit 1; fi; \
 
     #### ADD HRTT + DI_CORE + WEB_IDE
 #    if ! /installer/SAP_HANA_LCM/hdblcm \
@@ -68,6 +68,12 @@ RUN \
 #      –-components=xs \
 #      –-xs_components=xsac_hrtt,xsac_di_core,xsac_sap_web_ide \
 #      --xs_content_cfg=installer/XSA; then exit 1; fi; \
+
+  # To install a new SAP HANA system with XS Advanced and SAP Web IDE
+  # ./hdblcm --action=install –-components=server,xs –-xs_components=xsac_hrtt,xsac_di_core,xsac_sap_web_ide --xs_content_cfg=<path to directory with mtaextensions> …
+
+  #  To update XS Advanced and SAP Web IDE
+  #./hdblcm --action=update –-components=xs –-xs_components=xsac_hrtt,xsac_di_core,xsac_sap_web_ide --xs_content_cfg=<path todirectory with mta extensions>
 
   # Detected components:
       #SAP HANA Database (2.00.000.00.1470842078) in /installer/SAP_HANA_DATABASE/server
@@ -95,11 +101,11 @@ RUN \
     if ! xs install $di -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
 
     #### INSTALL WEBIDE
-    wb=$(ls /installer/XSA/sap-xsac-webide*[0-9].zip | grep -v "XSACSAP"); \
-    ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
-    if [ ! "${wb}" ]; then exit 1; fi; \
-    if [ ! "${ma}" ]; then exit 1; fi; \
-    if ! xs install $wb -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+#    wb=$(ls /installer/XSA/sap-xsac-webide*[0-9].zip | grep -v "XSACSAP"); \
+#    ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
+#    if [ ! "${wb}" ]; then exit 1; fi; \
+#    if [ ! "${ma}" ]; then exit 1; fi; \
+#    if ! xs install $wb -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
 
     #### DELETE INSTALLER
     if ! rm -rf /installer; then exit 1; fi; \
