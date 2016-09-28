@@ -63,6 +63,7 @@ foreach ($zone in $dropzones) {
 	  continue }
 
 	$diff = @(Compare-Object (get-Content diff\$OLD) (get-Content $NEW))
+	$diff = $diff | where { $_.SideIndicator -eq '=>' }
 
 	if ($diff.Count) {
 	  if ($diff.Count -gt 1) {
