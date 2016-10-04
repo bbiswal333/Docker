@@ -3,6 +3,8 @@
 # Purpose : check drops arrivals in dropZones : xsrt / hrtt / di / webide
 #*************************************************************************
 
+#$Hdbclm =         \\production.wdf.sap.corp\makeresults\newdb\POOL\HANA_WS_COR\released_weekstones\LastWS\lcm\linuxx86_64"
+#$HanaDb =         \\production.wdf.sap.corp\makeresults\newdb\POOL\HANA_WS_COR\released_weekstones\LastWS\server\linuxx86_64"
 #XSRunTimeUrl =    http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.releases.xmake/com/sap/xs/onpremise/runtime/xs.onpremise.runtime.hanainstallation_linuxx86_64/
 #AdminToolUrl =    http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/xsa/admin/sap-xsac-admin/
 #JobSchedulerUrl = http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/xs/jobscheduler/jobscheduler-assembly/
@@ -11,10 +13,7 @@
 #DIUrl=            http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/di/sap-xsac-di/
 #WebIDEUrl=        http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/devx/sap-xsac-webide/
 
-
-# --------------------------------
-FUNCTION historize($name) {
-  Move-Item -Force $name diff\$name }
+# Get-EventLog Security | ?{$_.Username -notmatch '^user1$|^.*user$'}
 
 
 # --------------------------------
@@ -25,58 +24,109 @@ FUNCTION historize($name) {
 #  $mask = $mask.Remove(0,1)
 #  return $mask }
 
-FUNCTION CreateUploadList($zone, $release) {
-  $list = Invoke-WebRequest "$rootUrl/$($zone.url)/$release"
-  $files = $list.Links | foreach { $_.outerText } | where { $_ -notmatch 'parent' }
 #  $mask = BuildMask $zone.mask
-  $limit = if ($zone.mask.Count -gt 1) {$zone.mask.Count-1} else {0}
-  $installers = $files | where { $_ -like "$($zone.mask[0])" -or $_ -like "$($zone.mask[$limit])" }
-  
-  foreach ($file in $installers) {
-    "$rootUrl/$($zone.url)/$file" | Out-File "upload-$($zone.name).txt" -Append }}
 
-# Get-EventLog Security | ?{$_.Username -notmatch '^user1$|^.*user$'}
+
+# --------------------------------
+FUNCTION OnBadParameter() {
+  Write-Host "Expected argument: <zone> with values = xsa or shine"
+  Write-host "Example: ./NexusDropsTrigger xsa"
+  exit 1 }
+
+
+FUNCTION AddUploadLine($zone, $url, $file) {
+  $line = "$($zone.name);$($zone.upload);$url;$file"
+  $line | Out-File "upload-$($zone.upload).txt" -Append }
+
+
+# --------------------------------
+FUNCTION historize($release, $releaseTxt) {
+  $release | Out-File diff\$releaseTxt }
+
 
 #********************************************************************************************
 #      MAIN
 #********************************************************************************************
-
-$rootUrl = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories"
-
-$dropzones = [pscustomobject] @{name = "xsrt";     upload="RT";   mask = @("xs.onpremise.runtime.hanainstallation*[0-9].SAR"); url = "deploy.releases.xmake/com/sap/xs/onpremise/runtime/xs.onpremise.runtime.hanainstallation_linuxx86_64"},
-             [pscustomobject] @{name = "admin";    upload="XSA";  mask = @("*MONITORING*[0-9].zip");                           url = "deploy.milestones.xmake/com/sap/xsa/admin/sap-xsac-admin"},
-             [pscustomobject] @{name = "schedule"; upload="root"; mask = @("jobscheduler-assembly*[0-9].zip");                 url = "deploy.milestones.xmake/com/sap/xs/jobscheduler/jobscheduler-assembly"},
-#            [pscustomobject] @{name = "shine";    upload="XSA";  mask = @("XSACSHINE*[0-9].zip");                             url = "deploy.milestones.xmake/com/sap/refapps/sap-xsac-shine"},
-             [pscustomobject] @{name = "hrtt";     upload="XSA";  mask = @("sap-xsac-hrtt*[0-9].zip");                         url = "deploy.milestones/com/sap/xsa/hrtt/sap-xsac-hrtt"},
-             [pscustomobject] @{name = "di";       upload="XSA";  mask = @("*XSACDICORE*[0-9].zip","*[0-9].mtaext");           url = "deploy.milestones/com/sap/di/sap-xsac-di"},
-             [pscustomobject] @{name = "webide";   upload="XSA";  mask = @("*XSACSAPWEBIDE[0-9]*.zip","*[0-9].mtaext");        url = "deploy.milestones/com/sap/devx/sap-xsac-webide"}
 cls
+
+# DEBUG
+#if ($args.Count -ne 1) {
+#  OnBadParameter }
+#ENDDEBUG
+
+$type = $args[0]
+$type = 'shine'
+$index = [Array]::IndexOf(('xsa','shine'), $type)
+
+if ( $index -lt 0) {
+  OnBadParameter }
+
+$dropzones = @(
+  @([pscustomobject] @{name = "lcm";      upload="root"; mask = @("SAP_HANA_LCM*");                              url = "\\production.wdf.sap.corp\makeresults\newdb\POOL\HANA_WS_COR\released_weekstones\LastWS\lcm\linuxx86_64"},
+    [pscustomobject] @{name = "hanaDb";   upload="root"; mask = @("SAP_HANA_DATABASE*.SAR");                     url = "\\production.wdf.sap.corp\makeresults\newdb\POOL\HANA_WS_COR\released_weekstones\LastWS\server\linuxx86_64"},
+    [pscustomobject] @{name = "xsrt";     upload="RT";   mask = @("*.runtime.hanainstallation*[0-9].SAR");       url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.releases.xmake/com/sap/xs/onpremise/runtime/xs.onpremise.runtime.hanainstallation_linuxx86_64"},
+    [pscustomobject] @{name = "schedule"; upload="root"; mask = @("jobscheduler-assembly*[0-9].zip");            url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/xs/jobscheduler/jobscheduler-assembly"},
+    [pscustomobject] @{name = "admin";    upload="XSA";  mask = @("*MONITORING*[0-9].zip");                      url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/xsa/admin/sap-xsac-admin"},
+    [pscustomobject] @{name = "hrtt";     upload="XSA";  mask = @("sap-xsac-hrtt*[0-9].zip");                    url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/xsa/hrtt/sap-xsac-hrtt"},
+    [pscustomobject] @{name = "di";       upload="XSA";  mask = @("*XSACDICORE*[0-9].zip","*[0-9].mtaext");      url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/di/sap-xsac-di"},
+    [pscustomobject] @{name = "webide";   upload="XSA";  mask = @("*XSACSAPWEBIDE[0-9]*.zip","*[0-9].mtaext");   url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/devx/sap-xsac-webide"}),
+
+  @([pscustomobject] @{name = "shine";    upload="root"; mask = @("*XSACSHINE[0-9]*.zip",,"*[0-9].mtaext");      url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/refapps/sap-xsac-shine"}))
+
+$metadataXml = "maven-metadata.xml"
+$status = 1,0
+$bChange = $false
+
 Set-Location (Split-Path $MyInvocation.MyCommand.Path)
 
+Remove-Item "$metadataXml", "upload-*.txt" -ErrorAction SilentlyContinue
 if (-not (Test-Path diff)) {
   mkdir diff }
- 
-foreach ($zone in $dropzones) {
 
-	$releaseTxt = "release-$($zone.name).txt"
+foreach ($zone in $dropzones[$index]) {
 
-	Invoke-WebRequest "$rootUrl/$($zone.url)/maven-metadata.xml" -OutFile $releaseTxt
-	
-	if (-not (Test-Path $releaseTxt)) {
-	  Write-Host "Failed to download '$rootUrl/$($zone.url)/maven-metadata.xml'"
-	  exit 1 }
+  # '=lcm' or '=hanaDb'
+  if (($dropzones[0][0].name,$dropzones[0][1].name) -contains $zone.name) {
+    $release = Get-ChildItem -filter $($zone.mask) -Path $($zone.url) | foreach { $_.name} }
 
-	$content = Get-Content $releaseTxt
-	$release = ($content | where { $_ -match 'release' }) -replace '</release>','' -replace '<release>','' -replace ' ',''
-	
-	$release | Out-File $releaseTxt
+  # '=lcm'
+  if ($zone.name -eq $dropzones[0][0].name) {
+    AddUploadLine $zone $zone.url $release
+    continue }
+  
+  #  '<>hanaDb'
+  if ($zone.name -ne $dropzones[0][1].name) {
+    $remoteFile = "$($zone.url)/$metadataXml"
+  	Invoke-WebRequest $remoteFile -OutFile $metadataXml
+  	
+  	if (-not (Test-Path $metadataXml)) {
+  	  Write-Host "Failed to download '$remoteFile'"
+  	  exit 1 }
+
+  	$metadata = Get-Content $metadataXml
+  	$release = ($metadata | where { $_ -match 'release' }) -replace '</release>','' -replace '<release>','' -replace ' ','' }
+
+  $releaseTxt = "release-$($zone.name).txt"
 
 	if ((Test-Path diff\$releaseTxt)) {		# First exec : consider last drop as a new drop
-      if ((Get-Content $releaseTxt) -eq (Get-Content diff\$releaseTxt)) {
-        continue }}
+      if ($release -ne (Get-Content diff\$releaseTxt)) {
+        $bChange = $true }}
+  
+  # '=hanaDb'
+  if ($zone.name -eq $dropzones[0][1].name) {
+    AddUploadLine $zone $zone.url $release }
+  else {
+    $list = Invoke-WebRequest "$($zone.url)/$release"
+    $files = $list.Links | foreach { $_.outerText } | where { $_ -notmatch 'parent' }
+    $limit = if ($zone.mask.Count -gt 1) {$zone.mask.Count-1} else {0}
+    $installers = $files | where { $_ -like "$($zone.mask[0])" -or $_ -like "$($zone.mask[$limit])" }
 
-    CreateUploadList $zone $release
-    historize $releaseTxt }
+    foreach ($file in $installers) {
+      AddUploadLine $zone "$($zone.url)/$release" $file }}
+
+    historize $release $releaseTxt }
+
+return $status[$bChange]
 
 
 # --------------------------------
