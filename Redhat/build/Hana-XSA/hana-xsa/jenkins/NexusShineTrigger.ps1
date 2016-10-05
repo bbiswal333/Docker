@@ -30,7 +30,7 @@
 # --------------------------------
 FUNCTION OnBadParameter() {
   Write-Host "Expected arguments: <GitHubtoken>  <trigger> with values = xsa or shine"
-  Write-host "Example: ./NexusShineDropsTrigger  <MyIUserGithubToken> xsa"
+  Write-host "Example: ./NexusShineTrigger.ps1  <MyIUserGithubToken> xsa"
   exit 1 }
 
 
