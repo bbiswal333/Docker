@@ -29,8 +29,8 @@
 
 # --------------------------------
 FUNCTION OnBadParameter() {
-  Write-Host "Expected argument: <zone> with values = xsa or shine"
-  Write-host "Example: ./NexusDropsTrigger xsa"
+  Write-Host "Expected arguments: <GitHubtoken>  <trigger> with values = xsa or shine"
+  Write-host "Example: ./NexusShineDropsTrigger  <MyIUserGithubToken> xsa"
   exit 1 }
 
 
@@ -49,15 +49,17 @@ FUNCTION historize($release, $releaseTxt) {
 #********************************************************************************************
 cls
 
-if ($args.Count -ne 1) {
+if ($args.Count -ne 2) {
   OnBadParameter }
 
-$trigger = $args[0]
-$index = [Array]::IndexOf(('xsa','shine'), $trigger)
+$token   = $args[0]
+$trigger = $args[1]
 
+$index = [Array]::IndexOf(('xsa','shine'), $trigger)
 if ((0,1) -notcontains $index) {
   OnBadParameter }
 
+$metadataXml = "maven-metadata.xml"
 $dropzones = @(
   @([pscustomobject] @{name = "lcm";      upload="root"; mask = @("SAP_HANA_LCM*");                            url = "\\production.wdf.sap.corp\makeresults\newdb\POOL\HANA_WS_COR\released_weekstones\LastWS\lcm\linuxx86_64"},
     [pscustomobject] @{name = "hanaDb";   upload="root"; mask = @("SAP_HANA_DATABASE*.SAR");                   url = "\\production.wdf.sap.corp\makeresults\newdb\POOL\HANA_WS_COR\released_weekstones\LastWS\server\linuxx86_64"},
@@ -69,8 +71,6 @@ $dropzones = @(
     [pscustomobject] @{name = "webide";   upload="XSA";  mask = @("*XSACSAPWEBIDE[0-9]*.zip","*[0-9].mtaext"); url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/devx/sap-xsac-webide"}),
 
   @([pscustomobject] @{name = "shine";    upload="root"; mask = @("*XSACSHINE[0-9]*.zip",,"*[0-9].mtaext");    url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/refapps/sap-xsac-shine"}))
-
-$metadataXml = "maven-metadata.xml"
 
 Set-Location (Split-Path $MyInvocation.MyCommand.Path)
 
@@ -123,15 +123,17 @@ foreach ($zone in $dropzones[$index]) {
 
     historize $release $releaseTxt }
 
-$git = "C:\Users\i050910\AppData\Local\GitHub\PortableGit_284a859b0e6deba86edc624fef1e4db2aa8241a9\cmd\git.exe"
+# upload Trigger manifest in Github
+$StartFrom = "$($Env:USERPROFILE)\AppData\Local\GitHub"
+$EndPoint = Get-ChildItem -Name git.exe -Path "$($Env:USERPROFILE)\AppData\Local\GitHub\" -Recurse | Where-Object { $_.Contains("cmd") } 
+$git = "$StartFrom\$EndPoint"
+
 invoke-expression "$git config --global http.sslVerify false"
-invoke-expression "$git remote set-url origin https://2761c6879f375c5ece8523b0d3fb8131875840f6@github.wdf.sap.corp/Dev-Infra-Levallois/Docker.git"
+invoke-expression "$git remote set-url origin https://$token@github.wdf.sap.corp/Dev-Infra-Levallois/Docker.git"
 invoke-expression "$git config --global user.name $Env:USERNAME"
-#git config --global push.default matching
 Invoke-Expression "$git add trigger-$trigger.txt"
 Invoke-Expression "$git commit -m 'XSA drops change detected'"
 Invoke-Expression "$git push -q"
-
 
 return (1,0)[$bChange]
 
