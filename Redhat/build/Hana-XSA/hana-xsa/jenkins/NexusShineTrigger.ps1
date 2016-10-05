@@ -128,11 +128,13 @@ $StartFrom = "$($Env:USERPROFILE)\AppData\Local\GitHub"
 $EndPoint = Get-ChildItem -Name git.exe -Path "$StartFrom" -Recurse | Where-Object { $_.Contains("cmd") } 
 $git = "$StartFrom\$EndPoint"
 
+$upper = $trigger.ToUpper()
+
 invoke-expression "$git config --global http.sslVerify false"
 invoke-expression "$git remote set-url origin https://$token@github.wdf.sap.corp/Dev-Infra-Levallois/Docker.git"
 invoke-expression "$git config --global user.name $Env:USERNAME"
 Invoke-Expression "$git add trigger-$trigger.txt"
-Invoke-Expression "$git commit -m 'XSA drops change detected'"
+Invoke-Expression "$git commit -m '$upper drops change detected'"
 Invoke-Expression "$git push -q"
 
 return (1,0)[$bChange]
