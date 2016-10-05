@@ -125,7 +125,7 @@ foreach ($zone in $dropzones[$index]) {
 
 # upload Trigger manifest in Github
 $StartFrom = "$($Env:USERPROFILE)\AppData\Local\GitHub"
-$EndPoint = Get-ChildItem -Name git.exe -Path "$($Env:USERPROFILE)\AppData\Local\GitHub\" -Recurse | Where-Object { $_.Contains("cmd") } 
+$EndPoint = Get-ChildItem -Name git.exe -Path "$StartFrom" -Recurse | Where-Object { $_.Contains("cmd") } 
 $git = "$StartFrom\$EndPoint"
 
 invoke-expression "$git config --global http.sslVerify false"
