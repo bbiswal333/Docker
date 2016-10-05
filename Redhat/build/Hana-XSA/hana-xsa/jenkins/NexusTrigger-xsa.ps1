@@ -123,6 +123,16 @@ foreach ($zone in $dropzones[$index]) {
 
     historize $release $releaseTxt }
 
+$git = "C:\Users\i050910\AppData\Local\GitHub\PortableGit_284a859b0e6deba86edc624fef1e4db2aa8241a9\cmd\git.exe"
+invoke-expression "$git config --global http.sslVerify false"
+invoke-expression "$git remote set-url origin https://2761c6879f375c5ece8523b0d3fb8131875840f6@github.wdf.sap.corp/Dev-Infra-Levallois/Docker.git"
+invoke-expression "$git config --global user.name $Env:USERNAME"
+#git config --global push.default matching
+Invoke-Expression "$git add trigger-$trigger.txt"
+Invoke-Expression "$git commit -m 'XSA drops change detected'"
+Invoke-Expression "$git push -q"
+
+
 return (1,0)[$bChange]
 
 
