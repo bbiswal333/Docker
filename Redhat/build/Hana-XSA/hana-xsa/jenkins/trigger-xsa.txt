@@ -1,4 +1,4 @@
-﻿lcm;root;\\production.wdf.sap.corp\makeresults\newdb\POOL\HANA_WS_COR\released_weekstones\LastWS\lcm\linuxx86_64;SAP_HANA_LCM
+lcm;root;\\production.wdf.sap.corp\makeresults\newdb\POOL\HANA_WS_COR\released_weekstones\LastWS\lcm\linuxx86_64;SAP_HANA_LCM
 hanaDb;root;\\production.wdf.sap.corp\makeresults\newdb\POOL\HANA_WS_COR\released_weekstones\LastWS\server\linuxx86_64;SAP_HANA_DATABASE100_WS2016-39-0_Linux_on_x86_64.SAR
 xsrt;RT;http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.releases.xmake/com/sap/xs/onpremise/runtime/xs.onpremise.runtime.hanainstallation_linuxx86_64/1.0.34;xs.onpremise.runtime.hanainstallation_linuxx86_64-1.0.34.SAR
 jobsched;root;http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/xs/jobscheduler/jobscheduler-assembly/1.3.0;jobscheduler-assembly-1.3.0.zip
