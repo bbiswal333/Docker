@@ -17,7 +17,23 @@ function OnError {
 
 
 #--------------------------------------
-function FilterInstaller {
+function GetTriggerFile {
+
+  $GithubURL = 'https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/jenkins'
+
+  if ! curl -k -s $GithubURL/trigger-xsa.txt -o trigger-xsa.tx; then
+    OnError "Failed to download 'trigger-xsa.txt' from Github"; fi
+
+  # replace Windows Newlines
+  tr -d "\r" < trigger-xsa.tx > trigger-xsa.txt
+  rm trigger-xsa.tx }
+
+
+#--------------------------------------
+function GetCifsInstaller {
+
+  if ! mount -t cifs "//production.wdf.sap.corp/makeresults/newdb" /mnt/cifs  -o domain=global,user=$1,password=$2; then
+    OnError "Failed to mount 'production.wdf.sap.corp' in CIFS"; fi
 
   rel=../../hana-installers
   mkdir -p upload/{RT,XSA}
@@ -82,15 +98,18 @@ image="hanaxsshine/weekstone/hana-xsa"
 imgPush=$registry:$push/$image
 imgPull=$registry:$pull/$image
 
+echo "Getting Trigger manifest from Github"
+GetTriggerFile
+exit 1
 echo "Create workspace folder 'build'"
-if [ -d build ]; then
-  rm -rf build; fi
-mkdir build
+#if [ -d build ]; then
+#  rm -rf build; fi
+#mkdir build
 cd build
 
-echo "Filtering Hana and XS installers to upload"
-FilterInstaller
-
+echo "Getting 'hanadb' and 'lcm' installers to upload"
+GetCifsInstaller
+exit
 echo "Getting Dockerfile from Github"
 if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/build/Dockerfile > Dockerfile; then
   OnError "Failed to curl Dockerfile"; fi
