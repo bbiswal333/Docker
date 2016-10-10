@@ -66,16 +66,16 @@ $sapcar = 'sapcar'
 $lcm = 'lcm'
 $hanadb = 'hanadb'
 $dropzones = @(
-  @([pscustomobject] @{name = $sapcar;    upload="installer";     mask = @("sapcar*.bin");                              url = "http://nexus.wdf.sap.corp:8081/nexus/content/groups/build.milestones/com/sap/tools/sapcar/linuxx86_64/opt/sapcar"},
-    [pscustomobject] @{name = $lcm;       upload="upload";        mask = @("SAP_HANA_LCM*");                            url = "\\production.wdf.sap.corp\makeresults\newdb\POOL\HANA_WS_COR\released_weekstones\LastWS\lcm\linuxx86_64"},
-    [pscustomobject] @{name = $hanadb;    upload="upload";        mask = @("SAP_HANA_DATABASE*.SAR");                   url = "\\production.wdf.sap.corp\makeresults\newdb\POOL\HANA_WS_COR\released_weekstones\LastWS\server\linuxx86_64"},
-    [pscustomobject] @{name = "xsrt";     upload="installer/RT";  mask = @("*.runtime.hanainstallation*[0-9].SAR");     url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.releases.xmake/com/sap/xs/onpremise/runtime/xs.onpremise.runtime.hanainstallation_linuxx86_64"},
-    [pscustomobject] @{name = "jobsched"; upload="installer";     mask = @("jobscheduler-assembly*[0-9].zip");          url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/xs/jobscheduler/jobscheduler-assembly"},
-    [pscustomobject] @{name = "admin";    upload="installer/XSA"; mask = @("*MONITORING*[0-9].zip");                    url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/xsa/admin/sap-xsac-admin"},
-    [pscustomobject] @{name = "hrtt";     upload="installer/XSA"; mask = @("*XSACHRTT*[0-9].zip");                      url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/xsa/hrtt/sap-xsac-hrtt"},
-    [pscustomobject] @{name = "di";       upload="installer/XSA"; mask = @("*XSACDICORE*[0-9].zip","*[0-9].mtaext");    url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/di/sap-xsac-di"},
-    [pscustomobject] @{name = "webide";   upload="installer/XSA"; mask = @("*XSACSAPWEBIDE[0-9]*.zip","*[0-9].mtaext"); url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/devx/sap-xsac-webide"}),
-  @([pscustomobject] @{name = "shine";    upload="installer";     mask = @("*XSACSHINE[0-9]*.zip",,"*[0-9].mtaext");    url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/refapps/sap-xsac-shine"}))
+  @([pscustomobject] @{name = $sapcar;    upload="installer";       mask = @("sapcar*.bin");                              url = "http://nexus.wdf.sap.corp:8081/nexus/content/groups/build.milestones/com/sap/tools/sapcar/linuxx86_64/opt/sapcar"},
+    [pscustomobject] @{name = $lcm;       upload="upload";          mask = @("SAP_HANA_LCM*");                            url = "\\production.wdf.sap.corp\makeresults\newdb\POOL\HANA_WS_COR\released_weekstones\LastWS\lcm\linuxx86_64"},
+    [pscustomobject] @{name = $hanadb;    upload="upload";          mask = @("SAP_HANA_DATABASE*.SAR");                   url = "\\production.wdf.sap.corp\makeresults\newdb\POOL\HANA_WS_COR\released_weekstones\LastWS\server\linuxx86_64"},
+    [pscustomobject] @{name = "xsrt";     upload="installer/RT";    mask = @("*.runtime.hanainstallation*[0-9].SAR");     url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.releases.xmake/com/sap/xs/onpremise/runtime/xs.onpremise.runtime.hanainstallation_linuxx86_64"},
+    [pscustomobject] @{name = "jobsched"; upload="installer";       mask = @("jobscheduler-assembly*[0-9].zip");          url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/xs/jobscheduler/jobscheduler-assembly"},
+    [pscustomobject] @{name = "admin";    upload="installer/XSA";   mask = @("*MONITORING*[0-9].zip");                    url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/xsa/admin/sap-xsac-admin"},
+    [pscustomobject] @{name = "hrtt";     upload="installer/XSA";   mask = @("*XSACHRTT*[0-9].zip");                      url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/xsa/hrtt/sap-xsac-hrtt"},
+    [pscustomobject] @{name = "di";       upload="installer/XSA";   mask = @("*XSACDICORE*[0-9].zip","*[0-9].mtaext");    url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/di/sap-xsac-di"},
+    [pscustomobject] @{name = "webide";   upload="installer/XSA";   mask = @("*XSACSAPWEBIDE[0-9]*.zip","*[0-9].mtaext"); url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/devx/sap-xsac-webide"}),
+  @([pscustomobject] @{name = "shine";    upload="installer/shine"; mask = @("*XSACSHINE[0-9]*.zip",,"*[0-9].mtaext");    url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/refapps/sap-xsac-shine"}))
 
 Set-Location (Split-Path $MyInvocation.MyCommand.Path)
 
