@@ -1,33 +1,35 @@
 FROM docker.wdf.sap.corp:50000/hanaxsshine/weekstone/hana-xsa-shine-req
 
-#MAINTAINER gerald.braunwarth@sap.com
+MAINTAINER gerald.braunwarth@sap.com
 
 #### UPLOAD INSTALLERS
 COPY  upload/     /installer/
 
 #### DOWNLOAD INSTALLERS
 RUN \
-set -x; \
-    if ! curl -k -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/jenkins/trigger-xsa.txt -o trigger-xsa.tx; then exit 1; fi; \
+    echo; \
+    echo "curl 'trigger-xsa.tx'"; \
+    if ! curl -k -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/jenkins/trigger-xsa.txt -o trigger-xsa.tmp; then exit 1; fi; \
 
-    tr -d "\r" < trigger-xsa.tx > trigger-xsa.txt; \
-    rm trigger-xsa.tx; \
+    tr -d "\r" < trigger-xsa.tmp > trigger-xsa.txt; \
+    rm trigger-xsa.tmp; \
 
     mkdir /installer/{RT,XSA}
 
-RUN \
-set -x; \
+    echo; \
     while IFS=';' read name folder url file; do \
       if [ "$name" != "lcm" -a "$name" != "hanadb" ]; then \
+        echo "curl '$folder/$file'"; \
         if ! curl -k -s "$url/$file" -o "/$folder/$file"; then exit 1; fi; fi; \
     done < trigger-xsa.txt; \
-ls -l /installer; \
-ls -l /installer/RT; \
-ls -l /installer/XSA
 
+    echo; \
+    echo "ls /installer"; \
+    ls -l /installer; \
+    ls -l /installer/RT; \
+    ls -l /installer/XSA; \
 
 #### DECOMPRESS INSTALLER
-RUN \
     sapcar=$(ls /installer/sapcar-*); \
     if [ ! "${sapcar}" ]; then exit 1; fi; \
     chmod +x $sapcar; \
@@ -51,7 +53,7 @@ ENV sid="DCK" \
     space="PROD" \
     saphome="/usr/sap/hana"
 
-#### Delayed variables expansion of previous ENV
+#### Another ENV for Delayed variables expansion
 ENV PATH=$PATH:$saphome/shared/$sid/HDB$number/exe/:$saphome/shared/$sid/xs/bin/
 
 RUN \
