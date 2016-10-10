@@ -3,7 +3,7 @@ FROM docker.wdf.sap.corp:50000/hanaxsshine/weekstone/hana-xsa-shine-req
 #MAINTAINER gerald.braunwarth@sap.com
 
 #### UPLOAD INSTALLERS
-#COPY  upload/     /installer/
+COPY  upload/     /installer/
 
 #### DOWNLOAD INSTALLERS
 RUN \
@@ -13,19 +13,17 @@ set -x; \
     tr -d "\r" < trigger-xsa.tx > trigger-xsa.txt; \
     rm trigger-xsa.tx; \
 
-    mkdir -p /installer/{RT,XSA}
+    mkdir /installer/{RT,XSA}
 
 RUN \
 set -x; \
     while IFS=';' read name folder url file; do \
-      if [ "$name" != "lcm" -a "$name" != "hanaDb" ]; then \
+      if [ "$name" != "lcm" -a "$name" != "hanadb" ]; then \
         if ! curl -k -s "$url/$file" -o "/$folder/$file"; then exit 1; fi; fi; \
     done < trigger-xsa.txt; \
 ls -l /installer; \
 ls -l /installer/RT; \
-ls -l /installer/XSA; \
-
-    exit 1
+ls -l /installer/XSA
 
 
 #### DECOMPRESS INSTALLER
@@ -83,14 +81,14 @@ RUN \
       --component_dirs=/installer/RT,/installer/XSA; then exit 1; fi; \
 
     #### ADD HRTT + DI_CORE + WEB_IDE
-#    if ! /installer/SAP_HANA_LCM/hdblcm \
-#      -b \
-#      --action=update \
-#      --sid=$sid \
-#      --number=$number \
-#      –-components=xs \
-#      –-xs_components=xsac_hrtt,xsac_di_core,xsac_sap_web_ide \
-#      --xs_content_cfg=installer/XSA; then exit 1; fi; \
+    if ! /installer/SAP_HANA_LCM/hdblcm \
+      -b \
+      --action=update \
+      --sid=$sid \
+      --number=$number \
+      –-components=xs \
+      –-xs_components=xsac_hrtt,xsac_di_core,xsac_sap_web_ide \
+      --xs_content_cfg=installer/XSA; then exit 1; fi; \
 
   # To install a new SAP HANA system with XS Advanced and SAP Web IDE
   # ./hdblcm --action=install –-components=server,xs –-xs_components=xsac_hrtt,xsac_di_core,xsac_sap_web_ide --xs_content_cfg=<path to directory with mtaextensions> …
@@ -107,21 +105,21 @@ RUN \
     # Unknown argument: –-xs_components=xsac_hrtt,xsac_di_core,xsac_sap_web_ide
 
     #### LOGIN TO XSA
-    if ! xs login -a https://$(hostname):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then \
-      echo "Retry 'xs login'"; \
-      if ! xs login -a https://$(hostname):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then exit 1; fi; fi; \
+#    if ! xs login -a https://$(hostname):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then \
+#      echo "Retry 'xs login'"; \
+#      if ! xs login -a https://$(hostname):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then exit 1; fi; fi; \
 
     #### INSTALL HRTT
-    file=$(ls /installer/XSA/sap-xsac-hrtt*[0-9].zip); \
-    if [ ! "${file}" ]; then exit 1; fi; \
-    if ! xs install $file -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+#    file=$(ls /installer/XSA/sap-xsac-hrtt*[0-9].zip); \
+#    if [ ! "${file}" ]; then exit 1; fi; \
+#    if ! xs install $file -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
 
     #### INSTALL DI
-    di=$(ls /installer/XSA/sap-xsac-di*[0-9].zip); \
-    ma=$(ls /installer/XSA/sap-xsac-di*.mtaext); \
-    if [ ! "${di}" ]; then exit 1; fi; \
-    if [ ! "${ma}" ]; then exit 1; fi; \
-    if ! xs install $di -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+#    di=$(ls /installer/XSA/sap-xsac-di*[0-9].zip); \
+#    ma=$(ls /installer/XSA/sap-xsac-di*.mtaext); \
+#    if [ ! "${di}" ]; then exit 1; fi; \
+#    if [ ! "${ma}" ]; then exit 1; fi; \
+#    if ! xs install $di -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
 
     #### INSTALL WEBIDE
 #    wb=$(ls /installer/XSA/sap-xsac-webide*[0-9].zip | grep -v "XSACSAP"); \

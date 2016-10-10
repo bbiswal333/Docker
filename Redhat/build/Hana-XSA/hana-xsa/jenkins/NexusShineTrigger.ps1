@@ -36,7 +36,8 @@ FUNCTION OnBadParameter() {
 
 
 FUNCTION AddUploadLine($trigger, $zone, $url, $file) {
-  $line = "$($zone.name);$($zone.upload);$url;$file"
+  $wurl = $url.replace('\','/')
+  $line = "$($zone.name);$($zone.upload);$wurl;$file"
   $line | Out-File -Encoding ASCII "trigger-$trigger.txt" -Append }
 
 
