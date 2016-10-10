@@ -37,8 +37,8 @@ RUN \
     done < $trigger.txt; \
 
     echo; \
-    echo "ls $/folder"; \
-    ls -l /$folder; \
+    echo "ls /installer/shine"; \
+    ls -l /installer/shine; \
 
     #### CREATE SHINE USER
 #    if ! hdbsql -i $number -n localhost:3${number}15 -u SYSTEM -p $secret \
@@ -57,8 +57,8 @@ RUN \
     if ! xs login -a https://$NEWHOST:3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then exit 1; fi; \
 
     #### INSTALL SHINE.ZIP
-    sh=$(ls /$folder/sap-xsac-shine-*[0-9].zip); \
-    ma=$(ls /$folder/sap-xsac-shine-*.mtaext); \
+    sh=$(ls /installer/shine/sap-xsac-shine-*[0-9].zip); \
+    ma=$(ls /installer/shine/sap-xsac-shine-*.mtaext); \
     if [ ! "${sh}" ]; then exit 1; fi; \
     if [ ! "${ma}" ]; then exit 1; fi; \
     if ! xs install $sh -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
