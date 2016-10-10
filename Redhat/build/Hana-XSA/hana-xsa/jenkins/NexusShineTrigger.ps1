@@ -67,8 +67,8 @@ $lcm = 'lcm'
 $hanadb = 'hanadb'
 $dropzones = @(
   @([pscustomobject] @{name = $sapcar;    upload="installer";     mask = @("sapcar*.bin");                              url = "http://nexus.wdf.sap.corp:8081/nexus/content/groups/build.milestones/com/sap/tools/sapcar/linuxx86_64/opt/sapcar"},
-    [pscustomobject] @{name = $lcm;       upload="installer";     mask = @("SAP_HANA_LCM*");                            url = "\\production.wdf.sap.corp\makeresults\newdb\POOL\HANA_WS_COR\released_weekstones\LastWS\lcm\linuxx86_64"},
-    [pscustomobject] @{name = $hanadb;    upload="installer";     mask = @("SAP_HANA_DATABASE*.SAR");                   url = "\\production.wdf.sap.corp\makeresults\newdb\POOL\HANA_WS_COR\released_weekstones\LastWS\server\linuxx86_64"},
+    [pscustomobject] @{name = $lcm;       upload="upload";        mask = @("SAP_HANA_LCM*");                            url = "\\production.wdf.sap.corp\makeresults\newdb\POOL\HANA_WS_COR\released_weekstones\LastWS\lcm\linuxx86_64"},
+    [pscustomobject] @{name = $hanadb;    upload="upload";        mask = @("SAP_HANA_DATABASE*.SAR");                   url = "\\production.wdf.sap.corp\makeresults\newdb\POOL\HANA_WS_COR\released_weekstones\LastWS\server\linuxx86_64"},
     [pscustomobject] @{name = "xsrt";     upload="installer/RT";  mask = @("*.runtime.hanainstallation*[0-9].SAR");     url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.releases.xmake/com/sap/xs/onpremise/runtime/xs.onpremise.runtime.hanainstallation_linuxx86_64"},
     [pscustomobject] @{name = "jobsched"; upload="installer";     mask = @("jobscheduler-assembly*[0-9].zip");          url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/xs/jobscheduler/jobscheduler-assembly"},
     [pscustomobject] @{name = "admin";    upload="installer/XSA"; mask = @("*MONITORING*[0-9].zip");                    url = "http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/xsa/admin/sap-xsac-admin"},
