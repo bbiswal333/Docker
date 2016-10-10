@@ -7,12 +7,15 @@ COPY  upload/     /installer/
 
 #### DOWNLOAD INSTALLERS
 RUN \
-    echo; \
-    echo "curl 'trigger-xsa.tx'"; \
-    if ! curl -k -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/jenkins/trigger-xsa.txt -o trigger-xsa.tmp; then exit 1; fi; \
+    trigger='trigger-xsa'; \
 
-    tr -d "\r" < trigger-xsa.tmp > trigger-xsa.txt; \
-    rm trigger-xsa.tmp; \
+    echo; \
+    echo "curl '$trigger.txt'"; \
+    if ! curl -k -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/jenkins/$trigger.txt -o $trigger.tmp; then exit 1; fi; \
+
+    # Windows \nl to Linux
+    tr -d "\r" < $trigger.tmp > $trigger.txt; \
+    rm $trigger.tmp; \
 
     mkdir /installer/{RT,XSA}
 
@@ -21,7 +24,7 @@ RUN \
       if [ "$name" != "lcm" -a "$name" != "hanadb" ]; then \
         echo "curl '$folder/$file'"; \
         if ! curl -k -s "$url/$file" -o "/$folder/$file"; then exit 1; fi; fi; \
-    done < trigger-xsa.txt; \
+    done < $trigger.txt; \
 
     echo; \
     echo "ls /installer"; \
