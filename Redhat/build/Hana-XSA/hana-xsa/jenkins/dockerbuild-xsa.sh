@@ -104,7 +104,7 @@ if [ ! -d /mnt/xsa ]; then
   mkdir /mnt/xsa; fi
 if [ -d build ]; then
   rm -rf build; fi
-mkdir -p build/installer
+mkdir -p build/upload
 
 echo "Getting 'hanadb' and 'lcm' installers to upload"
 GetCifsInstaller
