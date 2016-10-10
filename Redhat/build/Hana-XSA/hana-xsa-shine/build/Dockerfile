@@ -28,7 +28,7 @@ RUN \
     tr -d "\r" < $trigger.tmp > $trigger.txt; \
     rm $trigger.tmp; \
 
-    mkdir -p /installer/shine
+    mkdir -p /installer/shine; \
 
     echo; \
     while IFS=';' read name folder url file; do \
