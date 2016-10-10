@@ -108,9 +108,9 @@ mkdir -p build/installer
 
 echo "Getting 'hanadb' and 'lcm' installers to upload"
 GetCifsInstaller
-exit
+
 echo "Getting Dockerfile from Github"
-if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/build/Dockerfile > Dockerfile; then
+if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/build/Dockerfile -o build/Dockerfile; then
   OnError "Failed to curl Dockerfile"; fi
 
 echo "Initialize Artifactory login"
@@ -121,9 +121,9 @@ DeleteFailedBuildsContainers
 DeleteFailedBuildsImages
 
 echo "Running 'docker build'"
-if ! docker build -t $imgPush .; then
+if ! docker build -t $imgPush build; then
   OnError "Failed to build Dockerfile"; fi
-
+exit
 echo "Pushing image"
 if ! docker push $imgPush; then
   OnError "Failed to push image to Artifactory"; fi
