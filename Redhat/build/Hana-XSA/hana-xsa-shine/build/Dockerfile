@@ -18,7 +18,7 @@ RUN \
       --hostmap=$OLDHOST=$NEWHOST; then exit 1; fi; \
 
     ### DOWNLOAD TRIGGER FILE
-    $trigger='trigger-shine'; \
+    trigger='trigger-shine'; \
 
     echo; \
     echo "curl '$trigger.txt'"; \
