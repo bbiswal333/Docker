@@ -120,7 +120,7 @@ RUN \
     if ! xs install $di -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
 
     #### INSTALL WEBIDE
-    wb=$(ls /installer/XSA/sap-xsac-webide*[0-9].zip | grep -v "XSACSAP"); \
+    wb=$(ls /installer/XSA/sap-xsac-webide*[0-9].zip); \
     ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
     if [ ! "${wb}" ]; then exit 1; fi; \
     if [ ! "${ma}" ]; then exit 1; fi; \
