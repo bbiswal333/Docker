@@ -61,7 +61,8 @@ RUN \
     ma=$(ls /installer/shine/sap-xsac-shine-*.mtaext); \
     if [ ! "${sh}" ]; then exit 1; fi; \
     if [ ! "${ma}" ]; then exit 1; fi; \
-    if ! xs install $sh -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+#    if ! xs install $sh -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+    if ! xs install $sh ; then exit 1; fi; \
 
     #### INSTALL SHINE
 #    file=$(ls /$HomeBuild/git/shine/assembly/target/*.ZIP); \
