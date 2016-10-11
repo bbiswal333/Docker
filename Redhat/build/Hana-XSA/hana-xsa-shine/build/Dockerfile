@@ -45,8 +45,11 @@ set -x; \
 
 mkdir CXXABI138; \
 cd CXXABI138; \
+if ! curl -s -k ftp://ftp.pbone.net/mirror/ftp.sourceforge.net/pub/sourceforge/r/ra/ramonelinux/Rel_0.99/releases/x86_64/packages/gcc-libstdc++-4.9.1-1.ram0.99.x86_64.rpm \
+           -o gcc-libstdc++-4.9.1-1.ram0.99.x86_64.rpm; then exit 1; fi; \
 rpm2cpio gcc-libstdc++-4.9.1-1.ram0.99.x86_64.rpm | cpio -idmv; \
 mv usr/lib64/libstdc++.so.6* /usr/lib64/; \
+cd ..; \
 rm -rf CXXABI138; \
 
 #if ! yum install -y gcc-4.9 g++-4.9; then exit 1; fi; \
