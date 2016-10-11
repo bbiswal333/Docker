@@ -6,7 +6,6 @@ ARG branch
 MAINTAINER gerald.braunwarth@sap.com
 
 RUN \
-set -x; \
     #### RENAME HANA HOST
     OLDHOST=$($saphome/shared/$sid/hdblcm/hdblcm --list_systems | grep -i 'host:' | awk '$2 { print $2 }'); \
     NEWHOST=$(hostname -f); \
@@ -43,7 +42,8 @@ set -x; \
 
     #### CREATE SHINE USER
 set -x; \
-LD_LIBRARY_PATH=/usr/lib:$LD_LIBRARY_PATH; \
+if ! yum install -y gcc-4.9 g++-4.9; then exit 1; fi; \
+export LD_LIBRARY_PATH=/usr/lib64; \
     if ! hdbsql -i $number -n localhost:3${number}15 -u SYSTEM -p $secret \
          "CREATE USER SHINE_USER PASSWORD \"Sap12345\" NO FORCE_FIRST_PASSWORD_CHANGE \
          SET PARAMETER XS_RC_XS_CONTROLLER_ADMIN = 'XS_CONTROLLER_ADMIN',XS_RC_XS_AUTHORIZATION_ADMIN = 'XS_AUTHORIZATION_ADMIN',XS_RC_SHINE_ADMIN = 'SHINE_ADMIN'"; then exit 1; fi; \
