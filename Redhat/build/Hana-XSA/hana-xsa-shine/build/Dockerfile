@@ -41,6 +41,7 @@ RUN \
     ls -l /installer/shine; \
 
     #### CREATE SHINE USER
+set -x
 LD_LIBRARY_PATH=/usr/lib64:$LD_LIBRARY_PATH
     if ! hdbsql -i $number -n localhost:3${number}15 -u SYSTEM -p $secret \
          "CREATE USER SHINE_USER PASSWORD \"Sap12345\" NO FORCE_FIRST_PASSWORD_CHANGE \
