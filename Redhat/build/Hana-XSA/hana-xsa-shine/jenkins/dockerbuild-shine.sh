@@ -47,10 +47,10 @@ function DeleteFailedBuildsImages {
 #---------------  MAIN
 set -x
 
-#if [ $# -ne 1 ]; then
-#  echo "Expected parameter: Github branch to build the Shine version"
-#  echo "Example: ./dockerbuild-shine.sh rev-1.1.12"
-#  exit 1; fi
+if [ $# -ne 1 ]; then
+  echo "Expected parameter: Github branch to build the Shine version"
+  echo "Example: ./dockerbuild-shine.sh rev-1.1.12"
+  exit 1; fi
 
 registry="docker.wdf.sap.corp"
 push=51010
