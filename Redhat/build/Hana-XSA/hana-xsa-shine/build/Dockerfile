@@ -42,8 +42,15 @@ RUN \
 
     #### CREATE SHINE USER
 set -x; \
-if ! yum install -y gcc-4.9 g++-4.9; then exit 1; fi; \
-export LD_LIBRARY_PATH=/usr/lib64; \
+
+mkdir CXXABI138; \
+cd CXXABI138; \
+rpm2cpio gcc-libstdc++-4.9.1-1.ram0.99.x86_64.rpm | cpio -idmv; \
+mv usr/lib64/libstdc++.so.6* /usr/lib64/; \
+rm -rf CXXABI138; \
+
+#if ! yum install -y gcc-4.9 g++-4.9; then exit 1; fi; \
+#export LD_LIBRARY_PATH=/usr/lib64; \
     if ! hdbsql -i $number -n localhost:3${number}15 -u SYSTEM -p $secret \
          "CREATE USER SHINE_USER PASSWORD \"Sap12345\" NO FORCE_FIRST_PASSWORD_CHANGE \
          SET PARAMETER XS_RC_XS_CONTROLLER_ADMIN = 'XS_CONTROLLER_ADMIN',XS_RC_XS_AUTHORIZATION_ADMIN = 'XS_AUTHORIZATION_ADMIN',XS_RC_SHINE_ADMIN = 'SHINE_ADMIN'"; then exit 1; fi; \
