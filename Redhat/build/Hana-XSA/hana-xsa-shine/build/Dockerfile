@@ -6,6 +6,7 @@ ARG branch
 MAINTAINER gerald.braunwarth@sap.com
 
 RUN \
+set -x; \
     #### RENAME HANA HOST
     OLDHOST=$($saphome/shared/$sid/hdblcm/hdblcm --list_systems | grep -i 'host:' | awk '$2 { print $2 }'); \
     NEWHOST=$(hostname -f); \
