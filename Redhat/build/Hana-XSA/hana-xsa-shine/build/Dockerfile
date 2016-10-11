@@ -44,7 +44,7 @@ RUN \
 set -x; \
 
 # yum remove compat-libstdc++-33; \
-yum remove libstdc++-4.8.5-4.el7.x86_64; \
+#yum remove libstdc++-4.8.5-4.el7.x86_64; \
 
 #mkdir CXXABI138; \
 #cd CXXABI138; \
@@ -52,9 +52,13 @@ file=gcc-libstdc++-4.9.1-1.ram0.99.x86_64.rpm; \
 if ! curl -s -k ftp://ftp.pbone.net/mirror/ftp.sourceforge.net/pub/sourceforge/r/ra/ramonelinux/Rel_0.99/releases/x86_64/packages/$file -o $file; then exit 1; fi; \
 #rpm2cpio $file | cpio -idmv; \
 #mv usr/lib64/libstdc++.so.6* /usr/lib64/; \
-#cd ..; \
+#cd /usr/lib64; \
+#rm libstdc++.so.6; \
+#ln -s libstdc++.so.6.0.20 libstdc++.so.6#cd ..; \
 #rm -rf CXXABI138; \
-if ! yum install -y ./$file; then exit 1; fi; \
+
+#if ! yum install -y ./$file; then exit 1; fi; \
+if ! yum -y swap -- remove libstdc++-4.8.5-4.el7.x86_64 -- install ./gcc-libstdc++-4.9.1-1.ram0.99.x86_64.rpm; then exit 1; fi; \
 
 #if ! yum install -y gcc-4.9 g++-4.9; then exit 1; fi; \
 #export LD_LIBRARY_PATH=/usr/lib64; \
