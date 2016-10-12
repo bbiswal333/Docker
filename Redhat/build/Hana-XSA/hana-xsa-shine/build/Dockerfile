@@ -53,8 +53,8 @@ set -x; \
 #mkdir CXXABI138; \
 #cd CXXABI138; \
 file=gcc-libstdc++-4.9.1-1.ram0.99.x86_64.rpm; \
-if ! curl -s -k -O ftp://ftp.pbone.net/mirror/ftp.sourceforge.net/pub/sourceforge/r/ra/ramonelinux/Rel_0.99/releases/x86_64/packages/$file; then exit 1; fi; \
-#if ! curl -s -k -O https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/raw/master/Redhat/yum-rpm/$file; then exit 1; fi; \
+#if ! curl -s -k -O ftp://ftp.pbone.net/mirror/ftp.sourceforge.net/pub/sourceforge/r/ra/ramonelinux/Rel_0.99/releases/x86_64/packages/$file; then exit 1; fi; \
+if ! curl -s -k -O http://moo-repo.wdf.sap.corp:8080/static/monsoon/r/ra/ramonelinux/Rel_0.99/releases/x86_64/packages/$file; then exit 1; fi; \
 
 #rpm2cpio $file | cpio -idmv; \
 #mv usr/lib64/libstdc++.so.6* /usr/lib64/; \
