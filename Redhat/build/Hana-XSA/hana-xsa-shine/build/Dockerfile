@@ -54,7 +54,7 @@ set -x; \
 #cd CXXABI138; \
 file=gcc-libstdc++-4.9.1-1.ram0.99.x86_64.rpm; \
 #if ! curl -s -k ftp://ftp.pbone.net/mirror/ftp.sourceforge.net/pub/sourceforge/r/ra/ramonelinux/Rel_0.99/releases/x86_64/packages/$file -o $file; then exit 1; fi; \
-if ! curl -s -k https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/yum-rpm/$file -o ./$file; then exit 1; fi; \
+if ! curl -s -k -O https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/raw/master/Redhat/yum-rpm/$file; then exit 1; fi; \
 echo; \
 ls $file; \
 echo; \
