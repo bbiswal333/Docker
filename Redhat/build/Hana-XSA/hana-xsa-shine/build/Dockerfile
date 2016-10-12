@@ -44,7 +44,6 @@ RUN \
     ls -l /installer/shine; \
     echo; \
 
-    #### CREATE SHINE USER
 set -x; \
 
 # yum remove compat-libstdc++-33; \
@@ -69,33 +68,34 @@ if ! yum -y swap -- remove libstdc++-4.8.5-4.el7.x86_64 -- install ./$file; then
 #if ! yum install -y gcc-4.9 g++-4.9; then exit 1; fi; \
 #export LD_LIBRARY_PATH=/usr/lib64; \
 
-#    if ! hdbsql -i $number -n localhost:3${number}15 -u SYSTEM -p $secret \
-#         "CREATE USER SHINE_USER PASSWORD \"Sap12345\" NO FORCE_FIRST_PASSWORD_CHANGE \
-#         SET PARAMETER XS_RC_XS_CONTROLLER_ADMIN = 'XS_CONTROLLER_ADMIN',XS_RC_XS_AUTHORIZATION_ADMIN = 'XS_AUTHORIZATION_ADMIN',XS_RC_SHINE_ADMIN = 'SHINE_ADMIN'"; then exit 1; fi; \
+    #### CREATE SHINE USER
+    if ! hdbsql -i $number -n localhost:3${number}15 -u SYSTEM -p $secret \
+         "CREATE USER SHINE_USER PASSWORD \"Sap12345\" NO FORCE_FIRST_PASSWORD_CHANGE \
+         SET PARAMETER XS_RC_XS_CONTROLLER_ADMIN = 'XS_CONTROLLER_ADMIN',XS_RC_XS_AUTHORIZATION_ADMIN = 'XS_AUTHORIZATION_ADMIN',XS_RC_SHINE_ADMIN = 'SHINE_ADMIN'"; then exit 1; fi; \
 
     #### GIT CLONE SHINE
-#    cd /$HomeBuild/git; \
-#    if ! git clone -b $branch https://github.wdf.sap.corp/refapps/shine.git; then exit 1; fi; \
+    cd /$HomeBuild/git; \
+    if ! git clone -b $branch https://github.wdf.sap.corp/refapps/shine.git; then exit 1; fi; \
 
     #### BUILD SHINE WITH MAVEN
-#    cd shine; \
-#    if ! mvn clean install -s cfg/settings.xml -P release.build; then exit 1; fi; \
+    cd shine; \
+    if ! mvn clean install -s cfg/settings.xml -P release.build; then exit 1; fi; \
 
     #### LOGIN TO XSA
     if ! xs login -a https://$NEWHOST:3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then exit 1; fi; \
 
     #### INSTALL SHINE
-#    file=$(ls /$HomeBuild/git/shine/assembly/target/*.ZIP); \
-#    if [ ! ${file} ]; then exit 1; fi; \
-#    if ! xs install $file; then exit 1; fi; \
+    file=$(ls /$HomeBuild/git/shine/assembly/target/*.ZIP); \
+    if [ ! ${file} ]; then exit 1; fi; \
+    if ! xs install $file; then exit 1; fi; \
 
     #### INSTALL SHINE.ZIP
-    sh=$(ls /installer/shine/sap-xsac-shine-*[0-9].zip); \
+#    sh=$(ls /installer/shine/sap-xsac-shine-*[0-9].zip); \
 #    ma=$(ls /installer/shine/sap-xsac-shine-*.mtaext); \
-    if [ ! "${sh}" ]; then exit 1; fi; \
+#    if [ ! "${sh}" ]; then exit 1; fi; \
 #    if [ ! "${ma}" ]; then exit 1; fi; \
 #    if ! xs install $sh -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
-    if ! xs install $sh ; then exit 1; fi; \
+#    if ! xs install $sh ; then exit 1; fi; \
 
     #### STOP HANA + XSA
     sidadm=$(echo $sid | awk '{ print tolower($0) }')adm; \
