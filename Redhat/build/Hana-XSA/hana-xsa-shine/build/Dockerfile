@@ -7,18 +7,18 @@ FROM docker.wdf.sap.corp:50000/hanaxsshine/weekstone/hana-xsa
 
 RUN \
     #### RENAME HANA HOST
-#    OLDHOST=$($saphome/shared/$sid/hdblcm/hdblcm --list_systems | grep -i 'host:' | awk '$2 { print $2 }'); \
-#    NEWHOST=$(hostname -f); \
+    OLDHOST=$($saphome/shared/$sid/hdblcm/hdblcm --list_systems | grep -i 'host:' | awk '$2 { print $2 }'); \
+    NEWHOST=$(hostname -f); \
 
 #   lowOLDHOST=$(echo $OLDHOST | awk '{ print tolower($0) }'); \
 #   lowNEWHOST=$(echo $NEWHOST | awk '{ print tolower($0) }'); \
 
-#    if ! $saphome/shared/$sid/hdblcm/hdblcm -b --action=rename_system \
-#      --source_password=$secret --target_password=$secret \
-#      --hostmap=$OLDHOST=$NEWHOST; then exit 1; fi; \
+    if ! $saphome/shared/$sid/hdblcm/hdblcm -b --action=rename_system \
+      --source_password=$secret --target_password=$secret \
+      --hostmap=$OLDHOST=$NEWHOST; then exit 1; fi; \
 
-    sidadm=$(echo $sid | awk '{ print tolower($0) }')adm; \
-    if ! su - $sidadm -c "HDB start"; then exit 1; fi; \
+#    sidadm=$(echo $sid | awk '{ print tolower($0) }')adm; \
+#    if ! su - $sidadm -c "HDB start"; then exit 1; fi; \
 
     ### DOWNLOAD TRIGGER FILE
     trigger='trigger-shine'; \
