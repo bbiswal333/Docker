@@ -1,7 +1,7 @@
 FROM docker.wdf.sap.corp:50000/hanaxsshine/weekstone/hana-xsa
 
 # rev-1.1.12 is stable
-#ARG branch
+ARG branch
 
 #MAINTAINER gerald.braunwarth@sap.com
 
