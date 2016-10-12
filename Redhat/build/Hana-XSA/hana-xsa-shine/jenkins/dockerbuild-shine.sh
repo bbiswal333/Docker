@@ -75,8 +75,8 @@ DeleteFailedBuildsContainers
 DeleteFailedBuildsImages
 
 echo "Running 'docker build'"
-#if ! docker build --build-arg branch=$1 -t $imgPush .; then
-if ! docker build  -t $imgPush .; then
+if ! docker build --build-arg branch=$1 -t $imgPush .; then
+#if ! docker build  -t $imgPush .; then
   OnError "Failed to build Dockerfile"; fi
 
 echo "Pushing image"
