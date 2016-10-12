@@ -7,15 +7,18 @@ MAINTAINER gerald.braunwarth@sap.com
 
 RUN \
     #### RENAME HANA HOST
-    OLDHOST=$($saphome/shared/$sid/hdblcm/hdblcm --list_systems | grep -i 'host:' | awk '$2 { print $2 }'); \
-    NEWHOST=$(hostname -f); \
+#    OLDHOST=$($saphome/shared/$sid/hdblcm/hdblcm --list_systems | grep -i 'host:' | awk '$2 { print $2 }'); \
+#    NEWHOST=$(hostname -f); \
 
 #   lowOLDHOST=$(echo $OLDHOST | awk '{ print tolower($0) }'); \
 #   lowNEWHOST=$(echo $NEWHOST | awk '{ print tolower($0) }'); \
 
-    if ! $saphome/shared/$sid/hdblcm/hdblcm -b --action=rename_system \
-      --source_password=$secret --target_password=$secret \
-      --hostmap=$OLDHOST=$NEWHOST; then exit 1; fi; \
+#    if ! $saphome/shared/$sid/hdblcm/hdblcm -b --action=rename_system \
+#      --source_password=$secret --target_password=$secret \
+#      --hostmap=$OLDHOST=$NEWHOST; then exit 1; fi; \
+
+    sidadm=$(echo $sid | awk '{ print tolower($0) }')adm; \
+    if ! su - $sidadm -c "HDB start"; then exit 1; fi; \
 
     ### DOWNLOAD TRIGGER FILE
     trigger='trigger-shine'; \
@@ -51,7 +54,10 @@ set -x; \
 #cd CXXABI138; \
 file=gcc-libstdc++-4.9.1-1.ram0.99.x86_64.rpm; \
 #if ! curl -s -k ftp://ftp.pbone.net/mirror/ftp.sourceforge.net/pub/sourceforge/r/ra/ramonelinux/Rel_0.99/releases/x86_64/packages/$file -o $file; then exit 1; fi; \
-if ! curl -s -k https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/yum-rpm/$file -o $file; then exit 1; fi; \
+if ! curl -s -k https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/master/Redhat/yum-rpm/$file -o ./$file; then exit 1; fi; \
+echo; \
+ls $file; \
+echo; \
 #rpm2cpio $file | cpio -idmv; \
 #mv usr/lib64/libstdc++.so.6* /usr/lib64/; \
 #cd /usr/lib64; \
@@ -60,7 +66,7 @@ if ! curl -s -k https://github.wdf.sap.corp/Dev-Infra-Levallois/Docker/blob/mast
 #rm -rf CXXABI138; \
 
 #if ! yum install -y ./$file; then exit 1; fi; \
-if ! yum -y swap -- remove libstdc++-4.8.5-4.el7.x86_64 -- install ./gcc-libstdc++-4.9.1-1.ram0.99.x86_64.rpm; then exit 1; fi; \
+if ! yum -y swap -- remove libstdc++-4.8.5-4.el7.x86_64 -- install ./$file; then exit 1; fi; \
 
 #if ! yum install -y gcc-4.9 g++-4.9; then exit 1; fi; \
 #export LD_LIBRARY_PATH=/usr/lib64; \
