@@ -1,2 +1,1 @@
-shine;installer/shine;http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/refapps/sap-xsac-shine/1.2.0;sap-xsac-shine-1.2.0-XSACSHINE02_0.zip
-shine;installer/shine;http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/refapps/sap-xsac-shine/1.2.0;sap-xsac-shine-1.2.0.mtaext
+shine;installer/shine;http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/refapps/sap-xsac-shine/1.1.12;sap-xsac-shine-1.1.12-XSACSHINE01_12.zip
