@@ -45,7 +45,7 @@ function DeleteFailedBuildsImages {
 
 
 #---------------  MAIN
-set -x
+#set -x
 
 #if [ $# -ne 1 ]; then
 #  echo "Expected parameter: Github branch to build the Shine version"
@@ -66,7 +66,7 @@ mkdir build
 cd build
 
 echo "Getting Dockerfile from Github"
-if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa-shine/build/Dockerfile > Dockerfile; then
+if ! curl -s -k -O https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa-shine/build/Dockerfile; then
   OnError "Failed to curl Dockerfile"; fi
 
 InitArtifactoryLogin
