@@ -3,7 +3,7 @@ FROM docker.wdf.sap.corp:50000/hanaxsshine/weekstone/hana-xsa
 # rev-1.1.12 is stable
 #ARG branch
 
-MAINTAINER gerald.braunwarth@sap.com
+#MAINTAINER gerald.braunwarth@sap.com
 
 RUN \
     #### RENAME HANA HOST
