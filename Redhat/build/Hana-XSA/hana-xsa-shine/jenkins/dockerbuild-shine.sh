@@ -59,33 +59,36 @@ image="hanaxsshine/weekstone/hana-xsa-shine"
 imgPush=$registry:$push/$image
 imgPull=$registry:$pull/$image
 
+echo
 echo "Create workspace folder 'build'"
 if [ -d build ]; then
   rm -rf build; fi
 mkdir build
 cd build
 
-echo "Getting Dockerfile from Github"
+echo "Curl Dockerfile from Github"
 if ! curl -s -k -O https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa-shine/build/Dockerfile; then
   OnError "Failed to curl Dockerfile"; fi
 
+echo "Initialize Artifactory login"
 InitArtifactoryLogin
 
+echo "Cleanup Docker storage"
 DeleteFailedBuildsContainers
 DeleteFailedBuildsImages
 
-echo "Running 'docker build'"
+echo "Run 'docker build'"
 if ! docker build --build-arg branch=$1 -t $imgPush .; then
 #if ! docker build  -t $imgPush .; then
   OnError "Failed to build Dockerfile"; fi
 
-echo "Pushing image"
+echo "Push image"
 if ! docker push $imgPush; then
   OnError "Failed to push image to Artifactory"; fi
 
 docker logout $registry:$push
 
-echo "Renaming local image from Push to Pull tag"
+echo "Rename local image from Push to Pull tag"
 dummy=$(docker rmi $imgPull 2>&1)
 if ! docker tag $imgPush $imgPull; then OnError "Failed to tag image from Push to Pull"; fi
 if ! docker rmi $imgPush;          then OnError "Failed to delete local Push image"; fi
