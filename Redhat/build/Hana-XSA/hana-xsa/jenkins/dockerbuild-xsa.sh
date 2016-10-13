@@ -38,7 +38,7 @@ function GetCifsInstaller {
 
   remove="//production.wdf.sap.corp/makeresults/newdb/POOL/"
 
-  if ! mount -t nfs "derotvi0157.wdf.sap.corp:/derotvi0157a_ld9252/q_files"  /mnt/xsa; then
+  if ! sudo mount -t nfs "derotvi0157.wdf.sap.corp:/derotvi0157a_ld9252/q_files"  /mnt/xsa; then
     OnError "Failed to mount '$radix' in CIFS"; fi
 
   while IFS=';' read name folder url file; do
@@ -48,12 +48,12 @@ function GetCifsInstaller {
       endpoint=${url/$remove/}
 
       if ! cp -r /mnt/xsa/$endpoint/$file  build/$folder/; then
-        umount /mnt/xsa
+        sudo umount /mnt/xsa
         OnError "Failed to copy from '$url'"; fi; fi
 
   done < trigger-xsa.txt
 
-  umount /mnt/xsa; }
+  sudo umount /mnt/xsa; }
 
 
 #--------------------------------------
