@@ -15,7 +15,7 @@ RUN \
     ### INSTALL HANA REQUIREMENTS
       # (nfs-utils installed by rh7-tools parent image)
       # compat-sap-c++ replaced with compat-sap-c++-5
-      # gcc-c++ AND compat-sap-c++-5 replaced with gcc-libstdc++-4.9.1-1.ram0.99.x86_64.rpm
+      # gcc-c++ replaced with gcc-libstdc++-4.9.1-1.ram0.99.x86_64.rpm
 
     # DOWNLOADED FROM ftp://ftp.pbone.net/mirror/ftp.sourceforge.net/pub/sourceforge/r/ra/ramonelinux/Rel_0.99/releases/x86_64/packages/$file
     file=gcc-libstdc++-4.9.1-1.ram0.99.x86_64.rpm; \
@@ -27,7 +27,7 @@ RUN \
 #                        xorg-x11-xauth compat-libstdc++-33 numactl; then exit 1; fi; \
 
     if ! yum install -y unzip gtk2 libicu xulrunner sudo tcsh libssh2 expect cairo graphviz iptraf-ng krb5-workstation krb5-libs.i686 \
-                        lm_sensors rsyslog openssl098e openssl PackageKit-gtk-module libcanberra-gtk2 libtool-ltdl \
+                        lm_sensors rsyslog compat-sap-c++-5 openssl098e openssl PackageKit-gtk-module libcanberra-gtk2 libtool-ltdl \
                         xorg-x11-xauth numactl; then exit 1; fi; \
 
     if ! ln -s /usr/lib64/libssl.so.0.9.8e /usr/lib64/libssl.so.0.9.8; then exit 1; fi; \
