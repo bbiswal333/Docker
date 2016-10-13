@@ -74,7 +74,7 @@ DeleteFailedBuildsImages
 echo "Running 'docker build'"
 if ! docker build -t $imgPush .; then
   OnError "Failed to build Dockerfile"; fi
-exit
+
 echo "Pushing image"
 if ! docker push $imgPush; then
   OnError "Failed to push image to Artifactory"; fi
