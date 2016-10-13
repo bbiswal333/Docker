@@ -79,11 +79,14 @@ RUN \
       --install_hostagent=off \
       --system_usage=custom \
       --sapmnt=$saphome/shared --datapath=$saphome/data --logpath=$saphome/log \
-      --components=server,xs \
-      --xs_components=xsac_monitoring,xsac_services \
+      --components=all \
       --import_xs_content=yes \
       --add_local_roles=xs_worker \
       --component_dirs=/installer/RT,/installer/XSA; then exit 1; fi; \
+
+#      --components=server,xs \
+#      --xs_components=xsac_monitoring,xsac_services \
+
 
     #### ADD HRTT + DI_CORE + WEB_IDE
 #    if ! /installer/SAP_HANA_LCM/hdblcm \
