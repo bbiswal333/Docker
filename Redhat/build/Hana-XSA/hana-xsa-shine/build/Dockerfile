@@ -91,11 +91,11 @@ if ! yum -y swap -- remove libstdc++-4.8.5-4.el7.x86_64 -- install ./$file; then
 
     #### INSTALL SHINE.ZIP
     sh=$(ls /installer/shine/sap-xsac-shine-*[0-9].zip); \
-#    ma=$(ls /installer/shine/sap-xsac-shine-*.mtaext); \
+    ma=$(ls /installer/shine/sap-xsac-shine-*.mtaext); \
     if [ ! "${sh}" ]; then exit 1; fi; \
-#    if [ ! "${ma}" ]; then exit 1; fi; \
-#    if ! xs install $sh -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
-    if ! xs install $sh ; then exit 1; fi; \
+    if [ ! "${ma}" ]; then exit 1; fi; \
+    if ! xs install $sh -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+#    if ! xs install $sh ; then exit 1; fi; \
 
     #### STOP HANA + XSA
     sidadm=$(echo $sid | awk '{ print tolower($0) }')adm; \
