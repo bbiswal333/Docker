@@ -17,7 +17,7 @@ RUN \
     tr -d "\r" < $trigger.tmp > $trigger.txt; \
     rm $trigger.tmp; \
 
-    mkdir /installer/{RT,XSA}
+    mkdir /installer/{RT,XSA}; \
 
     echo; \
     while IFS=';' read name folder url file; do \
