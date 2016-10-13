@@ -12,15 +12,14 @@ RUN \
     #### INSTALL MORE LIBS FOR CONTAINERIZED HANA
     if ! yum install -y libaio; then exit 1; fi; \
 
+    # DOWNLOADED FROM ftp://ftp.pbone.net/mirror/ftp.sourceforge.net/pub/sourceforge/r/ra/ramonelinux/Rel_0.99/releases/x86_64/packages/$file
+    file=gcc-libstdc++-4.9.1-1.ram0.99.x86_64.rpm; \
+    if ! curl -s -k -O http://moo-repo.wdf.sap.corp:8080/static/monsoon/r/ra/ramonelinux/Rel_0.99/releases/x86_64/packages/$file; then exit 1; fi; \
+
     ### INSTALL HANA REQUIREMENTS
       # (nfs-utils installed by rh7-tools parent image)
       # compat-sap-c++ replaced with compat-sap-c++-5
       # gcc-c++ replaced with gcc-libstdc++-4.9.1-1.ram0.99.x86_64.rpm
-
-    # DOWNLOADED FROM ftp://ftp.pbone.net/mirror/ftp.sourceforge.net/pub/sourceforge/r/ra/ramonelinux/Rel_0.99/releases/x86_64/packages/$file
-    file=gcc-libstdc++-4.9.1-1.ram0.99.x86_64.rpm; \
-    if ! curl -s -k -O http://moo-repo.wdf.sap.corp:8080/static/monsoon/r/ra/ramonelinux/Rel_0.99/releases/x86_64/packages/$file; then exit 1; fi; \
-    if ! yum -y swap -- remove libstdc++-4.8.5-4.el7.x86_64 -- install ./$file; then exit 1; fi; \
 
 #    if ! yum install -y unzip gcc-c++ gtk2 libicu xulrunner sudo tcsh libssh2 expect cairo graphviz iptraf-ng krb5-workstation krb5-libs.i686 \
 #                        nfs-utils lm_sensors rsyslog compat-sap-c++-5 openssl098e openssl PackageKit-gtk-module libcanberra-gtk2 libtool-ltdl \
@@ -39,6 +38,8 @@ RUN \
 #    cp /usr/lib64/libssl.so.1.0.1e /usr/lib64/libssl.so.1.0.1; \
 #    cp /usr/lib64/libcrypto.so.0.9.8e /usr/lib64/libcrypto.so.0.9.8; \
 #    cp /usr/lib64/libcrypto.so.1.0.1e /usr/lib64/libcrypto.so.1.0.1; \
+
+    if ! yum -y swap -- remove libstdc++-4.8.5-4.el7.x86_64 -- install ./$file; then exit 1; fi; \
 
     #### INSTALL MORE COMMANDS FOR 3RD PARTY INSTALL \
 #    if ! yum -y install wget tar git which; then exit 1; fi; \
