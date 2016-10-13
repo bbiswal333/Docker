@@ -64,8 +64,10 @@ echo "Getting Dockerfile from Github"
 if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa-shine-req/build/Dockerfile > Dockerfile; then
   OnError "Failed to curl Dockerfile"; fi
 
+echo "Initialize Artifactory login"
 InitArtifactoryLogin
 
+echo "Clean up failed previous builds"
 DeleteFailedBuildsContainers
 DeleteFailedBuildsImages
 
