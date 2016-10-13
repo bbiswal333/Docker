@@ -30,7 +30,7 @@ RUN \
     ls -1 /installer; \
     echo;  echo "ls /installer/RT"; \
     ls -l /installer/RT; \
-    echo; echo ls /installer/XSA"; \
+    echo; echo "ls /installer/XSA"; \
     ls -l /installer/XSA; \
 
 #### DECOMPRESS INSTALLER
