@@ -3,6 +3,8 @@ lcm;upload;//production.wdf.sap.corp/makeresults/newdb/POOL/HANA_WS_COR/released
 hanadb;upload;//production.wdf.sap.corp/makeresults/newdb/POOL/HANA_WS_COR/released_weekstones/LastWS/server/linuxx86_64;SAP_HANA_DATABASE100_WS2016-41-0_Linux_on_x86_64.SAR
 xsrt;installer/RT;http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.releases.xmake/com/sap/xs/onpremise/runtime/xs.onpremise.runtime.hanainstallation_linuxx86_64/1.0.36;xs.onpremise.runtime.hanainstallation_linuxx86_64-1.0.36.SAR
 jobsched;installer;http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/xs/jobscheduler/jobscheduler-assembly/1.3.1;jobscheduler-assembly-1.3.1-XSACSERVICES03_1.zip
+jobsched;installer;http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/xs/jobscheduler/jobscheduler-assembly/1.3.1;jobscheduler-assembly-1.3.1-releaseMetadata.zip
+jobsched;installer;http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/xs/jobscheduler/jobscheduler-assembly/1.3.1;jobscheduler-assembly-1.3.1.zip
 admin;installer/XSA;http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones.xmake/com/sap/xsa/admin/sap-xsac-admin/1.3.1;sap-xsac-admin-1.3.1-XSACMONITORING03_0.zip
 hrtt;installer/XSA;http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/xsa/hrtt/sap-xsac-hrtt/2.1640.0;sap-xsac-hrtt-2.1640.0-XSACHRTT00_0.zip
 di;installer/XSA;http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/di/sap-xsac-di/3.1641.0;sap-xsac-di-3.1641.0-XSACDICORE13_0.zip
