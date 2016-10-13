@@ -62,11 +62,7 @@ if ! curl -s -k -O http://moo-repo.wdf.sap.corp:8080/static/monsoon/r/ra/ramonel
 #ln -s libstdc++.so.6.0.20 libstdc++.so.6#cd ..; \
 #rm -rf CXXABI138; \
 
-#if ! yum install -y ./$file; then exit 1; fi; \
 if ! yum -y swap -- remove libstdc++-4.8.5-4.el7.x86_64 -- install ./$file; then exit 1; fi; \
-
-#if ! yum install -y gcc-4.9 g++-4.9; then exit 1; fi; \
-#export LD_LIBRARY_PATH=/usr/lib64; \
 
     #### CREATE SHINE USER
 #    if ! hdbsql -i $number -n localhost:3${number}15 -u SYSTEM -p $secret \
@@ -94,6 +90,7 @@ if ! yum -y swap -- remove libstdc++-4.8.5-4.el7.x86_64 -- install ./$file; then
     ma=$(ls /installer/shine/sap-xsac-shine-*.mtaext); \
     if [ ! "${sh}" ]; then exit 1; fi; \
     if [ ! "${ma}" ]; then exit 1; fi; \
+    sed -e "s/<USERNAME>/'XSA_ADMIN'/g" -e "s/<PASSWORD>/$secret/g" -i $ma
     if ! xs install $sh -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
 #    if ! xs install $sh ; then exit 1; fi; \
 
