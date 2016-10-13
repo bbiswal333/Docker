@@ -38,10 +38,10 @@ RUN \
     chmod +x $sapcar; \
 
     if ! $sapcar -xf /installer/SAP_HANA_DATABASE*.SAR  -R /installer/; then exit 1; fi; \
-    rm /installer/SAP_HANA_DATABASE*.SAR
+    rm /installer/SAP_HANA_DATABASE*.SAR; \
 
-#    if ! $sapcar -xf /installer/RT/xs.onpremise.runtime.hanainstallation*.SAR  -R /installer/RT; then exit 1; fi; \
-#    rm /installer/RT/xs.onpremise.runtime.hanainstallation*.SAR; \
+    if ! $sapcar -xf /installer/RT/xs.onpremise.runtime.hanainstallation*.SAR  -R /installer/RT; then exit 1; fi; \
+    rm /installer/RT/xs.onpremise.runtime.hanainstallation*.SAR
 
 #    file=$(ls /installer/jobscheduler-assembly*[0-9].zip); \
 #    if [ ! "${file}" ]; then exit 1; fi; \
