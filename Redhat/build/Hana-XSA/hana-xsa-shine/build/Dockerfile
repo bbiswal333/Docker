@@ -90,7 +90,7 @@ if ! yum -y swap -- remove libstdc++-4.8.5-4.el7.x86_64 -- install ./$file; then
     ma=$(ls /installer/shine/sap-xsac-shine-*.mtaext); \
     if [ ! "${sh}" ]; then exit 1; fi; \
     if [ ! "${ma}" ]; then exit 1; fi; \
-    sed -e "s/<USERNAME>/'XSA_ADMIN'/g" -e "s/<PASSWORD>/$secret/g" -i $ma
+    if ! sed -e "s/<USERNAME>/XSA_ADMIN/g" -e "s/<PASSWORD>/$secret/g" -i $ma; then exit 1; fi; \
     if ! xs install $sh -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
 #    if ! xs install $sh ; then exit 1; fi; \
 
