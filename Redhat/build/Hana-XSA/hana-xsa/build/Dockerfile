@@ -38,7 +38,7 @@ RUN \
     chmod +x $sapcar; \
 
     if ! $sapcar -xf /installer/SAP_HANA_DATABASE*.SAR  -R /installer/; then exit 1; fi; \
-    rm /installer/SAP_HANA_DATABASE*.SAR; \
+    rm /installer/SAP_HANA_DATABASE*.SAR
 
 #    if ! $sapcar -xf /installer/RT/xs.onpremise.runtime.hanainstallation*.SAR  -R /installer/RT; then exit 1; fi; \
 #    rm /installer/RT/xs.onpremise.runtime.hanainstallation*.SAR; \
