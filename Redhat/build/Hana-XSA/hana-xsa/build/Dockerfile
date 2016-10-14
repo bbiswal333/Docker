@@ -49,6 +49,11 @@ RUN \
     if ! unzip $file -d /installer/XSA; then exit 1; fi; \
     rm /installer/XSA/sap-xsac-hrtt*; \
 
+    file=$(ls /installer/XSA/sap-xsac-webide*[0-9].zip); \
+    if [ ! "${file}" ]; then exit 1; fi; \
+    if ! unzip $file -d /installer/XSA; then exit 1; fi; \
+    rm /installer/XSA/sap-xsac-webide*.zip; \
+
     file=$(ls /installer/XSA/jobscheduler-assembly*[0-9].zip); \
     if [ ! "${file}" ]; then exit 1; fi; \
     if ! unzip $file -d /installer/XSA; then exit 1; fi; \
