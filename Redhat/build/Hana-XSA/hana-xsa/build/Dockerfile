@@ -44,6 +44,11 @@ RUN \
     if ! $sapcar -xf /installer/RT/xs.onpremise.runtime.hanainstallation*.SAR  -R /installer/RT; then exit 1; fi; \
     rm /installer/RT/xs.onpremise.runtime.hanainstallation*.SAR; \
 
+    file=$(ls /installer/XSA/sap-xsac-hrtt*[0-9].zip); \
+    if [ ! "${file}" ]; then exit 1; fi; \
+    if ! unzip $file -d /installer/XSA; then exit 1; fi; \
+    rm /installer/XSA/sap-xsac-hrtt*; \
+
     file=$(ls /installer/XSA/jobscheduler-assembly*[0-9].zip); \
     if [ ! "${file}" ]; then exit 1; fi; \
     if ! unzip $file -d /installer/XSA; then exit 1; fi; \
