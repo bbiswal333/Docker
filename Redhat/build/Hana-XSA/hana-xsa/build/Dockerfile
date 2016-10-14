@@ -2,6 +2,17 @@ FROM docker.wdf.sap.corp:50000/hanaxsshine/weekstone/hana-xsa-shine-req
 
 MAINTAINER gerald.braunwarth@sap.com
 
+#### HANA INSTALL CONSTANTS
+ENV sid="DCK" \
+    number="97" \
+    secret="Toor1234" \
+    org="REF" \
+    space="PROD" \
+    saphome="/usr/sap/hana"
+
+#### Another ENV for Delayed variables expansion
+#ENV PATH=$PATH:$saphome/shared/$sid/HDB$number/exe/:$saphome/shared/$sid/xs/bin/
+
 #### UPLOAD INSTALLERS
 COPY  upload/     /installer/
 
@@ -31,9 +42,10 @@ RUN \
     ls -1 /installer/RT; \
     echo; echo "ls /installer/XSA"; \
     ls -1 /installer/XSA; \
-    echo; \
+    echo
 
 #### DECOMPRESS INSTALLER
+RUN \
     sapcar=$(ls /installer/sapcar-*); \
     if [ ! "${sapcar}" ]; then exit 1; fi; \
     chmod +x $sapcar; \
@@ -44,31 +56,23 @@ RUN \
     if ! $sapcar -xf /installer/RT/xs.onpremise.runtime.hanainstallation*.SAR  -R /installer/RT; then exit 1; fi; \
     rm /installer/RT/xs.onpremise.runtime.hanainstallation*.SAR; \
 
-    file=$(ls /installer/XSA/sap-xsac-hrtt*[0-9].zip); \
-    if [ ! "${file}" ]; then exit 1; fi; \
-    if ! unzip $file -d /installer/XSA; then exit 1; fi; \
-    rm /installer/XSA/sap-xsac-hrtt*; \
+    ## DEVELOPERS ARE STANDARDIZING INSTALLERS
+    file=$(ls /installer/XSA/sap-xsac-hrtt*[0-9].zip | grep -v XSACHRTT); \
+    if [ "${file}" ]; then \
+      if ! unzip $file -d /installer/XSA; then exit 1; fi; \
+      rm /installer/XSA/sap-xsac-hrtt*; fi; \
 
-    file=$(ls /installer/XSA/sap-xsac-webide*[0-9].zip); \
-    if [ ! "${file}" ]; then exit 1; fi; \
-    if ! unzip $file -d /installer/XSA; then exit 1; fi; \
-    rm /installer/XSA/sap-xsac-webide*.zip; \
+    ## DEVELOPERS ARE STANDARDIZING INSTALLERS
+    file=$(ls /installer/XSA/sap-xsac-webide*[0-9].zip | grep -v XSACSAPWEBIDE); \
+    if [ "${file}" ]; then \
+      if ! unzip $file -d /installer/XSA; then exit 1; fi; \
+      rm /installer/XSA/sap-xsac-webide*.zip; fi; \
 
-    file=$(ls /installer/XSA/jobscheduler-assembly*[0-9].zip); \
-    if [ ! "${file}" ]; then exit 1; fi; \
-    if ! unzip $file -d /installer/XSA; then exit 1; fi; \
-    rm /installer/XSA/jobscheduler-assembly*
-
-#### HANA INSTALL CONSTANTS
-ENV sid="DCK" \
-    number="97" \
-    secret="Toor1234" \
-    org="REF" \
-    space="PROD" \
-    saphome="/usr/sap/hana"
-
-#### Another ENV for Delayed variables expansion
-ENV PATH=$PATH:$saphome/shared/$sid/HDB$number/exe/:$saphome/shared/$sid/xs/bin/
+    ## DEVELOPERS ARE STANDARDIZING INSTALLERS
+    file=$(ls /installer/XSA/jobscheduler-assembly*[0-9].zip | grep -v XSACSERVICES); \
+    if [ "${file}" ]; then \
+      if ! unzip $file -d /installer/XSA; then exit 1; fi; \
+      rm /installer/XSA/jobscheduler-assembly*; fi
 
 RUN \
     mkdir -p $saphome/{shared,data,log}; \
