@@ -9,8 +9,7 @@ COPY  upload/     /installer/
 RUN \
     trigger='trigger-xsa'; \
 
-    echo; \
-    echo "curl '$trigger.txt'"; \
+    echo; echo "curl '$trigger.txt'"; \
     if ! curl -k -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/jenkins/$trigger.txt -o $trigger.tmp; then exit 1; fi; \
 
     # Windows \nl to Linux
@@ -26,12 +25,13 @@ RUN \
         if ! curl -k -s "$url/$file" -o "/$folder/$file"; then exit 1; fi; fi; \
     done < $trigger.txt; \
 
-    echo;  echo "ls /installer"; \
+    echo; echo "ls /installer"; \
     ls -1 /installer; \
-    echo;  echo "ls /installer/RT"; \
+    echo; echo "ls /installer/RT"; \
     ls -1 /installer/RT; \
     echo; echo "ls /installer/XSA"; \
     ls -1 /installer/XSA; \
+    echo; \
 
 #### DECOMPRESS INSTALLER
     sapcar=$(ls /installer/sapcar-*); \
@@ -44,10 +44,10 @@ RUN \
     if ! $sapcar -xf /installer/RT/xs.onpremise.runtime.hanainstallation*.SAR  -R /installer/RT; then exit 1; fi; \
     rm /installer/RT/xs.onpremise.runtime.hanainstallation*.SAR
 
-#    file=$(ls /installer/jobscheduler-assembly*[0-9].zip); \
-#    if [ ! "${file}" ]; then exit 1; fi; \
-#    if ! unzip $file -d /installer/XSA; then exit 1; fi; \
-#    rm /installer/jobscheduler-assembly*
+    file=$(ls /installer/jobscheduler-assembly*[0-9].zip); \
+    if [ ! "${file}" ]; then exit 1; fi; \
+    if ! unzip $file -d /installer/XSA; then exit 1; fi; \
+    rm /installer/jobscheduler-assembly*
 
 #### HANA INSTALL CONSTANTS
 ENV sid="DCK" \
