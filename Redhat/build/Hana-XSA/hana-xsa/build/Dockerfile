@@ -110,40 +110,36 @@ RUN \
   #  To update XS Advanced and SAP Web IDE
   #./hdblcm --action=update –-components=xs –-xs_components=xsac_hrtt,xsac_di_core,xsac_sap_web_ide --xs_content_cfg=<path todirectory with mta extensions>
 
-  # Detected components:
-      #SAP HANA Database (2.00.000.00.1470842078) in /installer/SAP_HANA_DATABASE/server
-  # Wrong usage!
-    # Unknown option: xs_content_cfg
-    # Unknown argument: –-components=xs
-    # Unknown argument: –-xs_components=xsac_hrtt,xsac_di_core,xsac_sap_web_ide
-
     #### LOGIN TO XSA
-    if ! xs login -a https://$(hostname):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then \
-      echo "Retry 'xs login'"; \
-      if ! xs login -a https://$(hostname):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then exit 1; fi; fi; \
+#    if ! xs login -a https://$(hostname):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then \
+#      echo "Retry 'xs login'"; \
+#      if ! xs login -a https://$(hostname):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then exit 1; fi; fi; \
 
     #### INSTALL HRTT
-    file=$(ls /installer/XSA/sap-xsac-hrtt*[0-9].zip); \
-    if [ ! "${file}" ]; then exit 1; fi; \
-    if ! xs install $file -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+#    file=$(ls /installer/XSA/sap-xsac-hrtt*[0-9].zip); \
+#    if [ ! "${file}" ]; then exit 1; fi; \
+#    if ! xs install $file -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
 
     #### INSTALL DI
-    di=$(ls /installer/XSA/sap-xsac-di*[0-9].zip); \
-    ma=$(ls /installer/XSA/sap-xsac-di*.mtaext); \
-    if [ ! "${di}" ]; then exit 1; fi; \
-    if [ ! "${ma}" ]; then exit 1; fi; \
-    if ! xs install $di -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+#    di=$(ls /installer/XSA/sap-xsac-di*[0-9].zip); \
+#    ma=$(ls /installer/XSA/sap-xsac-di*.mtaext); \
+#    if [ ! "${di}" ]; then exit 1; fi; \
+#    if [ ! "${ma}" ]; then exit 1; fi; \
+#    if ! xs install $di -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
 
     #### INSTALL WEBIDE
-    wb=$(ls /installer/XSA/sap-xsac-webide*[0-9].zip); \
-    ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
-    if [ ! "${wb}" ]; then exit 1; fi; \
-    if [ ! "${ma}" ]; then exit 1; fi; \
-    if ! xs install $wb -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+#    wb=$(ls /installer/XSA/sap-xsac-webide*[0-9].zip); \
+#    ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
+#    if [ ! "${wb}" ]; then exit 1; fi; \
+#    if [ ! "${ma}" ]; then exit 1; fi; \
+#    if ! xs install $wb -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
 
     #### DELETE INSTALLER
     if ! rm -rf /installer; then exit 1; fi; \
 
     #### STOP HANA
     sidadm=$(echo $sid | awk '{ print tolower($0) }')adm; \
-    su - $sidadm -c "unset LD_PRELOAD; HDB stop; /usr/sap/$sid/SYS/exe/hdb/sapcontrol -nr $number -function StopService"
+    su - $sidadm -c "unset LD_PRELOAD; HDB stop; /usr/sap/$sid/SYS/exe/hdb/sapcontrol -nr $number -function StopService"; \
+
+## DEBUG
+exit 1
