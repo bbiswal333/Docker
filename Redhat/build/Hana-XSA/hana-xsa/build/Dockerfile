@@ -29,9 +29,9 @@ RUN \
     echo;  echo "ls /installer"; \
     ls -1 /installer; \
     echo;  echo "ls /installer/RT"; \
-    ls -l /installer/RT; \
+    ls -1 /installer/RT; \
     echo; echo "ls /installer/XSA"; \
-    ls -l /installer/XSA; \
+    ls -1 /installer/XSA; \
 
 #### DECOMPRESS INSTALLER
     sapcar=$(ls /installer/sapcar-*); \
