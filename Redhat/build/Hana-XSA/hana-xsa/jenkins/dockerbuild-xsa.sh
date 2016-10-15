@@ -87,7 +87,7 @@ function DeleteFailedBuildsImages {
 
 
 #---------------  MAIN
-set -x
+#set -x
 
 registry="docker.wdf.sap.corp"
 push=51010
@@ -96,7 +96,7 @@ image="hanaxsshine/weekstone/hana-xsa"
 imgPush=$registry:$push/$image
 imgPull=$registry:$pull/$image
 
-echo "Getting Trigger manifest from Github"
+echo "Get Trigger manifest from Github"
 GetTriggerFile
 
 echo "Create workspace folder 'build'" if [ ! ]
@@ -106,31 +106,31 @@ if [ -d build ]; then
   rm -rf build; fi
 mkdir -p build/upload
 
-echo "Getting 'hanadb' and 'lcm' installers to upload"
+echo "Get 'hanadb' and 'lcm' installers to upload"
 GetCifsInstaller
 
-echo "Getting Dockerfile from Github"
+echo "Get Dockerfile from Github"
 if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/build/Dockerfile -o build/Dockerfile; then
   OnError "Failed to curl Dockerfile"; fi
 
 echo "Initialize Artifactory login"
 InitArtifactoryLogin
 
-echo "Clean up failed previous builds"
+echo "Clean up Docker storage"
 DeleteFailedBuildsContainers
 DeleteFailedBuildsImages
 
-echo "Running 'docker build'"
+echo "Run 'docker build'"
 if ! docker build -t $imgPush build; then
   OnError "Failed to build Dockerfile"; fi
 
-#echo "Pushing image"
+#echo "Push image"
 #if ! docker push $imgPush; then
 #  OnError "Failed to push image to Artifactory"; fi
 
 #docker logout $registry:$push
 
-echo "Renaming local image from Push to Pull tag"
+echo "Rename local image from Push to Pull tag"
 dummy=$(docker rmi $imgPull 2>&1)
 if ! docker tag $imgPush $imgPull; then OnError "Failed to tag image from Push to Pull"; fi
 if ! docker rmi $imgPush;          then OnError "Failed to delete local Push image"; fi
