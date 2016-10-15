@@ -7,5 +7,5 @@ admin;installer/XSA;http://nexus.wdf.sap.corp:8081/nexus/content/repositories/de
 hrtt;installer/XSA;http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/xsa/hrtt/sap-xsac-hrtt/2.1632.0;sap-xsac-hrtt-2.1632.0.zip
 di;installer/XSA;http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/di/sap-xsac-di/3.1632.0;sap-xsac-di-3.1632.0-XSACDICORE13_0.zip
 di;installer/XSA;http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/di/sap-xsac-di/3.1632.0;sap-xsac-di-3.1632.0.mtaext
-webide;installer/XSA;http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/devx/sap-xsac-webide/3.1620.1;sap-xsac-webide-3.1620.1.zip
-webide;installer/XSA;http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/devx/sap-xsac-webide/3.1620.1;sap-xsac-webide-3.1620.1.mtaext
+webide;installer/XSA;http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/devx/sap-xsac-webide/3.1621.1;sap-xsac-webide-3.1621.1.zip
+webide;installer/XSA;http://nexus.wdf.sap.corp:8081/nexus/content/repositories/deploy.milestones/com/sap/devx/sap-xsac-webide/3.1621.1;sap-xsac-webide-3.1621.1.mtaext
