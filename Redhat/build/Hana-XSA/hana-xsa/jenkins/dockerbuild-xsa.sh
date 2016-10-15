@@ -124,11 +124,11 @@ echo "Running 'docker build'"
 if ! docker build -t $imgPush build; then
   OnError "Failed to build Dockerfile"; fi
 
-echo "Pushing image"
-if ! docker push $imgPush; then
-  OnError "Failed to push image to Artifactory"; fi
+#echo "Pushing image"
+#if ! docker push $imgPush; then
+#  OnError "Failed to push image to Artifactory"; fi
 
-docker logout $registry:$push
+#docker logout $registry:$push
 
 echo "Renaming local image from Push to Pull tag"
 dummy=$(docker rmi $imgPull 2>&1)

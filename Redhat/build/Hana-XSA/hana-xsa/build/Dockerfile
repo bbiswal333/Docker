@@ -2,17 +2,6 @@ FROM docker.wdf.sap.corp:50000/hanaxsshine/weekstone/hana-xsa-shine-req
 
 MAINTAINER gerald.braunwarth@sap.com
 
-#### HANA INSTALL CONSTANTS
-ENV sid="DCK" \
-    number="97" \
-    secret="Toor1234" \
-    org="REF" \
-    space="PROD" \
-    saphome="/usr/sap/hana"
-
-#### Another ENV for Delayed variables expansion
-#ENV PATH=$PATH:$saphome/shared/$sid/HDB$number/exe/:$saphome/shared/$sid/xs/bin/
-
 #### UPLOAD INSTALLERS
 COPY  upload/     /installer/
 
@@ -73,6 +62,17 @@ RUN \
     if [ "${file}" ]; then \
       if ! unzip $file -d /installer/XSA; then exit 1; fi; \
       rm /installer/XSA/jobscheduler-assembly*; fi
+
+#### HANA INSTALL CONSTANTS
+ENV sid="DCK" \
+    number="97" \
+    secret="Toor1234" \
+    org="REF" \
+    space="PROD" \
+    saphome="/usr/sap/hana"
+
+#### Another ENV for Delayed variables expansion
+#ENV PATH=$PATH:$saphome/shared/$sid/HDB$number/exe/:$saphome/shared/$sid/xs/bin/
 
 RUN \
     mkdir -p $saphome/{shared,data,log}; \
@@ -144,11 +144,8 @@ RUN \
 #    if ! xs install $wb -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
 
     #### DELETE INSTALLER
-    if ! rm -rf /installer; then exit 1; fi; \
+#    if ! rm -rf /installer; then exit 1; fi; \
 
     #### STOP HANA
     sidadm=$(echo $sid | awk '{ print tolower($0) }')adm; \
     su - $sidadm -c "unset LD_PRELOAD; HDB stop; /usr/sap/$sid/SYS/exe/hdb/sapcontrol -nr $number -function StopService"; \
-
-## DEBUG
-exit 1
