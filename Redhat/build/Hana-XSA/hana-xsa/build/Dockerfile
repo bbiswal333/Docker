@@ -25,13 +25,9 @@ RUN \
         if ! curl -k -s "$url/$file" -o "/$folder/$file"; then exit 1; fi; fi; \
     done < $trigger.txt; \
 
-    echo; echo "ls /installer"; \
-    ls -1 /installer; \
-    echo; echo "ls /installer/RT"; \
-    ls -1 /installer/RT; \
-    echo; echo "ls /installer/XSA"; \
-    ls -1 /installer/XSA; \
-    echo
+    echo; echo "ls /installer";     ls -1 /installer; \
+    echo; echo "ls /installer/RT";  ls -1 /installer/RT; \
+    echo; echo "ls /installer/XSA"; ls -1 /installer/XSA; echo
 
 #### DECOMPRESS INSTALLER
 RUN \
@@ -55,19 +51,19 @@ RUN \
     file=$(ls /installer/XSA/sap-xsac-webide*[0-9].zip | grep -v XSACSAPWEBIDE); \
     if [ "${file}" ]; then \
       if ! unzip $file -d /installer/XSA; then exit 1; fi; \
-      rm /installer/XSA/sap-xsac-webide*.zip; fi; \
+      rm /installer/XSA/$file; fi; \
     ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
-    echo; echo "$ma customized"; \
     if [ "${ma}" ]; then \
        echo "  properties:" >> $ma; \
        echo "    NO_PROXY: localhost, $(hostname -f)" >> $ma; \
+       echo; echo "$ma customized"; \
        cat $ma; echo; fi; \
 
     ## DEVELOPERS ARE STANDARDIZING INSTALLERS
     file=$(ls /installer/XSA/jobscheduler-assembly*[0-9].zip | grep -v XSACSERVICES); \
     if [ "${file}" ]; then \
       if ! unzip $file -d /installer/XSA; then exit 1; fi; \
-      rm /installer/XSA/jobscheduler-assembly*; fi
+      rm /installer/XSA/$file; fi
 
 #### HANA INSTALL CONSTANTS
 ENV sid="DCK" \
