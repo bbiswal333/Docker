@@ -57,10 +57,11 @@ RUN \
       if ! unzip $file -d /installer/XSA; then exit 1; fi; \
       rm /installer/XSA/sap-xsac-webide*.zip; fi; \
     ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
+    echo; echo "$ma customized"; \
     if [ "${ma}" ]; then \
        echo "  properties:" >> $ma; \
        echo "    NO_PROXY: localhost, $(hostname -f)" >> $ma; \
-       cat $ma; fi; \
+       cat $ma; echo; fi; \
 
     ## DEVELOPERS ARE STANDARDIZING INSTALLERS
     file=$(ls /installer/XSA/jobscheduler-assembly*[0-9].zip | grep -v XSACSERVICES); \
