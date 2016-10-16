@@ -55,7 +55,7 @@ RUN \
     ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
     if [ "${ma}" ]; then \
        echo "  properties:" >> $ma; \
-       echo "    NO_PROXY: localhost, $(hostname -f)" >> $ma; \
+       echo "    NO_PROXY: \"localhost, $(hostname -f)\"" >> $ma; \
        echo; echo "$ma customized"; \
        cat $ma; echo; fi; \
 
