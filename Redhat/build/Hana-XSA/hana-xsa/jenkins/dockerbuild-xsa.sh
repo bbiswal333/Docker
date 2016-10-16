@@ -99,7 +99,7 @@ imgPull=$registry:$pull/$image
 echo "Get Trigger manifest from Github"
 GetTriggerFile
 
-echo "Create workspace folder 'build'" if [ ! ]
+echo "Create workspace folder 'build'"
 if [ ! -d /mnt/xsa ]; then
   mkdir /mnt/xsa; fi
 if [ -d build ]; then
