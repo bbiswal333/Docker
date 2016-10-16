@@ -57,8 +57,8 @@ RUN \
       if ! unzip $file -d /installer/XSA; then exit 1; fi; \
       rm /installer/XSA/sap-xsac-webide*.zip; fi; \
     ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
-    if [ "${ma}" ]; then
-       echo "  properties:" >> $ma
+    if [ "${ma}" ]; then \
+       echo "  properties:" >> $ma; \
        echo "    NO_PROXY: localhost, $(hostname -f)" >> $ma; \
        cat $ma; fi; \
 
