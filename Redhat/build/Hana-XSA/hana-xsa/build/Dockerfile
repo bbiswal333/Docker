@@ -25,7 +25,7 @@ RUN \
         if ! curl -k -s "$url/$file" -o "/$folder/$file"; then exit 1; fi; fi; \
     done < $trigger.txt; \
 
-    echo; echo "ls /installer";     ls -1 /installer; \
+    echo; echo "ls /installer";     ls -l /installer | awk '/^-/ { print $NF }'; \
     echo; echo "ls /installer/RT";  ls -1 /installer/RT; \
     echo; echo "ls /installer/XSA"; ls -1 /installer/XSA; echo
 
