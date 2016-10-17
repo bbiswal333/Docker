@@ -129,6 +129,12 @@ RUN \
     if ! xs login -a https://$(hostname -f):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then exit 1; fi; \
 #    if ! xs target -s $space; then exit 1; fi; \
 
+    #### PREPARE DI INSTALLATION
+    xs spaces; \
+    if ! xs create-space DEV; then exit 1; fi; \
+    if ! xs set-space-role dckxsa $org DEV SpaceDeveloper; then exit 1; fi; \
+    xs spaces; \
+
     #### INSTALL DI
     fi=$(ls /installer/XSA/*.zip | grep -i "\-di\-"); \
     ma=$(ls /installer/XSA/*.mtaext | grep -i "\-di\-"); \
@@ -137,28 +143,28 @@ RUN \
       if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
     else \
 
-      echo; echo "$ma before customization"; \
+      echo; echo "file '$ma'"; echo; \
       cat $ma; echo; \
 
-      ## SAP note 2304873 (rewrite the file to remove the developpers DEV_SPACE)
-      echo "_schema-version: \"2.0.0\"" > $ma; \
-      echo "ID: com.sap.devx.di.xs2-config1" >> $ma; \
-      echo "extends: com.sap.devx.di" >> $ma; \
-      echo >> $ma; \
-      echo "modules:" >> $ma; \
-      echo >> $ma; \
-      echo "  - name: di-core" >> $ma; \
-      echo "    parameters:" >> $ma; \
-      echo "      memory: 512M" >> $ma; \
-      echo "    properties:" >> $ma; \
-      echo "      JBP_CONFIG_JAVA_OPTS: '[java_opts: \"\"]'" >> $ma; \
-      echo >> $ma; \
-      echo "  - name: di-runner" >> $ma; \
-      echo "    parameters:" >> $ma; \
-      echo "      memory: 512M" >> $ma; \
+#      ## SAP note 2304873 (rewrite the file to remove the developpers DEV_SPACE)
+#      echo "_schema-version: \"2.0.0\"" > $ma; \
+#      echo "ID: com.sap.devx.di.xs2-config1" >> $ma; \
+#      echo "extends: com.sap.devx.di" >> $ma; \
+#      echo >> $ma; \
+#      echo "modules:" >> $ma; \
+#      echo >> $ma; \
+#      echo "  - name: di-core" >> $ma; \
+#      echo "    parameters:" >> $ma; \
+#      echo "      memory: 512M" >> $ma; \
+#      echo "    properties:" >> $ma; \
+#      echo "      JBP_CONFIG_JAVA_OPTS: '[java_opts: \"\"]'" >> $ma; \
+#      echo >> $ma; \
+#      echo "  - name: di-runner" >> $ma; \
+#      echo "    parameters:" >> $ma; \
+#      echo "      memory: 512M" >> $ma; \
 
-      echo; echo "$ma customized"; \
-      cat $ma; echo; \
+#      echo; echo "$ma customized"; \
+#      cat $ma; echo; \
 
       if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
