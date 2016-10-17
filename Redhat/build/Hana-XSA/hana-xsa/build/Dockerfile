@@ -127,7 +127,7 @@ RUN \
 
     #### LOGIN TO XSA
     if ! xs login -a https://$(hostname -f):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then exit 1; fi; \
-    if ! xs target -s $space; then exit 1; fi; \
+#    if ! xs target -s $space; then exit 1; fi; \
 
     #### INSTALL DI
     fi=$(ls /installer/XSA/*.zip | grep -i "\-di\-"); \
