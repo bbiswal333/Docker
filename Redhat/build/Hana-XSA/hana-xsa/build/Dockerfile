@@ -128,8 +128,8 @@ RUN \
     if ! xs target -s $space; then exit 1; fi; \
 
     #### INSTALL DI
-    fi=$(ls /installer/XSA/sap-xsac-di*[0-9].zip); \
-    ma=$(ls /installer/XSA/sap-xsac-di*.mtaext); \
+    fi=$(ls /installer/XSA/*.zip | grep -i "\-di\-"); \
+    ma=$(ls /installer/XSA/*.mtaext | grep -i "\-di\-"); \
     if [ ! "${fi}" ]; then exit 1; fi; \
     if [ ! "${ma}" ]; then \
       if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
@@ -137,8 +137,8 @@ RUN \
       if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### INSTALL HRTT
-    fi=$(ls /installer/XSA/sap-xsac-hrtt*[0-9].zip); \
-    ma=$(ls /installer/XSA/sap-xsac-hrtt*..mtaext); \
+    fi=$(ls /installer/XSA/*.zip | grep -i hrtt); \
+    ma=$(ls /installer/XSA/*.mtaext | grep -i hrtt); \
     if [ ! "${fi}" ]; then exit 1; fi; \
     if [ ! "${ma}" ]; then \
       if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
@@ -146,8 +146,8 @@ RUN \
       if ! xs install $fi  -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### INSTALL MONITORING
-    fi=$(ls /installer/XSA/sap-xsac-admin-*[0-9].zip); \
-    ma=$(ls /installer/XSA/sap-xsac-admin-*.mtaext); \
+    fi=$(ls /installer/XSA/*.zip | grep -i admin); \
+    ma=$(ls /installer/XSA/*.mtaext | grep -i admin); \
     if [ ! "${fi}" ]; then exit 1; fi; \
     if [ ! "${ma}" ]; then \
       if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
@@ -155,8 +155,8 @@ RUN \
       if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### INSTALL WEBIDE
-    fi=$(ls /installer/XSA/sap-xsac-webide*[0-9].zip); \
-    ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
+    fi=$(ls /installer/XSA/*.zip | grep -i webide); \
+    ma=$(ls /installer/XSA/*.mtaext | grep -i webide); \
     if [ ! "${fi}" ]; then exit 1; fi; \
     if [ ! "${ma}" ]; then \
       if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
@@ -168,8 +168,8 @@ RUN \
       if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### INSTALL SERVICES
-    fi=$(ls /installer/XSA/XSAC_SERVICES-*[0-9].zip); \
-    ma=$(ls /installer/XSA/XSAC_SERVICES-*.mtaext); \
+    fi=$(ls /installer/XSA/*.zip | grep -i services); \
+    ma=$(ls /installer/XSA/*.mtaext | grep -i services); \
     if [ ! "${fi}" ]; then exit 1; fi; \
     if [ ! "${ma}" ]; then \
       if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi \
