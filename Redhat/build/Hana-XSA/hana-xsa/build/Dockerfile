@@ -54,8 +54,8 @@ RUN \
       rm $file; fi; \
 #    ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
 #    if [ "${ma}" ]; then \
-#       echo "  properties:" >> $ma; \
-#       echo "    NO_PROXY: \"localhost, $(hostname -f)\"" >> $ma; \
+#       echo "    properties:" >> $ma; \
+#       echo "      NO_PROXY: \"localhost, $(hostname -f)\"" >> $ma; \
 #       echo; echo "$ma customized"; \
 #       cat $ma; echo; fi; \
 
@@ -163,10 +163,10 @@ RUN \
     if [ ! "${ma}" ]; then \
       if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
     else \
-#      echo "  properties:" >> $ma; \
-#      echo "    NO_PROXY: \"localhost, $(hostname -f)\"" >> $ma; \
-#      echo; echo "$ma customized"; \
-#      cat $ma; echo; \
+      echo "    properties:" >> $ma; \
+      echo "      NO_PROXY: \"localhost, $(hostname -f)\"" >> $ma; \
+      echo; echo "$ma customized"; \
+      cat $ma; echo; \
       if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### INSTALL SERVICES
