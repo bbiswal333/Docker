@@ -52,12 +52,12 @@ RUN \
     if [ "${file}" ]; then \
       if ! unzip $file -d /installer/XSA; then exit 1; fi; \
       rm $file; fi; \
-    ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
-    if [ "${ma}" ]; then \
-       echo "  properties:" >> $ma; \
-       echo "    NO_PROXY: \"localhost, $(hostname -f)\"" >> $ma; \
-       echo; echo "$ma customized"; \
-       cat $ma; echo; fi; \
+#    ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
+#    if [ "${ma}" ]; then \
+#       echo "  properties:" >> $ma; \
+#       echo "    NO_PROXY: \"localhost, $(hostname -f)\"" >> $ma; \
+#       echo; echo "$ma customized"; \
+#       cat $ma; echo; fi; \
 
     ## DEVELOPERS ARE STANDARDIZING INSTALLERS
     file=$(ls /installer/XSA/jobscheduler-assembly*[0-9].zip | grep -v XSACSERVICES); \
@@ -96,15 +96,17 @@ RUN \
       --install_hostagent=off \
       --system_usage=custom \
       --sapmnt=$saphome/shared --datapath=$saphome/data --logpath=$saphome/log \
-      --components=all \
-      --xs_components=all \
-      --import_xs_content=yes \
-      --add_local_roles=xs_worker \
-      --component_dirs=/installer/RT,/installer/XSA; then exit 1; fi; \
+      --components=server,xs \
+      --component_dirs=/installer/RT; then exit 1; fi; \
 
 #      --components=server,xs \
 #      --xs_components=xsac_monitoring,xsac_services \
 
+#      --components=all \
+#      --xs_components=all \
+#      --import_xs_content=yes \
+#      --add_local_roles=xs_worker \
+#      --component_dirs=/installer/RT,/installer/XSA; then exit 1; fi; \
 
     #### ADD HRTT + DI_CORE + WEB_IDE
 #    if ! /installer/SAP_HANA_LCM/hdblcm \
@@ -122,28 +124,57 @@ RUN \
   #./hdblcm --action=update –-components=xs –-xs_components=xsac_hrtt,xsac_di_core,xsac_sap_web_ide --xs_content_cfg=<path todirectory with mta extensions>
 
     #### LOGIN TO XSA
-#    if ! xs login -a https://$(hostname):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then \
-#      echo "Retry 'xs login'"; \
-#      if ! xs login -a https://$(hostname):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then exit 1; fi; fi; \
-
-    #### INSTALL HRTT
-#    file=$(ls /installer/XSA/sap-xsac-hrtt*[0-9].zip); \
-#    if [ ! "${file}" ]; then exit 1; fi; \
-#    if ! xs install $file -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+    if ! xs login -a https://$(hostname -f):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then exit 1; fi; \
+    if ! xs target -s $space; then exit 1; fi; \
 
     #### INSTALL DI
-#    di=$(ls /installer/XSA/sap-xsac-di*[0-9].zip); \
-#    ma=$(ls /installer/XSA/sap-xsac-di*.mtaext); \
-#    if [ ! "${di}" ]; then exit 1; fi; \
-#    if [ ! "${ma}" ]; then exit 1; fi; \
-#    if ! xs install $di -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+    fi=$(ls /installer/XSA/sap-xsac-di*[0-9].zip); \
+    ma=$(ls /installer/XSA/sap-xsac-di*.mtaext); \
+    if [ ! "${fi}" ]; then exit 1; fi; \
+    if [ ! "${ma}" ]; then \
+      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi \
+    else \
+      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
+
+    #### INSTALL HRTT
+    fi=$(ls /installer/XSA/sap-xsac-hrtt*[0-9].zip); \
+    ma=$(ls /installer/XSA/sap-xsac-hrtt*..mtaext); \
+    if [ ! "${fi}" ]; then exit 1; fi; \
+    if [ ! "${ma}" ]; then \
+      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi \
+    else \
+      if ! xs install $fi  -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
+
+    #### INSTALL MONITORING
+    fi=$(ls /installer/XSA/sap-xsac-admin-*[0-9].zip); \
+    ma=$(ls /installer/XSA/sap-xsac-admin-*.mtaext); \
+    if [ ! "${fi}" ]; then exit 1; fi; \
+    if [ ! "${ma}" ]; then \
+      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi \
+    else \
+      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### INSTALL WEBIDE
-#    wb=$(ls /installer/XSA/sap-xsac-webide*[0-9].zip); \
-#    ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
-#    if [ ! "${wb}" ]; then exit 1; fi; \
-#    if [ ! "${ma}" ]; then exit 1; fi; \
-#    if ! xs install $wb -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+    fi=$(ls /installer/XSA/sap-xsac-webide*[0-9].zip); \
+    ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
+    if [ ! "${fi}" ]; then exit 1; fi; \
+    if [ ! "${ma}" ]; then exit 1; fi; \
+      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi \
+    else \
+      echo "  properties:" >> $ma; \
+      echo "    NO_PROXY: \"localhost, $(hostname -f)\"" >> $ma; \
+      echo; echo "$ma customized"; \
+      cat $ma; echo; fi; \
+      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
+
+    #### INSTALL SERVICES
+    fi=$(ls /installer/XSA/XSAC_SERVICES-*[0-9].zip); \
+    ma=$(ls /installer/XSA/XSAC_SERVICES-*.mtaext); \
+    if [ ! "${fi}" ]; then exit 1; fi; \
+    if [ ! "${ma}" ]; then exit 1; fi; \
+      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi \
+    else \
+      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### DELETE INSTALLER
 #    if ! rm -rf /installer; then exit 1; fi; \
