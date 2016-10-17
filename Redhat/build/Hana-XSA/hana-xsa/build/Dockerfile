@@ -132,7 +132,7 @@ RUN \
     #### PREPARE DI INSTALLATION
     xs spaces; \
     if ! xs create-space DEV; then exit 1; fi; \
-    if ! xs set-space-role dckxsa $org DEV SpaceDeveloper; then exit 1; fi; \
+    if ! xs set-space-role fschuler $org DEV SpaceDeveloper; then exit 1; fi; \
     xs spaces; \
 
     #### INSTALL DI
