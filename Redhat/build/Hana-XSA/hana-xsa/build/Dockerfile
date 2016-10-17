@@ -25,7 +25,7 @@ RUN \
         if ! curl -k -s "$url/$file" -o "/$folder/$file"; then exit 1; fi; fi; \
     done < $trigger.txt; \
 
-    echo; echo "ls /installer";     ls -l /installer | awk '/^-/ { print $NF }'; \
+    echo; echo "ls /installer";     ls -l /installer | grep -v "[RT|XSA]"; \
     echo; echo "ls /installer/RT";  ls -1 /installer/RT; \
     echo; echo "ls /installer/XSA"; ls -1 /installer/XSA; echo
 
@@ -97,6 +97,8 @@ RUN \
       --system_usage=custom \
       --sapmnt=$saphome/shared --datapath=$saphome/data --logpath=$saphome/log \
       --components=server,xs \
+      --import_xs_content=yes \
+      --add_local_roles=xs_worker \
       --component_dirs=/installer/RT; then exit 1; fi; \
 
 #      --components=server,xs \
