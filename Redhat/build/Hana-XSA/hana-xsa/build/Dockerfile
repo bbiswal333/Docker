@@ -164,7 +164,7 @@ RUN \
       echo "  properties:" >> $ma; \
       echo "    NO_PROXY: \"localhost, $(hostname -f)\"" >> $ma; \
       echo; echo "$ma customized"; \
-      cat $ma; echo; fi; \
+      cat $ma; echo; \
       if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### INSTALL SERVICES
