@@ -45,13 +45,13 @@ RUN \
     file=$(ls /installer/XSA/sap-xsac-hrtt*[0-9].zip | grep -v XSACHRTT); \
     if [ "${file}" ]; then \
       if ! unzip $file -d /installer/XSA; then exit 1; fi; \
-      rm /installer/XSA/sap-xsac-hrtt*; fi; \
+      rm $file; fi; \
 
     ## DEVELOPERS ARE STANDARDIZING INSTALLERS
     file=$(ls /installer/XSA/sap-xsac-webide*[0-9].zip | grep -v XSACSAPWEBIDE); \
     if [ "${file}" ]; then \
       if ! unzip $file -d /installer/XSA; then exit 1; fi; \
-      rm /installer/XSA/$file; fi; \
+      rm $file; fi; \
     ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
     if [ "${ma}" ]; then \
        echo "  properties:" >> $ma; \
@@ -63,7 +63,7 @@ RUN \
     file=$(ls /installer/XSA/jobscheduler-assembly*[0-9].zip | grep -v XSACSERVICES); \
     if [ "${file}" ]; then \
       if ! unzip $file -d /installer/XSA; then exit 1; fi; \
-      rm /installer/XSA/$file; fi
+      rm $file; fi
 
 #### HANA INSTALL CONSTANTS
 ENV sid="DCK" \
