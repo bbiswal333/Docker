@@ -158,7 +158,7 @@ RUN \
     fi=$(ls /installer/XSA/sap-xsac-webide*[0-9].zip); \
     ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
     if [ ! "${fi}" ]; then exit 1; fi; \
-    if [ ! "${ma}" ]; then exit 1; fi; \
+    if [ ! "${ma}" ]; then \
       if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
     else \
       echo "  properties:" >> $ma; \
@@ -171,7 +171,7 @@ RUN \
     fi=$(ls /installer/XSA/XSAC_SERVICES-*[0-9].zip); \
     ma=$(ls /installer/XSA/XSAC_SERVICES-*.mtaext); \
     if [ ! "${fi}" ]; then exit 1; fi; \
-    if [ ! "${ma}" ]; then exit 1; fi; \
+    if [ ! "${ma}" ]; then \
       if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi \
     else \
       if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
