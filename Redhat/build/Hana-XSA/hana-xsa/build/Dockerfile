@@ -132,7 +132,7 @@ RUN \
     ma=$(ls /installer/XSA/sap-xsac-di*.mtaext); \
     if [ ! "${fi}" ]; then exit 1; fi; \
     if [ ! "${ma}" ]; then \
-      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi \
+      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
     else \
       if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
@@ -141,7 +141,7 @@ RUN \
     ma=$(ls /installer/XSA/sap-xsac-hrtt*..mtaext); \
     if [ ! "${fi}" ]; then exit 1; fi; \
     if [ ! "${ma}" ]; then \
-      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi \
+      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
     else \
       if ! xs install $fi  -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
@@ -150,7 +150,7 @@ RUN \
     ma=$(ls /installer/XSA/sap-xsac-admin-*.mtaext); \
     if [ ! "${fi}" ]; then exit 1; fi; \
     if [ ! "${ma}" ]; then \
-      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi \
+      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
     else \
       if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
@@ -159,7 +159,7 @@ RUN \
     ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
     if [ ! "${fi}" ]; then exit 1; fi; \
     if [ ! "${ma}" ]; then exit 1; fi; \
-      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi \
+      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
     else \
       echo "  properties:" >> $ma; \
       echo "    NO_PROXY: \"localhost, $(hostname -f)\"" >> $ma; \
