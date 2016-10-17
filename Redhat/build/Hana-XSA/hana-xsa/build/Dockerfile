@@ -163,8 +163,26 @@ RUN \
     if [ ! "${ma}" ]; then \
       if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
     else \
+#      echo "    properties:" >> $ma; \
+#      echo "      NO_PROXY: \"localhost, $(hostname -f)\"" >> $ma; \
+
+      ## WARNING : file is overwritten
+      echo "_schema-version: \"2.0.0\"" > $ma; \
+      echo "ID: com.sap.devx.di.xs2-config1" >> $ma; \
+      echo "extends: com.sap.devx.di" >> $ma; \
+      echo >> $ma; \
+      echo "modules:" >> $ma; \
+      echo >> $ma; \
+      echo "  - name: di-core" >> $ma; \
+      echo "    parameters:" >> $ma; \
+      echo "      memory: 512M" >> $ma; \
       echo "    properties:" >> $ma; \
-      echo "      NO_PROXY: \"localhost, $(hostname -f)\"" >> $ma; \
+      echo "      JBP_CONFIG_JAVA_OPTS: '[java_opts: \"\"]'" >> $ma; \
+      echo >> $ma; \
+      echo "  - name: di-runner" >> $ma; \
+      echo "    parameters:" >> $ma; \
+      echo "      memory: 512M" >> $ma; \
+
       echo; echo "$ma customized"; \
       cat $ma; echo; \
       if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
