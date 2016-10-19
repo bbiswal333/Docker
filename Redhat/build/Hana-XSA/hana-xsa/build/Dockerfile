@@ -9,7 +9,7 @@ COPY  upload/     /installer/
 RUN \
     trigger='trigger-xsa'; \
 
-    echo; echo "curl '$trigger.txt'"; \
+    echo; echo "download '$trigger.txt'"; echo; \
     if ! curl -k -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/jenkins/$trigger.txt -o $trigger.tmp; then exit 1; fi; \
 
     # Windows \nl to Linux
@@ -18,7 +18,6 @@ RUN \
 
     mkdir /installer/{RT,XSA}; \
 
-    echo; \
     while IFS=';' read name folder url file; do \
       if [ "$name" != "lcm" -a "$name" != "hanadb" ]; then \
         echo "curl to '$folder/$file'"; \
@@ -163,12 +162,8 @@ RUN \
 #      echo "    parameters:" >> $ma; \
 #      echo "      memory: 512M" >> $ma; \
 
-      echo >> $ma; \
-      echo "resources:"; >> $ma; \
-      echo "  - name: di-dev-space"; >> $ma; \
-      echo "    properties:"; >> $ma; \
-      echo "      DEV_SPACE: $space"; >> $ma; \
-
+      if ! sed -e "s/DEV_SPACE: DEV/DEV_SPACE: $space/g" -i $ma; then exit 1; fi; \
+ 
       echo; echo "$ma customized"; \
       cat $ma; echo; \
 
