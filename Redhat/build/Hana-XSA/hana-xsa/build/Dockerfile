@@ -26,10 +26,10 @@ RUN \
 
     echo; echo "ls /installer";     ls -1 /installer | grep -v -e "RT" -e "XSA"; \
     echo; echo "ls /installer/RT";  ls -1 /installer/RT; \
-    echo; echo "ls /installer/XSA"; ls -1 /installer/XSA; echo
+    echo; echo "ls /installer/XSA"; ls -1 /installer/XSA; echo; \
 
-#### DECOMPRESS INSTALLER
-RUN \
+    #### DECOMPRESS INSTALLER
+#RUN \
     sapcar=$(ls /installer/sapcar-*); \
     if [ ! "${sapcar}" ]; then exit 1; fi; \
     chmod +x $sapcar; \
