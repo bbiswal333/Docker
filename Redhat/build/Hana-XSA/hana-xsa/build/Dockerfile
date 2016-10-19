@@ -45,8 +45,8 @@ RUN \
     if [ "${ma}" ]; then \
       echo; echo "file '$ma' before customization"; echo; \
       cat $ma; echo; \
-#     if ! sed -e "s/DEV_SPACE: DEV/DEV_SPACE: $space/g" -i $ma; then exit 1; fi; \
-      if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/jenkins/sap-xsac-di-3.12.24.mtaext -o $ma; then exit 1; fi; \
+      if ! sed -e "s/DEV_SPACE: DEV/DEV_SPACE: $space/g" -i $ma; then exit 1; fi; \
+#     if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/jenkins/sap-xsac-di-3.12.24.mtaext -o $ma; then exit 1; fi; \
       echo; echo "New file $ma"; \
       cat $ma; echo; fi; \
 
