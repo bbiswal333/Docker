@@ -130,10 +130,10 @@ RUN \
 #    if ! xs target -s $space; then exit 1; fi; \
 
     #### PREPARE DI INSTALLATION
-    xs spaces; \
-    if ! xs create-space DEV; then exit 1; fi; \
-    if ! xs set-space-role fschuler $org DEV SpaceDeveloper; then exit 1; fi; \
-    xs spaces; \
+#    xs spaces; \
+#    if ! xs create-space DEV; then exit 1; fi; \
+#    if ! xs set-space-role fschuler $org DEV SpaceDeveloper; then exit 1; fi; \
+#    xs spaces; \
 
     #### INSTALL DI
     fi=$(ls /installer/XSA/*.zip | grep -i "\-di\-"); \
