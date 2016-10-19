@@ -1,0 +1,15 @@
+_schema-version: "2.0.0"
+ID: com.sap.devx.di.xs2-config1
+extends: com.sap.devx.di
+
+modules:
+
+  - name: di-core
+    parameters:
+      memory: 512M
+    properties:
+      JBP_CONFIG_JAVA_OPTS: '[java_opts: ""]'
+
+  - name: di-runner
+    parameters:
+      memory: 512M
