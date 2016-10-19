@@ -163,8 +163,14 @@ RUN \
 #      echo "    parameters:" >> $ma; \
 #      echo "      memory: 512M" >> $ma; \
 
-#      echo; echo "$ma customized"; \
-#      cat $ma; echo; \
+      echo >> $ma; \
+      echo "resources:"; \
+      echo "  - name: di-dev-space"; \
+      echo "    properties:"; \
+      echo "      DEV_SPACE: $space"; \
+
+      echo; echo "$ma customized"; \
+      cat $ma; echo; \
 
       if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
