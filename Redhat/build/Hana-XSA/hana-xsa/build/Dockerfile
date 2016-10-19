@@ -164,10 +164,10 @@ RUN \
 #      echo "      memory: 512M" >> $ma; \
 
       echo >> $ma; \
-      echo "resources:"; \
-      echo "  - name: di-dev-space"; \
-      echo "    properties:"; \
-      echo "      DEV_SPACE: $space"; \
+      echo "resources:"; >> $ma; \
+      echo "  - name: di-dev-space"; >> $ma; \
+      echo "    properties:"; >> $ma; \
+      echo "      DEV_SPACE: $space"; >> $ma; \
 
       echo; echo "$ma customized"; \
       cat $ma; echo; \
