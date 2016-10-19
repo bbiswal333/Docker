@@ -5,6 +5,17 @@ MAINTAINER gerald.braunwarth@sap.com
 #### UPLOAD INSTALLERS
 COPY  upload/     /installer/
 
+#### HANA INSTALL CONSTANTS
+ENV sid="DCK" \
+    number="97" \
+    secret="Toor1234" \
+    org="REF" \
+    space="PROD" \
+    saphome="/usr/sap/hana"
+
+#### Another ENV for Delayed variables expansion
+ENV PATH=$PATH:$saphome/shared/$sid/HDB$number/exe/:$saphome/shared/$sid/xs/bin/
+
 #### DOWNLOAD INSTALLERS
 RUN \
     trigger='trigger-xsa'; \
@@ -73,17 +84,6 @@ RUN \
     if [ "${file}" ]; then \
       if ! unzip $file -d /installer/XSA; then exit 1; fi; \
       rm $file; fi
-
-#### HANA INSTALL CONSTANTS
-ENV sid="DCK" \
-    number="97" \
-    secret="Toor1234" \
-    org="REF" \
-    space="PROD" \
-    saphome="/usr/sap/hana"
-
-#### Another ENV for Delayed variables expansion
-ENV PATH=$PATH:$saphome/shared/$sid/HDB$number/exe/:$saphome/shared/$sid/xs/bin/
 
 RUN \
     mkdir -p $saphome/{shared,data,log}; \
