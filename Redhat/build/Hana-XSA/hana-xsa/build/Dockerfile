@@ -52,14 +52,14 @@ RUN \
     rm /installer/RT/xs.onpremise.runtime.hanainstallation*.SAR; \
 
     ## CONFIGURE DI-CORE INSTALLATION
-    ma=$(ls /installer/XSA/*.mtaext | grep -i "\-di\-"); \
-    if [ "${ma}" ]; then \
-      echo; echo "file '$ma' before customization"; echo; \
-      cat $ma; echo; \
-      if ! sed -e "s/DEV_SPACE: DEV/DEV_SPACE: $space/g" -i $ma; then exit 1; fi; \
+#    ma=$(ls /installer/XSA/*.mtaext | grep -i "\-di\-"); \
+#    if [ "${ma}" ]; then \
+#      echo; echo "file '$ma' before customization"; echo; \
+#      cat $ma; echo; \
+#      if ! sed -e "s/DEV_SPACE: DEV/DEV_SPACE: $space/g" -i $ma; then exit 1; fi; \
 #     if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/jenkins/sap-xsac-di-3.12.24.mtaext -o $ma; then exit 1; fi; \
-      echo; echo "New file $ma"; \
-      cat $ma; echo; fi; \
+#      echo; echo "New file $ma"; \
+#      cat $ma; echo; fi; \
 
     ## DEVELOPERS ARE STANDARDIZING INSTALLERS
     file=$(ls /installer/XSA/sap-xsac-hrtt*[0-9].zip | grep -v XSACHRTT); \
@@ -105,14 +105,11 @@ RUN \
       --install_hostagent=off \
       --system_usage=custom \
       --sapmnt=$saphome/shared --datapath=$saphome/data --logpath=$saphome/log \
-      --components=all \
-      --xs_components=all \
+      --components=server,xs \
+      --xs_components=xsac_monitoring,xsac_services \
       --import_xs_content=yes \
       --add_local_roles=xs_worker \
       --component_dirs=/installer/RT,/installer/XSA; then exit 1; fi; \
-
-#      --components=server,xs \
-#      --xs_components=xsac_monitoring,xsac_services \
 
     #### ADD HRTT + DI_CORE + WEB_IDE
 #    if ! /installer/SAP_HANA_LCM/hdblcm \
@@ -130,23 +127,24 @@ RUN \
   #./hdblcm --action=update –-components=xs –-xs_components=xsac_hrtt,xsac_di_core,xsac_sap_web_ide --xs_content_cfg=<path todirectory with mta extensions>
 
     #### LOGIN TO XSA
-#    if ! xs login -a https://$(hostname -f):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then exit 1; fi; \
+    if ! xs login -a https://$(hostname -f):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then exit 1; fi; \
 #    if ! xs target -s $space; then exit 1; fi; \
 
-    #### PREPARE DI INSTALLATION
-#    xs spaces; \
-#    if ! xs create-space DEV; then exit 1; fi; \
-#    if ! xs set-space-role fschuler $org DEV SpaceDeveloper; then exit 1; fi; \
-#    xs spaces; \
-
     #### INSTALL DI
-#    fi=$(ls /installer/XSA/*.zip | grep -i "\-di\-"); \
-#    ma=$(ls /installer/XSA/*.mtaext | grep -i "\-di\-"); \
-#    if [ ! "${fi}" ]; then exit 1; fi; \
-#    if [ ! "${ma}" ]; then \
-#      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
-#    else \
+    newuser="webidedev"
+    if ! useradd $newuser -p $newuser; then exit 1; fi
 
+    xs spaces; \
+    if ! xs create-space DEV; then exit 1; fi; \
+    if ! xs set-space-role newuser $org DEV SpaceDeveloper; then exit 1; fi; \
+    xs spaces; \
+
+    fi=$(ls /installer/XSA/*.zip | grep -i "\-di\-"); \
+    ma=$(ls /installer/XSA/*.mtaext | grep -i "\-di\-"); \
+    if [ ! "${fi}" ]; then exit 1; fi; \
+    if [ ! "${ma}" ]; then \
+      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+    else \
 #      echo; echo "file '$ma'"; echo; \
 #      cat $ma; echo; \
 
@@ -172,16 +170,16 @@ RUN \
 #      echo; echo "$ma customized"; \
 #      cat $ma; echo; \
 
-#      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
+      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### INSTALL HRTT
-#    fi=$(ls /installer/XSA/*.zip | grep -i hrtt); \
-#    ma=$(ls /installer/XSA/*.mtaext | grep -i hrtt); \
-#    if [ ! "${fi}" ]; then exit 1; fi; \
-#    if [ ! "${ma}" ]; then \
-#      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
-#    else \
-#      if ! xs install $fi  -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
+    fi=$(ls /installer/XSA/*.zip | grep -i hrtt); \
+    ma=$(ls /installer/XSA/*.mtaext | grep -i hrtt); \
+    if [ ! "${fi}" ]; then exit 1; fi; \
+    if [ ! "${ma}" ]; then \
+      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+    else \
+      if ! xs install $fi  -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### INSTALL MONITORING
 #    fi=$(ls /installer/XSA/*.zip | grep -i admin); \
@@ -193,19 +191,19 @@ RUN \
 #      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### INSTALL WEBIDE
-#    fi=$(ls /installer/XSA/*.zip | grep -i webide); \
-#    ma=$(ls /installer/XSA/*.mtaext | grep -i webide); \
-#    if [ ! "${fi}" ]; then exit 1; fi; \
-#    if [ ! "${ma}" ]; then \
-#      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
-#    else \
+    fi=$(ls /installer/XSA/*.zip | grep -i webide); \
+    ma=$(ls /installer/XSA/*.mtaext | grep -i webide); \
+    if [ ! "${fi}" ]; then exit 1; fi; \
+    if [ ! "${ma}" ]; then \
+      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+    else \
 #      echo; echo "$ma before customization"; \
 #      cat $ma; echo; \
 #      echo "    properties:" >> $ma; \
 #      echo "      NO_PROXY: \"localhost, $(hostname -f)\"" >> $ma; \
 #      echo; echo "$ma customized"; \
 #      cat $ma; echo; \
-#      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
+      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### INSTALL SERVICES
 #    fi=$(ls /installer/XSA/*.zip | grep -i services); \
