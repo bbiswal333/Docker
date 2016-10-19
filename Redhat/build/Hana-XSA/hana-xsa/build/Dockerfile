@@ -131,8 +131,8 @@ RUN \
 #    if ! xs target -s $space; then exit 1; fi; \
 
     #### INSTALL DI
-    newuser="webidedev"
-    if ! useradd $newuser -p $newuser; then exit 1; fi
+    newuser="webidedev"; \
+    if ! useradd $newuser -p $newuser; then exit 1; fi; \
 
     xs spaces; \
     if ! xs create-space DEV; then exit 1; fi; \
