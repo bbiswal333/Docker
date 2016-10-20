@@ -131,7 +131,7 @@ RUN \
 #    if ! xs target -s $space; then exit 1; fi; \
 
     #### INSTALL DI
-set -x
+set -x; \
 #    newuser="webidedev"; \
 #    if ! useradd $newuser -p $newuser; then exit 1; fi; \
     newuser="dckadm"; \
@@ -140,7 +140,7 @@ set -x
     if ! xs create-space DEV -u $newuser; then exit 1; fi; \
     if ! xs set-space-role $newuser $org DEV SpaceDeveloper; then exit 1; fi; \
     xs spaces; \
-set +x
+set +x; \
     fi=$(ls /installer/XSA/*.zip | grep -i "\-di\-"); \
     ma=$(ls /installer/XSA/*.mtaext | grep -i "\-di\-"); \
     if [ ! "${fi}" ]; then exit 1; fi; \
