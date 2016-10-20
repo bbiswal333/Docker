@@ -45,10 +45,10 @@ RUN \
     if [ ! "${sapcar}" ]; then exit 1; fi; \
     chmod +x $sapcar; \
 
-    if ! $sapcar -xf /installer/SAP_HANA_DATABASE*.SAR  -R /installer/; then exit 1; fi; \
+    echo; if ! $sapcar -xf /installer/SAP_HANA_DATABASE*.SAR  -R /installer/; then exit 1; fi; \
     rm /installer/SAP_HANA_DATABASE*.SAR; \
 
-    if ! $sapcar -xf /installer/RT/xs.onpremise.runtime.hanainstallation*.SAR  -R /installer/RT; then exit 1; fi; \
+    echo; if ! $sapcar -xf /installer/RT/xs.onpremise.runtime.hanainstallation*.SAR  -R /installer/RT; then exit 1; fi; \
     rm /installer/RT/xs.onpremise.runtime.hanainstallation*.SAR; \
 
     ## CONFIGURE DI-CORE INSTALLATION
@@ -64,25 +64,25 @@ RUN \
     ## DEVELOPERS ARE STANDARDIZING INSTALLERS
     file=$(ls /installer/XSA/sap-xsac-hrtt*[0-9].zip | grep -v XSACHRTT); \
     if [ "${file}" ]; then \
-      if ! unzip $file -d /installer/XSA; then exit 1; fi; \
+      echo; if ! unzip $file -d /installer/XSA; then exit 1; fi; \
       rm $file; fi; \
 
     ## DEVELOPERS ARE STANDARDIZING INSTALLERS
     file=$(ls /installer/XSA/sap-xsac-webide*[0-9].zip | grep -v XSACSAPWEBIDE); \
     if [ "${file}" ]; then \
-      if ! unzip $file -d /installer/XSA; then exit 1; fi; \
+      echo; if ! unzip $file -d /installer/XSA; then exit 1; fi; \
       rm $file; fi; \
     ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
     if [ "${ma}" ]; then \
        echo "    properties:" >> $ma; \
        echo "      NO_PROXY: \"localhost, $(hostname -f)\"" >> $ma; \
-       echo; echo "$ma customized"; \
+       echo; echo "$ma customized"; echo; \
        cat $ma; echo; fi; \
 
     ## DEVELOPERS ARE STANDARDIZING INSTALLERS
     file=$(ls /installer/XSA/jobscheduler-assembly*[0-9].zip | grep -v XSACSERVICES); \
     if [ "${file}" ]; then \
-      if ! unzip $file -d /installer/XSA; then exit 1; fi; \
+      echo; if ! unzip $file -d /installer/XSA; then exit 1; fi; \
       rm $file; fi
 
 RUN \
@@ -135,7 +135,7 @@ RUN \
     if ! useradd $newuser -p $newuser; then exit 1; fi; \
 
     xs spaces; \
-    if ! xs create-space DEV; then exit 1; fi; \
+    if ! xs create-space DEV -u $newuser; then exit 1; fi; \
     if ! xs set-space-role $newuser $org DEV SpaceDeveloper; then exit 1; fi; \
     xs spaces; \
 
