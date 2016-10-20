@@ -136,7 +136,7 @@ RUN \
 
     xs spaces; \
     if ! xs create-space DEV; then exit 1; fi; \
-    if ! xs set-space-role newuser $org DEV SpaceDeveloper; then exit 1; fi; \
+    if ! xs set-space-role $newuser $org DEV SpaceDeveloper; then exit 1; fi; \
     xs spaces; \
 
     fi=$(ls /installer/XSA/*.zip | grep -i "\-di\-"); \
