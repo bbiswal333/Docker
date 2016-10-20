@@ -136,7 +136,7 @@ set -x; \
 #    if ! useradd $devuser -p $devuser; then exit 1; fi; \
 
     if ! hdbsql -i $number -n localhost:3${number}15 -u SYSTEM -p $secret \
-         "CREATE USER $devuser PASSWORD \"$devuser\" NO FORCE_FIRST_PASSWORD_CHANGE"; then exit 1; fi; \
+         "CREATE USER $devuser PASSWORD \"$secret\" NO FORCE_FIRST_PASSWORD_CHANGE"; then exit 1; fi; \
 
     xs spaces; \
     if ! xs create-space DEV -u $devuser; then exit 1; fi; \
