@@ -87,6 +87,7 @@ RUN \
 
 RUN \
     mkdir -p $saphome/{shared,data,log}; \
+#exit 0; \
 
     #### INSTALL HANA
     if ! /installer/SAP_HANA_LCM/hdblcm \
@@ -106,7 +107,6 @@ RUN \
       --system_usage=custom \
       --sapmnt=$saphome/shared --datapath=$saphome/data --logpath=$saphome/log \
       --components=server,xs \
-      --xs_components=xsac_monitoring,xsac_services \
       --import_xs_content=yes \
       --add_local_roles=xs_worker \
       --component_dirs=/installer/RT,/installer/XSA; then exit 1; fi; \
@@ -131,7 +131,6 @@ RUN \
 #    if ! xs target -s $space; then exit 1; fi; \
 
     #### INSTALL DI
-set -x; \
     devuser="webidedev"; \
 #    if ! useradd $devuser -p $devuser; then exit 1; fi; \
 
@@ -142,7 +141,7 @@ set -x; \
     if ! xs create-space DEV -u $devuser; then exit 1; fi; \
     if ! xs set-space-role $devuser $org DEV SpaceDeveloper; then exit 1; fi; \
     xs spaces; \
-set +x; \
+
     fi=$(ls /installer/XSA/*.zip | grep -i "\-di\-"); \
     ma=$(ls /installer/XSA/*.mtaext | grep -i "\-di\-"); \
     if [ ! "${fi}" ]; then exit 1; fi; \
@@ -194,6 +193,11 @@ set +x; \
 #    else \
 #      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
+#sidadm=$(echo $sid | awk '{ print tolower($0) }')adm; \
+#su - $sidadm -c "unset LD_PRELOAD; HDB stop; /usr/sap/$sid/SYS/exe/hdb/sapcontrol -nr $number -function StopService"; \
+#exit 0; \
+
+
     #### INSTALL WEBIDE
     fi=$(ls /installer/XSA/*.zip | grep -i webide); \
     ma=$(ls /installer/XSA/*.mtaext | grep -i webide); \
@@ -201,12 +205,20 @@ set +x; \
     if [ ! "${ma}" ]; then \
       if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
     else \
-#      echo; echo "$ma before customization"; \
-#      cat $ma; echo; \
+      echo; echo "$ma before customization"; \
+      cat $ma; echo; \
+
 #      echo "    properties:" >> $ma; \
 #      echo "      NO_PROXY: \"localhost, $(hostname -f)\"" >> $ma; \
-#      echo; echo "$ma customized"; \
-#      cat $ma; echo; \
+
+      echo "resources:" >> $ma; \
+      echo "  - name: di-dev-space" >> $ma; \
+      echo "    properties:" >> $ma; \
+      echo "      DEV_SPACE: DEV" >> $ma; \
+
+      echo; echo "$ma customized"; \
+      cat $ma; echo; \
+
       if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### INSTALL SERVICES
