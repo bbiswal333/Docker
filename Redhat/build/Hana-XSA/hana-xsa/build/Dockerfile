@@ -148,8 +148,8 @@ RUN \
     if [ ! "${ma}" ]; then \
       if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
     else \
-#      echo; echo "file '$ma'"; echo; \
-#      cat $ma; echo; \
+      echo; echo "file '$ma'"; echo; \
+      cat $ma; echo; \
 
 #      ## SAP note 2304873 (rewrite the file to remove the developpers DEV_SPACE)
 #      echo "_schema-version: \"2.0.0\"" > $ma; \
