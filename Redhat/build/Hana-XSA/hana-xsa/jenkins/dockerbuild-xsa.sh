@@ -96,7 +96,7 @@ image="hanaxsshine/weekstone/hana-xsa"
 imgPush=$registry:$push/$image
 imgPull=$registry:$pull/$image
 
-echo "Get Trigger manifest from Github"
+echo; echo "Download 'trigger-xsa.txt' from Github"
 GetTriggerFile
 
 echo "Create workspace folder 'build'"
