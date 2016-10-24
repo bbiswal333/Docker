@@ -1,6 +1,47 @@
 FROM docker.wdf.sap.corp:50000/hanaxsshine/weekstone/hana-xsa-shine-req
 
-MAINTAINER gerald.braunwarth@sap.com
+#MAINTAINER gerald.braunwarth@sap.com
+
+RUN \
+    fi=$(ls /installer/XSA/*.zip | grep -i "\-di\-"); \
+    ma=$(ls /installer/XSA/*.mtaext | grep -i "\-di\-"); \
+    if [ ! "${fi}" ]; then exit 1; fi; \
+    if [ ! "${ma}" ]; then \
+      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+    else \
+      echo; echo "file '$ma'"; echo; \
+      cat $ma; echo; \
+
+      ## SAP note 2304873 (rewrite the file to remove the developpers DEV_SPACE)
+      echo "_schema-version: \"2.0.0\"" > $ma; \
+      echo "ID: com.sap.devx.di.xs2-config1" >> $ma; \
+      echo "extends: com.sap.devx.di" >> $ma; \
+      echo >> $ma; \
+      echo "modules:" >> $ma; \
+      echo >> $ma; \
+      echo "  - name: di-core" >> $ma; \
+      echo "    parameters:" >> $ma; \
+      echo "      port: 53030" >> $ma; \
+      echo "      memory: 512M" >> $ma; \
+      echo "    properties:" >> $ma; \
+#     echo "      JBP_CONFIG_JAVA_OPTS: '[java_opts: \"\"]'" >> $ma; \
+      echo "      JBP_CONFIG_JAVA_OPTS: '[java_opts: \"-Dhttps.proxyHost=proxy.wdf.sap.corp -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=\\\\"*.sap.corp|*.corp.sap|nexus|localhost|127.0.0.1|10.*\\\\"\"]'" >> $ma; \
+      echo >> $ma; \
+      echo "  - name: di-runner" >> $ma; \
+      echo "    parameters:" >> $ma; \
+      echo "      memory: 512M" >> $ma; \
+      echo >> $ma; \
+      echo "resources:" >> $ma; \
+      echo "  - name: di-dev-space" >> $ma; \
+      echo "    properties:" >> $ma; \
+      echo "      DEV_SPACE: \${space}" >> $ma; \
+
+#      if ! sed -e "s/DEV_SPACE: DEV/DEV_SPACE: $space/g" -i $ma; then exit 1; fi; \
+ 
+      echo; echo "$ma customized"; \
+      cat $ma; echo; \
+
+      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi
 
 #### UPLOAD INSTALLERS
 COPY  upload/     /installer/
@@ -37,7 +78,7 @@ RUN \
 
     echo; echo "ls /installer";     ls -1 /installer | grep -v -e "RT" -e "XSA"; \
     echo; echo "ls /installer/RT";  ls -1 /installer/RT; \
-    echo; echo "ls /installer/XSA"; ls -1 /installer/XSA; echo; \
+    echo; echo "ls /installer/XSA"; ls -1 /installer/XSA; \
 
     #### DECOMPRESS INSTALLER
 #RUN \
@@ -150,8 +191,8 @@ RUN \
     if [ ! "${ma}" ]; then \
       if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
     else \
-      echo; echo "file '$ma'"; echo; \
-      cat $ma; echo; \
+      echo; echo "file '$ma'"; \
+      echo; cat $ma; echo; \
 
       ## SAP note 2304873 (rewrite the file to remove the developpers DEV_SPACE)
       echo "_schema-version: \"2.0.0\"" > $ma; \
