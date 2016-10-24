@@ -15,6 +15,6 @@ modules:
       memory: 512M
 
 resources:
- - name: di-dev-space
+  - name: di-dev-space
     properties:
       DEV_SPACE: DEV
