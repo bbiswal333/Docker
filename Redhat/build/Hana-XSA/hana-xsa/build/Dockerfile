@@ -166,7 +166,7 @@ RUN \
       echo "      memory: 512M" >> $ma; \
       echo "    properties:" >> $ma; \
 #     echo "      JBP_CONFIG_JAVA_OPTS: '[java_opts: \"\"]'" >> $ma; \
-      echo "      JBP_CONFIG_JAVA_OPTS: '[java_opts: "-Dhttps.proxyHost=proxy.wdf.sap.corp -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=\\\\"*.sap.corp|*.corp.sap|nexus|localhost|127.0.0.1|10.*\\\\"\"]'" >> $ma; \
+      echo "      JBP_CONFIG_JAVA_OPTS: '[java_opts: \"-Dhttps.proxyHost=proxy.wdf.sap.corp -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=\\\\"*.sap.corp|*.corp.sap|nexus|localhost|127.0.0.1|10.*\\\\"\"]'" >> $ma; \
       echo >> $ma; \
       echo "  - name: di-runner" >> $ma; \
       echo "    parameters:" >> $ma; \
