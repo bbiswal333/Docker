@@ -72,12 +72,12 @@ RUN \
     if [ "${file}" ]; then \
       echo; if ! unzip $file -d /installer/XSA; then exit 1; fi; \
       rm $file; fi; \
-    ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
-    if [ "${ma}" ]; then \
-       echo "    properties:" >> $ma; \
-       echo "      NO_PROXY: \"localhost, $(hostname -f)\"" >> $ma; \
-       echo; echo "$ma customized"; echo; \
-       cat $ma; echo; fi; \
+#    ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
+#    if [ "${ma}" ]; then \
+#       echo "    properties:" >> $ma; \
+#       echo "      NO_PROXY: \"localhost, $(hostname -f)\"" >> $ma; \
+#       echo; echo "$ma customized"; echo; \
+#       cat $ma; echo; fi; \
 
     ## DEVELOPERS ARE STANDARDIZING INSTALLERS
     file=$(ls /installer/XSA/jobscheduler-assembly*[0-9].zip | grep -v XSACSERVICES); \
@@ -87,7 +87,6 @@ RUN \
 
 RUN \
     mkdir -p $saphome/{shared,data,log}; \
-#exit 0; \
 
     #### INSTALL HANA
     if ! /installer/SAP_HANA_LCM/hdblcm \
@@ -109,7 +108,7 @@ RUN \
       --components=server,xs \
       --import_xs_content=yes \
       --add_local_roles=xs_worker \
-      --component_dirs=/installer/RT,/installer/XSA; then exit 1; fi; \
+      --component_dirs=/installer/RT; then exit 1; fi; \
 
     #### ADD HRTT + DI_CORE + WEB_IDE
 #    if ! /installer/SAP_HANA_LCM/hdblcm \
@@ -118,6 +117,8 @@ RUN \
 #      --sid=$sid \
 #      –-components=xs \
 #      –-xs_components=xsac_hrtt,xsac_di_core,xsac_sap_web_ide \
+
+#      --component_dirs=/installer/RT,/installer/XSA; then exit 1; fi; \
 #      --xs_content_cfg=installer/XSA; then exit 1; fi; \
 
   # To install a new SAP HANA system with XS Advanced and SAP Web IDE
@@ -137,10 +138,10 @@ RUN \
     if ! hdbsql -i $number -n localhost:3${number}15 -u SYSTEM -p $secret \
          "CREATE USER $devuser PASSWORD \"$secret\" NO FORCE_FIRST_PASSWORD_CHANGE"; then exit 1; fi; \
 
-    xs spaces; \
-    if ! xs create-space DEV -u $devuser; then exit 1; fi; \
-    if ! xs set-space-role $devuser $org DEV SpaceDeveloper; then exit 1; fi; \
-    xs spaces; \
+#    xs spaces; \
+#    if ! xs create-space DEV -u $devuser; then exit 1; fi; \
+#    if ! xs set-space-role $devuser $org DEV SpaceDeveloper; then exit 1; fi; \
+#    xs spaces; \
 
     fi=$(ls /installer/XSA/*.zip | grep -i "\-di\-"); \
     ma=$(ls /installer/XSA/*.mtaext | grep -i "\-di\-"); \
@@ -151,27 +152,34 @@ RUN \
       echo; echo "file '$ma'"; echo; \
       cat $ma; echo; \
 
-#      ## SAP note 2304873 (rewrite the file to remove the developpers DEV_SPACE)
-#      echo "_schema-version: \"2.0.0\"" > $ma; \
-#      echo "ID: com.sap.devx.di.xs2-config1" >> $ma; \
-#      echo "extends: com.sap.devx.di" >> $ma; \
-#      echo >> $ma; \
-#      echo "modules:" >> $ma; \
-#      echo >> $ma; \
-#      echo "  - name: di-core" >> $ma; \
-#      echo "    parameters:" >> $ma; \
-#      echo "      memory: 512M" >> $ma; \
-#      echo "    properties:" >> $ma; \
-#      echo "      JBP_CONFIG_JAVA_OPTS: '[java_opts: \"\"]'" >> $ma; \
-#      echo >> $ma; \
-#      echo "  - name: di-runner" >> $ma; \
-#      echo "    parameters:" >> $ma; \
-#      echo "      memory: 512M" >> $ma; \
+      ## SAP note 2304873 (rewrite the file to remove the developpers DEV_SPACE)
+      echo "_schema-version: \"2.0.0\"" > $ma; \
+      echo "ID: com.sap.devx.di.xs2-config1" >> $ma; \
+      echo "extends: com.sap.devx.di" >> $ma; \
+      echo >> $ma; \
+      echo "modules:" >> $ma; \
+      echo >> $ma; \
+      echo "  - name: di-core" >> $ma; \
+      echo "    parameters:" >> $ma; \
+      echo "      port: 53030" >> $ma; \
+      echo "      memory: 512M" >> $ma; \
+      echo "    properties:" >> $ma; \
+#     echo "      JBP_CONFIG_JAVA_OPTS: '[java_opts: \"\"]'" >> $ma; \
+      echo "      JBP_CONFIG_JAVA_OPTS: '[java_opts: "-Dhttps.proxyHost=proxy.wdf.sap.corp -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=\\\\"*.sap.corp|*.corp.sap|nexus|localhost|127.0.0.1|10.*\\\\"\"]'" >> $ma; \
+      echo >> $ma; \
+      echo "  - name: di-runner" >> $ma; \
+      echo "    parameters:" >> $ma; \
+      echo "      memory: 512M" >> $ma; \
+      echo >> $ma; \
+      echo "resources:" >> $ma; \
+      echo "  - name: di-dev-space" >> $ma; \
+      echo "    properties:" >> $ma; \
+      echo "      DEV_SPACE: \${space}" >> $ma; \
 
 #      if ! sed -e "s/DEV_SPACE: DEV/DEV_SPACE: $space/g" -i $ma; then exit 1; fi; \
  
-#      echo; echo "$ma customized"; \
-#      cat $ma; echo; \
+      echo; echo "$ma customized"; \
+      cat $ma; echo; \
 
       if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
@@ -185,18 +193,13 @@ RUN \
       if ! xs install $fi  -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### INSTALL MONITORING
-#    fi=$(ls /installer/XSA/*.zip | grep -i admin); \
-#    ma=$(ls /installer/XSA/*.mtaext | grep -i admin); \
-#    if [ ! "${fi}" ]; then exit 1; fi; \
-#    if [ ! "${ma}" ]; then \
-#      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
-#    else \
-#      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
-
-#sidadm=$(echo $sid | awk '{ print tolower($0) }')adm; \
-#su - $sidadm -c "unset LD_PRELOAD; HDB stop; /usr/sap/$sid/SYS/exe/hdb/sapcontrol -nr $number -function StopService"; \
-#exit 0; \
-
+    fi=$(ls /installer/XSA/*.zip | grep -i admin); \
+    ma=$(ls /installer/XSA/*.mtaext | grep -i admin); \
+    if [ ! "${fi}" ]; then exit 1; fi; \
+    if [ ! "${ma}" ]; then \
+      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+    else \
+      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### INSTALL WEBIDE
     fi=$(ls /installer/XSA/*.zip | grep -i webide); \
@@ -205,30 +208,16 @@ RUN \
     if [ ! "${ma}" ]; then \
       if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
     else \
-      echo; echo "$ma before customization"; \
-      cat $ma; echo; \
-
-#      echo "    properties:" >> $ma; \
-#      echo "      NO_PROXY: \"localhost, $(hostname -f)\"" >> $ma; \
-
-      echo "resources:" >> $ma; \
-      echo "  - name: di-dev-space" >> $ma; \
-      echo "    properties:" >> $ma; \
-      echo "      DEV_SPACE: DEV" >> $ma; \
-
-      echo; echo "$ma customized"; \
-      cat $ma; echo; \
-
       if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### INSTALL SERVICES
-#    fi=$(ls /installer/XSA/*.zip | grep -i services); \
-#    ma=$(ls /installer/XSA/*.mtaext | grep -i services); \
-#    if [ ! "${fi}" ]; then exit 1; fi; \
-#    if [ ! "${ma}" ]; then \
-#      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi \
-#    else \
-#      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
+    fi=$(ls /installer/XSA/*.zip | grep -i services); \
+    ma=$(ls /installer/XSA/*.mtaext | grep -i services); \
+    if [ ! "${fi}" ]; then exit 1; fi; \
+    if [ ! "${ma}" ]; then \
+      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi \
+    else \
+      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### DELETE INSTALLER
 #    if ! rm -rf /installer; then exit 1; fi; \
