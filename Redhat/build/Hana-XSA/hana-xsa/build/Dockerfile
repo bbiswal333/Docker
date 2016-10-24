@@ -136,13 +136,14 @@ RUN \
 #    if ! useradd $devuser -p $devuser; then exit 1; fi; \
 
     if ! hdbsql -i $number -n localhost:3${number}15 -u SYSTEM -p $secret \
-         "CREATE USER $devuser PASSWORD \"$secret\" NO FORCE_FIRST_PASSWORD_CHANGE"; then exit 1; fi; \
+         "CREATE USER $devuser PASSWORD \"$secret\" NO FORCE_FIRST_PASSWORD_CHANGE"; then exit 1; fi
 
 #    xs spaces; \
 #    if ! xs create-space DEV -u $devuser; then exit 1; fi; \
 #    if ! xs set-space-role $devuser $org DEV SpaceDeveloper; then exit 1; fi; \
 #    xs spaces; \
 
+RUN \
     fi=$(ls /installer/XSA/*.zip | grep -i "\-di\-"); \
     ma=$(ls /installer/XSA/*.mtaext | grep -i "\-di\-"); \
     if [ ! "${fi}" ]; then exit 1; fi; \
@@ -181,8 +182,9 @@ RUN \
       echo; echo "$ma customized"; \
       cat $ma; echo; \
 
-      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
+      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi
 
+RUN \
     #### INSTALL HRTT
     fi=$(ls /installer/XSA/*.zip | grep -i hrtt); \
     ma=$(ls /installer/XSA/*.mtaext | grep -i hrtt); \
