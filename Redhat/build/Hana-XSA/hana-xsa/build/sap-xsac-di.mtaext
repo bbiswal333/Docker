@@ -1,0 +1,20 @@
+_schema-version: "2.0.0"
+ID: com.sap.devx.di.xs2-config1
+extends: com.sap.devx.di
+
+modules:
+  - name: di-core
+    parameters:
+      port: 53030
+      memory: 512M
+    properties:
+      JBP_CONFIG_JAVA_OPTS: '[java_opts: "-Dhttps.proxyHost=proxy.wdf.sap.corp -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=\\\"*.sap.corp|*.corp.sap|nexus|localhost|127.0.0.1|10.*\\\""]'
+
+  - name: di-runner
+    parameters:
+      memory: 512M
+
+resources:
+ - name: di-dev-space
+    properties:
+      DEV_SPACE: ${space}
