@@ -108,7 +108,7 @@ RUN \
       --components=server,xs \
       --import_xs_content=yes \
       --add_local_roles=xs_worker \
-      --component_dirs=/installer/RT; then exit 1; fi; \
+      --component_dirs=/installer/RT; then exit 1; fi
 
     #### ADD HRTT + DI_CORE + WEB_IDE
 #    if ! /installer/SAP_HANA_LCM/hdblcm \
@@ -128,6 +128,7 @@ RUN \
   #./hdblcm --action=update –-components=xs –-xs_components=xsac_hrtt,xsac_di_core,xsac_sap_web_ide --xs_content_cfg=<path todirectory with mta extensions>
 
 RUN \
+set -x; \
     #### LOGIN TO XSA
     if ! xs login -a https://$(hostname -f):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then exit 1; fi; \
 #    if ! xs target -s $space; then exit 1; fi; \
@@ -137,13 +138,15 @@ RUN \
 #    if ! useradd $devuser -p $devuser; then exit 1; fi; \
 
     if ! hdbsql -i $number -n localhost:3${number}15 -u SYSTEM -p $secret \
-         "CREATE USER $devuser PASSWORD \"$secret\" NO FORCE_FIRST_PASSWORD_CHANGE"; then exit 1; fi; \
+         "CREATE USER $devuser PASSWORD \"$secret\" NO FORCE_FIRST_PASSWORD_CHANGE"; then exit 1; fi
 
 #    xs spaces; \
 #    if ! xs create-space DEV -u $devuser; then exit 1; fi; \
 #    if ! xs set-space-role $devuser $org DEV SpaceDeveloper; then exit 1; fi; \
 #    xs spaces; \
 
+RUN \
+set -x; \
     fi=$(ls /installer/XSA/*.zip | grep -i "\-di\-"); \
     ma=$(ls /installer/XSA/*.mtaext | grep -i "\-di\-"); \
     if [ ! "${fi}" ]; then exit 1; fi; \
@@ -185,6 +188,7 @@ RUN \
       if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi
 
 RUN \
+set -x; \
     #### INSTALL HRTT
     fi=$(ls /installer/XSA/*.zip | grep -i hrtt); \
     ma=$(ls /installer/XSA/*.mtaext | grep -i hrtt); \
