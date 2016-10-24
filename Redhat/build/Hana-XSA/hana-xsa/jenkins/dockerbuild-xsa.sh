@@ -116,11 +116,11 @@ if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/maste
 echo "Initialize Artifactory login"
 InitArtifactoryLogin
 
-echo "Clean up Docker storage"
+echo; echo "Clean up Docker storage"
 DeleteFailedBuildsContainers
 DeleteFailedBuildsImages
 
-echo "Run 'docker build'"
+echo; echo "Run 'docker build'"
 if ! docker build -t $imgPush build; then
   OnError "Failed to build Dockerfile"; fi
 
