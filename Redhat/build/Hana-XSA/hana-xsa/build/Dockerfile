@@ -2,50 +2,6 @@ FROM docker.wdf.sap.corp:50000/hanaxsshine/weekstone/hana-xsa-shine-req
 
 #MAINTAINER gerald.braunwarth@sap.com
 
-RUN \
-    fi=$(ls /installer/XSA/*.zip | grep -i "\-di\-"); \
-    ma=$(ls /installer/XSA/*.mtaext | grep -i "\-di\-"); \
-    if [ ! "${fi}" ]; then exit 1; fi; \
-    if [ ! "${ma}" ]; then \
-      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
-    else \
-      echo; echo "file '$ma'"; echo; \
-      cat $ma; echo; \
-
-      ## SAP note 2304873 (rewrite the file to remove the developpers DEV_SPACE)
-      echo "_schema-version: \"2.0.0\"" > $ma; \
-      echo "ID: com.sap.devx.di.xs2-config1" >> $ma; \
-      echo "extends: com.sap.devx.di" >> $ma; \
-      echo >> $ma; \
-      echo "modules:" >> $ma; \
-      echo >> $ma; \
-      echo "  - name: di-core" >> $ma; \
-      echo "    parameters:" >> $ma; \
-      echo "      port: 53030" >> $ma; \
-      echo "      memory: 512M" >> $ma; \
-      echo "    properties:" >> $ma; \
-#     echo "      JBP_CONFIG_JAVA_OPTS: '[java_opts: \"\"]'" >> $ma; \
-      echo "      JBP_CONFIG_JAVA_OPTS: '[java_opts: \"-Dhttps.proxyHost=proxy.wdf.sap.corp -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=\\\\"*.sap.corp|*.corp.sap|nexus|localhost|127.0.0.1|10.*\\\\"\"]'" >> $ma; \
-      echo >> $ma; \
-      echo "  - name: di-runner" >> $ma; \
-      echo "    parameters:" >> $ma; \
-      echo "      memory: 512M" >> $ma; \
-      echo >> $ma; \
-      echo "resources:" >> $ma; \
-      echo "  - name: di-dev-space" >> $ma; \
-      echo "    properties:" >> $ma; \
-      echo "      DEV_SPACE: \${space}" >> $ma; \
-
-#      if ! sed -e "s/DEV_SPACE: DEV/DEV_SPACE: $space/g" -i $ma; then exit 1; fi; \
- 
-      echo; echo "$ma customized"; \
-      cat $ma; echo; \
-
-      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi
-
-#### UPLOAD INSTALLERS
-COPY  upload/     /installer/
-
 #### HANA INSTALL CONSTANTS
 ENV sid="DCK" \
     number="97" \
@@ -56,6 +12,9 @@ ENV sid="DCK" \
 
 #### Another ENV for Delayed variables expansion
 ENV PATH=$PATH:$saphome/shared/$sid/HDB$number/exe/:$saphome/shared/$sid/xs/bin/
+
+#### UPLOAD INSTALLERS
+COPY  upload/     /installer/
 
 #### DOWNLOAD INSTALLERS
 RUN \
@@ -168,6 +127,7 @@ RUN \
   #  To update XS Advanced and SAP Web IDE
   #./hdblcm --action=update –-components=xs –-xs_components=xsac_hrtt,xsac_di_core,xsac_sap_web_ide --xs_content_cfg=<path todirectory with mta extensions>
 
+RUN \
     #### LOGIN TO XSA
     if ! xs login -a https://$(hostname -f):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then exit 1; fi; \
 #    if ! xs target -s $space; then exit 1; fi; \
@@ -177,14 +137,13 @@ RUN \
 #    if ! useradd $devuser -p $devuser; then exit 1; fi; \
 
     if ! hdbsql -i $number -n localhost:3${number}15 -u SYSTEM -p $secret \
-         "CREATE USER $devuser PASSWORD \"$secret\" NO FORCE_FIRST_PASSWORD_CHANGE"; then exit 1; fi
+         "CREATE USER $devuser PASSWORD \"$secret\" NO FORCE_FIRST_PASSWORD_CHANGE"; then exit 1; fi; \
 
 #    xs spaces; \
 #    if ! xs create-space DEV -u $devuser; then exit 1; fi; \
 #    if ! xs set-space-role $devuser $org DEV SpaceDeveloper; then exit 1; fi; \
 #    xs spaces; \
 
-RUN \
     fi=$(ls /installer/XSA/*.zip | grep -i "\-di\-"); \
     ma=$(ls /installer/XSA/*.mtaext | grep -i "\-di\-"); \
     if [ ! "${fi}" ]; then exit 1; fi; \
