@@ -17,4 +17,4 @@ modules:
 resources:
  - name: di-dev-space
     properties:
-      DEV_SPACE: ${space}
+      DEV_SPACE: DEV
