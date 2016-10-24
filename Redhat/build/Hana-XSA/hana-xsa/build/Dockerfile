@@ -18,8 +18,6 @@ COPY  upload/     /installer/
 
 #### DOWNLOAD INSTALLERS
 RUN \
-if ! service firewalld stop; then exit 1; fi; \
-
     trigger='trigger-xsa'; \
 
     echo; echo "download '$trigger.txt'"; echo; \
@@ -128,9 +126,6 @@ RUN \
 
   #  To update XS Advanced and SAP Web IDE
   #./hdblcm --action=update –-components=xs –-xs_components=xsac_hrtt,xsac_di_core,xsac_sap_web_ide --xs_content_cfg=<path todirectory with mta extensions>
-
-    #### STOP FIREWALL
-    if ! service firewalld stop; then exit 1; fi; \
 
     #### LOGIN TO XSA
     if ! xs login -a https://$(hostname -f):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then exit 1; fi; \
