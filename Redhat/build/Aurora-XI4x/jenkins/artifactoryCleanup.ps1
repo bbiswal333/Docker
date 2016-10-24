@@ -7,18 +7,18 @@
 
 # parameters: aurora  3
 
-if ($args.Count -ne 2) {
-  Write-Host "Expected argument: <SuiteName> <NbVersionsToKeep>"
-  Write-host "Example: artifactoryCleanup.ps1  aurora  3"
-  exit 1 }
+#if ($args.Count -ne 2) {
+#  Write-Host "Expected argument: <SuiteName> <NbVersionsToKeep>"
+#  Write-host "Example: artifactoryCleanup.ps1  aurora  3"
+#  exit 1 }
 
 $suite = $args[0]
 $max = $args[1]
 
 ## DEBUG
-#cls
-#$suite = 'aurora'
-#$max = 3
+cls
+$suite = 'aurora'
+$max = 3
 ## ENDDEBUG
 
 $AllBuild = 'aurora_pi_aolap', 'aurora_pi_po', 'aurora_pi_tp', 'aurora_rel_cs', 'aurora42_cons', 'aurora42_cons_ml'
@@ -27,11 +27,13 @@ $registry = 'https://docker.wdf.sap.corp'
 $ports    = '51003', '51020'
 $repos    = 'cidemo', 'xmake_snapshot'
 
-$apiKey = 'AKCp2UNNGgbwi9YrxsAXiGdtMN8FLaTumzzMNiXs2xELzfEDGp9NnqsHhQPK9EXJM8vTsHDC9'
+$apiKey = 'AKCp2V6nVTaG6JHK9bNt4a7uSoB7sNRMXRZqaBRsCGmD5yCLGepjwAVXGMr3DBNYnF74eXKY9'
 $header = @{"X-Jfrog-Art-Api" = $apiKey}
 
-Write-Host "Retrieving images list from Artifactory folder 'virtual_docker'"
-$html = Invoke-RestMethod -Method Get -Header $header -Uri "$($registry):50002/artifactory/api/storage/xmake_allrepos/$suite"
+Write-Host "Retrieving images list from Artifactory folder 'xmake_allrepos'"
+$html = Invoke-RestMethod -Method Get -Header $header -Uri "$($registry):50002/artifactory/api/storage/xmake_allrepos/$suite/"
+#$html = Invoke-RestMethod -Method Get -Header $header -Uri "$($registry):50002/artifactory/api/repositories/xmake_allrepos/$suite/"
+#$html = Invoke-WebRequest -Uri "$($registry):10443/artifactory/list/xmake_allrepos/$suite"
 
 if (-not $html.children.Count) {
   Write-Host 'Failed to retrieve Aurora images list from Artifactory server'
