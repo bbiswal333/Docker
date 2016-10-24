@@ -127,7 +127,6 @@ RUN \
   #  To update XS Advanced and SAP Web IDE
   #./hdblcm --action=update –-components=xs –-xs_components=xsac_hrtt,xsac_di_core,xsac_sap_web_ide --xs_content_cfg=<path todirectory with mta extensions>
 
-set -x; \
     #### LOGIN TO XSA
     if ! xs login -a https://$(hostname -f):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then exit 1; fi; \
 #    if ! xs target -s $space; then exit 1; fi; \
@@ -156,8 +155,7 @@ set -x; \
       ## SAP note 2304873 (rewrite the file to remove the developpers DEV_SPACE)
       ## Developer guidance: Bismay BISWAL
       if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/build/sap-xsac-di.mtaext -o $ma; then exit 1; fi; \
-
-#      if ! sed -e "s/DEV_SPACE: DEV/DEV_SPACE: $space/g" -i $ma; then exit 1; fi; \
+      if ! sed -e "s/DEV_SPACE: DEV/DEV_SPACE: $space/g" -i $ma; then exit 1; fi; \
  
       echo; echo "$ma customized"; \
       cat $ma; echo; \
