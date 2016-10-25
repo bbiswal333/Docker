@@ -138,10 +138,10 @@ RUN \
     if ! hdbsql -i $number -n localhost:3${number}15 -u SYSTEM -p $secret \
          "CREATE USER $devuser PASSWORD \"$secret\" NO FORCE_FIRST_PASSWORD_CHANGE"; then exit 1; fi; \
 
-#    xs spaces; \
-#    if ! xs create-space DEV -u $devuser; then exit 1; fi; \
-#    if ! xs set-space-role $devuser $org DEV SpaceDeveloper; then exit 1; fi; \
-#    xs spaces; \
+    xs spaces; \
+    if ! xs create-space DEV -u $devuser; then exit 1; fi; \
+    if ! xs set-space-role $devuser $org DEV SpaceDeveloper; then exit 1; fi; \
+    xs spaces; \
 
     fi=$(ls /installer/XSA/*.zip | grep -i "\-di\-"); \
     ma=$(ls /installer/XSA/*.mtaext | grep -i "\-di\-"); \
@@ -155,9 +155,9 @@ RUN \
       ## SAP note 2304873 (rewrite the file to remove the developpers DEV_SPACE)
       ## Developer guidance: Bismay BISWAL
       if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/build/sap-xsac-di.mtaext -o $ma; then exit 1; fi; \
-      if ! sed -e "s/DEV_SPACE: DEV/DEV_SPACE: $space/g" -i $ma; then exit 1; fi; \
+#      if ! sed -e "s/DEV_SPACE: DEV/DEV_SPACE: $space/g" -i $ma; then exit 1; fi; \
  
-      echo; echo "$ma customized"; \
+      echo; echo "$ma downloaded from Github"; \
       cat $ma; echo; \
 
       if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi;\
@@ -187,6 +187,10 @@ RUN \
     if [ ! "${ma}" ]; then \
       if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
     else \
+
+      echo; echo "$ma"; \
+      cat $ma; echo; \
+
       if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### INSTALL SERVICES
