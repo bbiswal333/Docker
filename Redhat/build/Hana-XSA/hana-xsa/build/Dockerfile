@@ -66,7 +66,7 @@ RUN \
     ma=$(ls /installer/XSA/*.mtaext | grep -i "\-di\-"); \
     if [ "${ma}" ]; then \
 
-      echo; echo "Original file '$ma'"; \
+      echo; echo "Original file '$ma':"; \
       echo; cat $ma; echo; \
 
       ## SAP note 2304873 (rewrite the file to remove the developpers DEV_SPACE)
@@ -74,7 +74,7 @@ RUN \
       if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/build/sap-xsac-di.mtaext -o $ma; then exit 1; fi; \
 #     if ! sed -e "s/DEV_SPACE: DEV/DEV_SPACE: $space/g" -i $ma; then exit 1; fi; \
 
-      echo; echo "$ma downloaded from Github"; \
+      echo; echo "File '$ma' downloaded from Github:"; \
       echo; cat $ma; echo; fi; \
 
     ## DEVELOPERS ARE STANDARDIZING INSTALLERS
