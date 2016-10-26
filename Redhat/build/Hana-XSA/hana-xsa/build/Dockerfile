@@ -107,10 +107,12 @@ RUN \
       --system_usage=custom \
       --sapmnt=$saphome/shared --datapath=$saphome/data --logpath=$saphome/log \
       --components=server,xs \
-      –-xs_components=xsac_monitoring,xsac_services \
       --import_xs_content=yes \
       --add_local_roles=xs_worker \
       --component_dirs=/installer/RT,/installer/XSA; then exit 1; fi; \
+
+#     –-xs_components=xsac_monitoring,xsac_services \
+
 
     #### ADD HRTT + DI_CORE + WEB_IDE
 #    if ! /installer/SAP_HANA_LCM/hdblcm \
@@ -134,24 +136,24 @@ RUN \
 #    if ! xs target -s $space; then exit 1; fi; \
 
     #### INSTALL MONITORING
-#    fi=$(ls /installer/XSA/*.zip | grep -i admin); \
-#    ma=$(ls /installer/XSA/*.mtaext | grep -i admin); \
-#    if [ ! "${fi}" ]; then exit 1; fi; \
-#    if [ ! "${ma}" ]; then \
-#      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
-#    else \
-#      echo "'$ma' exists"; \
-#      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
+    fi=$(ls /installer/XSA/*.zip | grep -i admin); \
+    ma=$(ls /installer/XSA/*.mtaext | grep -i admin); \
+    if [ ! "${fi}" ]; then exit 1; fi; \
+    if [ ! "${ma}" ]; then \
+      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+    else \
+      echo "'$ma' exists"; \
+      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### INSTALL SERVICES
-#    fi=$(ls /installer/XSA/*.zip | grep -i services); \
-#    ma=$(ls /installer/XSA/*.mtaext | grep -i services); \
-#    if [ ! "${fi}" ]; then exit 1; fi; \
-#    if [ ! "${ma}" ]; then \
-#      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi \
-#    else \
-#      echo "'$ma' exists"; \
-#      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
+    fi=$(ls /installer/XSA/*.zip | grep -i services); \
+    ma=$(ls /installer/XSA/*.mtaext | grep -i services); \
+    if [ ! "${fi}" ]; then exit 1; fi; \
+    if [ ! "${ma}" ]; then \
+      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi \
+    else \
+      echo "'$ma' exists"; \
+      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### INSTALL HRTT
     fi=$(ls /installer/XSA/*.zip | grep -i hrtt); \
