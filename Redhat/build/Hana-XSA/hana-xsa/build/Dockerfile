@@ -110,7 +110,7 @@ RUN \
       --system_usage=custom \
       --sapmnt=$saphome/shared --datapath=$saphome/data --logpath=$saphome/log \
       --components=server,xs \
-      –-xs_components=xsac_admin,xsac_services \
+      –-xs_components=xsac_monitoring,xsac_services \
       --import_xs_content=yes \
       --add_local_roles=xs_worker \
       --component_dirs=/installer/RT,/installer/XSA; then exit 1; fi; \
