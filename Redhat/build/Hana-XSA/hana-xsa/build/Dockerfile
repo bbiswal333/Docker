@@ -7,7 +7,7 @@ ENV sid="DCK" \
     number="97" \
     secret="Toor1234" \
     org="REF" \
-    space="PROD" \
+    space="SAP" \
     saphome="/usr/sap/hana"
 
 #### Another ENV for Delayed variables expansion
@@ -40,7 +40,6 @@ RUN \
     echo; echo "ls /installer/XSA"; ls -1 /installer/XSA; \
 
     #### DECOMPRESS INSTALLER
-#RUN \
     sapcar=$(ls /installer/sapcar-*); \
     if [ ! "${sapcar}" ]; then exit 1; fi; \
     chmod +x $sapcar; \
@@ -51,15 +50,11 @@ RUN \
     echo; if ! $sapcar -xf /installer/RT/xs.onpremise.runtime.hanainstallation*.SAR  -R /installer/RT; then exit 1; fi; \
     rm /installer/RT/xs.onpremise.runtime.hanainstallation*.SAR; \
 
-    ## CONFIGURE DI-CORE INSTALLATION
-#    ma=$(ls /installer/XSA/*.mtaext | grep -i "\-di\-"); \
-#    if [ "${ma}" ]; then \
-#      echo; echo "file '$ma' before customization"; echo; \
-#      cat $ma; echo; \
-#      if ! sed -e "s/DEV_SPACE: DEV/DEV_SPACE: $space/g" -i $ma; then exit 1; fi; \
-#     if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/jenkins/sap-xsac-di-3.12.24.mtaext -o $ma; then exit 1; fi; \
-#      echo; echo "New file $ma"; \
-#      cat $ma; echo; fi; \
+    ## DEVELOPERS ARE STANDARDIZING INSTALLERS
+    file=$(ls /installer/XSA/jobscheduler-assembly*[0-9].zip | grep -v XSACSERVICES); \
+    if [ "${file}" ]; then \
+      echo; if ! unzip $file -d /installer/XSA; then exit 1; fi; \
+      rm $file; fi; \
 
     ## DEVELOPERS ARE STANDARDIZING INSTALLERS
     file=$(ls /installer/XSA/sap-xsac-hrtt*[0-9].zip | grep -v XSACHRTT); \
@@ -67,23 +62,32 @@ RUN \
       echo; if ! unzip $file -d /installer/XSA; then exit 1; fi; \
       rm $file; fi; \
 
+    ## CONFIGURE DI-CORE INSTALLATION
+    ma=$(ls /installer/XSA/*.mtaext | grep -i "\-di\-"); \
+    if [ "${ma}" ]; then \
+
+      echo; echo "Original file '$ma'"; \
+      echo; cat $ma; echo; \
+
+      ## SAP note 2304873 (rewrite the file to remove the developpers DEV_SPACE)
+      ## Developer guidance: Bismay BISWAL
+      if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/build/sap-xsac-di.mtaext -o $ma; then exit 1; fi; \
+#     if ! sed -e "s/DEV_SPACE: DEV/DEV_SPACE: $space/g" -i $ma; then exit 1; fi; \
+
+      echo; echo "$ma downloaded from Github"; \
+      echo; cat $ma; echo; fi; \
+
     ## DEVELOPERS ARE STANDARDIZING INSTALLERS
     file=$(ls /installer/XSA/sap-xsac-webide*[0-9].zip | grep -v XSACSAPWEBIDE); \
     if [ "${file}" ]; then \
       echo; if ! unzip $file -d /installer/XSA; then exit 1; fi; \
-      rm $file; fi; \
-#    ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
-#    if [ "${ma}" ]; then \
-#       echo "    properties:" >> $ma; \
-#       echo "      NO_PROXY: \"localhost, $(hostname -f)\"" >> $ma; \
-#       echo; echo "$ma customized"; echo; \
-#       cat $ma; echo; fi; \
-
-    ## DEVELOPERS ARE STANDARDIZING INSTALLERS
-    file=$(ls /installer/XSA/jobscheduler-assembly*[0-9].zip | grep -v XSACSERVICES); \
-    if [ "${file}" ]; then \
-      echo; if ! unzip $file -d /installer/XSA; then exit 1; fi; \
       rm $file; fi
+#   ma=$(ls /installer/XSA/sap-xsac-webide*.mtaext); \
+#   if [ "${ma}" ]; then \
+#      echo "    properties:" >> $ma; \
+#      echo "      NO_PROXY: \"localhost, $(hostname -f)\"" >> $ma; \
+#      echo; echo "$ma customized"; echo; \
+#      cat $ma; echo; fi; \
 
 RUN \
     mkdir -p $saphome/{shared,data,log}; \
@@ -100,15 +104,16 @@ RUN \
           -org_manager_password $secret \
           -system_user_password $secret \
       --org_name=$org \
-      --prod_space_name=$prod \
+      --prod_space_name=$space \
       --remote_execution=ssh \
       --install_hostagent=off \
       --system_usage=custom \
       --sapmnt=$saphome/shared --datapath=$saphome/data --logpath=$saphome/log \
       --components=server,xs \
+      –-xs_components=xsac_admin,xsac_services \
       --import_xs_content=yes \
       --add_local_roles=xs_worker \
-      --component_dirs=/installer/RT; then exit 1; fi; \
+      --component_dirs=/installer/RT,/installer/XSA; then exit 1; fi; \
 
     #### ADD HRTT + DI_CORE + WEB_IDE
 #    if ! /installer/SAP_HANA_LCM/hdblcm \
@@ -131,36 +136,25 @@ RUN \
     if ! xs login -a https://$(hostname -f):3${number}30 -u XSA_ADMIN -p $secret -o $org -s $space --skip-ssl-validation; then exit 1; fi; \
 #    if ! xs target -s $space; then exit 1; fi; \
 
-    #### INSTALL DI
-    devuser="webidedev"; \
-#    if ! useradd $devuser -p $devuser; then exit 1; fi; \
+    #### INSTALL MONITORING
+#    fi=$(ls /installer/XSA/*.zip | grep -i admin); \
+#    ma=$(ls /installer/XSA/*.mtaext | grep -i admin); \
+#    if [ ! "${fi}" ]; then exit 1; fi; \
+#    if [ ! "${ma}" ]; then \
+#      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
+#    else \
+#      echo "'$ma' exists"; \
+#      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
-    if ! hdbsql -i $number -n localhost:3${number}15 -u SYSTEM -p $secret \
-         "CREATE USER $devuser PASSWORD \"$secret\" NO FORCE_FIRST_PASSWORD_CHANGE"; then exit 1; fi; \
-
-    xs spaces; \
-    if ! xs create-space DEV -u $devuser; then exit 1; fi; \
-    if ! xs set-space-role $devuser $org DEV SpaceDeveloper; then exit 1; fi; \
-    xs spaces; \
-
-    fi=$(ls /installer/XSA/*.zip | grep -i "\-di\-"); \
-    ma=$(ls /installer/XSA/*.mtaext | grep -i "\-di\-"); \
-    if [ ! "${fi}" ]; then exit 1; fi; \
-    if [ ! "${ma}" ]; then \
-      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
-    else \
-      echo; echo "file '$ma'"; \
-      echo; cat $ma; echo; \
-
-      ## SAP note 2304873 (rewrite the file to remove the developpers DEV_SPACE)
-      ## Developer guidance: Bismay BISWAL
-      if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/build/sap-xsac-di.mtaext -o $ma; then exit 1; fi; \
-#      if ! sed -e "s/DEV_SPACE: DEV/DEV_SPACE: $space/g" -i $ma; then exit 1; fi; \
- 
-      echo; echo "$ma downloaded from Github"; \
-      cat $ma; echo; \
-
-      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi;\
+    #### INSTALL SERVICES
+#    fi=$(ls /installer/XSA/*.zip | grep -i services); \
+#    ma=$(ls /installer/XSA/*.mtaext | grep -i services); \
+#    if [ ! "${fi}" ]; then exit 1; fi; \
+#    if [ ! "${ma}" ]; then \
+#      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi \
+#    else \
+#      echo "'$ma' exists"; \
+#      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### INSTALL HRTT
     fi=$(ls /installer/XSA/*.zip | grep -i hrtt); \
@@ -169,16 +163,29 @@ RUN \
     if [ ! "${ma}" ]; then \
       if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
     else \
+      echo "'$ma' exists"; \
       if ! xs install $fi  -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
-    #### INSTALL MONITORING
-    fi=$(ls /installer/XSA/*.zip | grep -i admin); \
-    ma=$(ls /installer/XSA/*.mtaext | grep -i admin); \
+    #### INSTALL DI
+#    devuser="webidedev"; \
+#    if ! useradd $devuser -p $devuser; then exit 1; fi; \
+
+#    if ! hdbsql -i $number -n localhost:3${number}15 -u SYSTEM -p $secret \
+#         "CREATE USER $devuser PASSWORD \"$secret\" NO FORCE_FIRST_PASSWORD_CHANGE"; then exit 1; fi; \
+
+#    xs spaces; \
+#    if ! xs create-space DEV -u $devuser; then exit 1; fi; \
+#    if ! xs set-space-role $devuser $org DEV SpaceDeveloper; then exit 1; fi; \
+#    xs spaces; \
+
+    fi=$(ls /installer/XSA/*.zip | grep -i "\-di\-"); \
+    ma=$(ls /installer/XSA/*.mtaext | grep -i "\-di\-"); \
     if [ ! "${fi}" ]; then exit 1; fi; \
     if [ ! "${ma}" ]; then \
       if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
     else \
-      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
+      echo "'$ma' exists"; \
+      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi;\
 
     #### INSTALL WEBIDE
     fi=$(ls /installer/XSA/*.zip | grep -i webide); \
@@ -187,19 +194,7 @@ RUN \
     if [ ! "${ma}" ]; then \
       if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi; \
     else \
-
-      echo; echo "$ma"; \
-      cat $ma; echo; \
-
-      if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
-
-    #### INSTALL SERVICES
-    fi=$(ls /installer/XSA/*.zip | grep -i services); \
-    ma=$(ls /installer/XSA/*.mtaext | grep -i services); \
-    if [ ! "${fi}" ]; then exit 1; fi; \
-    if [ ! "${ma}" ]; then \
-      if ! xs install $fi -o ALLOW_SC_SAME_VERSION; then exit 1; fi \
-    else \
+      echo "'$ma' exists"; \
       if ! xs install $fi -e $ma -o ALLOW_SC_SAME_VERSION; then exit 1; fi; fi; \
 
     #### DELETE INSTALLER
