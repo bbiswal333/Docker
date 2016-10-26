@@ -7,7 +7,7 @@ ENV sid="DCK" \
     number="97" \
     secret="Toor1234" \
     org="REF" \
-    space="SAP" \
+    space="PROD" \
     saphome="/usr/sap/hana"
 
 #### Another ENV for Delayed variables expansion
@@ -65,9 +65,6 @@ RUN \
     ## CONFIGURE DI-CORE INSTALLATION
     ma=$(ls /installer/XSA/*.mtaext | grep -i "\-di\-"); \
     if [ "${ma}" ]; then \
-
-      echo; echo "Original file '$ma':"; \
-      echo; cat $ma; echo; \
 
       ## SAP note 2304873 (rewrite the file to remove the developpers DEV_SPACE)
       ## Developer guidance: Bismay BISWAL
