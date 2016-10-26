@@ -106,7 +106,7 @@ if [ -d build ]; then
   rm -rf build; fi
 mkdir -p build/upload
 
-echo "Get 'hanadb' and 'lcm' installers to upload"
+echo "Copy 'lcm' and 'hanadb' installers on build machine"
 GetCifsInstaller
 
 echo "Get Dockerfile from Github"
