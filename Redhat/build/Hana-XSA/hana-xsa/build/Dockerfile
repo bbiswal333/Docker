@@ -21,7 +21,7 @@ RUN \
     trigger='trigger-xsa'; \
 
     echo; echo "download '$trigger.txt'"; echo; \
-    if ! curl -k -s https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/jenkins/$trigger.txt -o $trigger.tmp; then exit 1; fi; \
+    if ! curl -k -s https://github.wdf.sap.corp/I313177/Docker/master/Redhat/build/Hana-XSA/hana-xsa/jenkins/$trigger.txt -o $trigger.tmp; then exit 1; fi; \
 
     # Windows \nl to Linux
     tr -d "\r" < $trigger.tmp > $trigger.txt; \
@@ -68,7 +68,7 @@ RUN \
 
       ## SAP note 2304873 (rewrite the file to remove the developpers DEV_SPACE)
       ## Developer guidance: Bismay BISWAL
-      if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/build/sap-xsac-di.mtaext -o $ma; then exit 1; fi; \
+      if ! curl -s -k https://github.wdf.sap.corp/I313177/Docker/master/Redhat/build/Hana-XSA/hana-xsa/build/sap-xsac-di.mtaext -o $ma; then exit 1; fi; \
 #     if ! sed -e "s/DEV_SPACE: DEV/DEV_SPACE: $space/g" -i $ma; then exit 1; fi; \
 
       echo; echo "File '$ma' downloaded from Github:"; \
