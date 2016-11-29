@@ -67,7 +67,7 @@ mkdir build
 cd build
 
 echo "Curl Dockerfile from Github"
-if ! curl -s -k -O https://github.wdf.sap.corp/I313177/Docker/tree/master/Redhat/build/Hana-XSA/hana-xsa-shine/build/Dockerfile; then
+if ! curl -s -k -O https://github.wdf.sap.corp/raw/I313177/Docker/master/Redhat/build/Hana-XSA/hana-xsa-shine/build/Dockerfile; then
   OnError "Failed to curl Dockerfile"; fi
 
 echo "Initialize Artifactory login"
