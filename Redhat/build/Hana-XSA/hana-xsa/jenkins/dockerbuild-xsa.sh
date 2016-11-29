@@ -19,7 +19,7 @@ function OnError {
 #--------------------------------------
 function GetTriggerFile {
 
-  GithubURL='https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/jenkins'
+  GithubURL='https://github.wdf.sap.corp/I313177/Docker/master/Redhat/build/Hana-XSA/hana-xsa/jenkins'
 
   if ! curl -k -s $GithubURL/trigger-xsa.txt -o trigger-xsa.tx; then
     OnError "Failed to download 'trigger-xsa.txt' from Github"; fi
@@ -110,7 +110,7 @@ echo "Copy 'lcm' and 'hanadb' installers on build machine"
 GetCifsInstaller
 
 echo "Get Dockerfile from Github"
-if ! curl -s -k https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa/build/Dockerfile -o build/Dockerfile; then
+if ! curl -s -k https://github.wdf.sap.corp/I313177/Docker/master/Redhat/build/Hana-XSA/hana-xsa/build/Dockerfile -o build/Dockerfile; then
   OnError "Failed to curl Dockerfile"; fi
 
 echo "Initialize Artifactory login"
