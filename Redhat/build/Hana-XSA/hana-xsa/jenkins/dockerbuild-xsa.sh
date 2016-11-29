@@ -46,6 +46,8 @@ function GetCifsInstaller {
     if [ "$name" == "lcm" -o "$name" == "hanadb" ]; then
 
       endpoint=${url/$mounted/}
+      echo $mounted
+      echo $endpoint
 
       if ! cp -r /mnt/xsa/$endpoint/$file  build/$folder/; then
         sudo umount /mnt/xsa
