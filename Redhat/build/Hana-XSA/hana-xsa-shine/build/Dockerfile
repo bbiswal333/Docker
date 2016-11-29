@@ -25,7 +25,7 @@ RUN \
 
     echo; \
     echo "curl '$trigger.txt'"; \
-    if ! curl -k -s https://github.wdf.sap.corp/I313177/Docker/master/Redhat/build/Hana-XSA/hana-xsa/jenkins/$trigger.txt -o $trigger.tmp; then exit 1; fi; \
+    if ! curl -k -s https://github.wdf.sap.corp/I313177/Docker/tree/master/Redhat/build/Hana-XSA/hana-xsa/jenkins/$trigger.txt -o $trigger.tmp; then exit 1; fi; \
 
     # Windows \nl to Linux
     tr -d "\r" < $trigger.tmp > $trigger.txt; \
