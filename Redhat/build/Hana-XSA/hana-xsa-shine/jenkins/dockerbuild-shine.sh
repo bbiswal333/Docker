@@ -67,7 +67,7 @@ mkdir build
 cd build
 
 echo "Curl Dockerfile from Github"
-if ! curl -s -k -O https://github.wdf.sap.corp/raw/Dev-Infra-Levallois/Docker/master/Redhat/build/Hana-XSA/hana-xsa-shine/build/Dockerfile; then
+if ! curl -s -k -O https://github.wdf.sap.corp/I313177/Docker/master/Redhat/build/Hana-XSA/hana-xsa-shine/build/Dockerfile; then
   OnError "Failed to curl Dockerfile"; fi
 
 echo "Initialize Artifactory login"
@@ -78,17 +78,17 @@ DeleteFailedBuildsContainers
 DeleteFailedBuildsImages
 
 echo "Run 'docker build'"
-if ! docker build --build-arg branch=$1 -t $imgPush .; then
+if ! docker build --build-arg branch=$1 -t $imgPush:1.0 .; then
 #if ! docker build  -t $imgPush .; then
   OnError "Failed to build Dockerfile"; fi
 
 echo "Push image"
-if ! docker push $imgPush; then
+if ! docker push $imgPush:1.0; then
   OnError "Failed to push image to Artifactory"; fi
 
 docker logout $registry:$push
 
 echo "Rename local image from Push to Pull tag"
-dummy=$(docker rmi $imgPull 2>&1)
-if ! docker tag $imgPush $imgPull; then OnError "Failed to tag image from Push to Pull"; fi
-if ! docker rmi $imgPush;          then OnError "Failed to delete local Push image"; fi
+dummy=$(docker rmi $imgPull:1.0 2>&1)
+if ! docker tag $imgPush:1.0 $imgPull:1.0; then OnError "Failed to tag image from Push to Pull"; fi
+if ! docker rmi $imgPush:1.0;          then OnError "Failed to delete local Push image"; fi
