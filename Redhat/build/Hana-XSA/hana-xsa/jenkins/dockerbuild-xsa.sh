@@ -121,7 +121,7 @@ DeleteFailedBuildsContainers
 DeleteFailedBuildsImages
 
 echo; echo "Run 'docker build'"
-if ! docker build -t $imgPush build; then
+if ! docker build -t $imgPush:1.0 build; then
   OnError "Failed to build Dockerfile"; fi
 
 #echo "Push image"
@@ -131,6 +131,6 @@ if ! docker build -t $imgPush build; then
 #docker logout $registry:$push
 
 echo "Rename local image from Push to Pull tag"
-dummy=$(docker rmi $imgPull 2>&1)
-if ! docker tag $imgPush $imgPull; then OnError "Failed to tag image from Push to Pull"; fi
-if ! docker rmi $imgPush;          then OnError "Failed to delete local Push image"; fi
+dummy=$(docker rmi $imgPull:1.0 2>&1)
+if ! docker tag $imgPush:1.0 $imgPull:1.0; then OnError "Failed to tag image from Push to Pull"; fi
+if ! docker rmi $imgPush:1.0;          then OnError "Failed to delete local Push image"; fi
