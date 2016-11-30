@@ -36,7 +36,7 @@ function GetCifsInstaller {
   #   mount -t nfs derotvi0157.wdf.sap.corp:/derotvi0157a_ld9252/q_files  /mnt/xsa
   #      =>  /mnt/xsa/HANA_WS_COR/released_weekstones/LastWS/lcm/linuxx86_64
 
-  mounted="derotvi0157.wdf.sap.corp:/derotvi0157a_ld9252/q_files"
+  remove="//production.wdf.sap.corp/makeresults/newdb/POOL/"
 
   if ! sudo mount -t nfs "derotvi0157.wdf.sap.corp:/derotvi0157a_ld9252/q_files"  /mnt/xsa; then
     OnError "Failed to mount '$radix' in CIFS"; fi
@@ -45,7 +45,7 @@ function GetCifsInstaller {
 
     if [ "$name" == "lcm" -o "$name" == "hanadb" ]; then
 
-      endpoint=${url/$mounted/}
+      endpoint=${url/$remove/}
       echo $mounted
       echo $endpoint
 
